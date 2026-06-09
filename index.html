@@ -31,6 +31,9 @@ const KEY = "lyra-cs-v4";
 const KEY_BACKUP = "lyra-cs-backup";
 const DATA_PATCH = 3;
 const AUTH_KEY = "lyra-auth";
+const PASS_PREFIX = "lyra-pw-";
+function getPass(email){return localStorage.getItem(PASS_PREFIX+email)||USERS.find(u=>u.email===email)?.pass||'';}
+function savePass(email,pass){localStorage.setItem(PASS_PREFIX+email,pass);}
 
 // ─── USUÁRIOS E PERMISSÕES ────────────────────────────────────────────────────
 const USERS=[
@@ -1075,8 +1078,8 @@ function LoginView({onLogin}){
   const[pass,setPass]=useState('');
   const[error,setError]=useState('');
   function login(){
-    const u=USERS.find(u=>u.email.toLowerCase()===email.toLowerCase().trim()&&u.pass===pass);
-    if(u){setError('');onLogin(u);}
+    const u=USERS.find(u=>u.email.toLowerCase()===email.toLowerCase().trim());
+    if(u&&getPass(u.email)===pass){setError('');onLogin(u);}
     else setError('E-mail ou senha incorretos.');
   }
   return<div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100vh',background:P_BG}}>
@@ -1237,6 +1240,21 @@ function App(){
 
   const[showApiModal,setShowApiModal]=useState(false);
   const[apiInput,setApiInput]=useState('');
+  const[showPassModal,setShowPassModal]=useState(false);
+  const[passAtual,setPassAtual]=useState('');
+  const[passNova,setPassNova]=useState('');
+  const[passConfirm,setPassConfirm]=useState('');
+  const[passMsg,setPassMsg]=useState('');
+  const[passErr,setPassErr]=useState('');
+  function trocarSenha(){
+    if(getPass(auth.email)!==passAtual){setPassErr('Senha atual incorreta.');return;}
+    if(passNova.length<6){setPassErr('Nova senha deve ter pelo menos 6 caracteres.');return;}
+    if(passNova!==passConfirm){setPassErr('As senhas não coincidem.');return;}
+    savePass(auth.email,passNova);
+    setPassErr('');setPassMsg('Senha alterada com sucesso!');
+    setPassAtual('');setPassNova('');setPassConfirm('');
+    setTimeout(()=>{setPassMsg('');setShowPassModal(false);},2000);
+  }
 
   // ─── Guards (após todos os hooks) ───────────────────────────────────────────
   if(!auth)return<LoginView onLogin={doLogin}/>;
@@ -1268,6 +1286,31 @@ function App(){
         style={{width:'100%',background:'transparent',color:'#DC2626',padding:'8px',borderRadius:12,fontSize:11,border:'1px solid #FCA5A5',cursor:'pointer'}}>
         Remover chave salva
       </button>}
+    </div>
+  </div>;
+
+  if(showPassModal)return<div style={{position:'fixed',inset:0,background:'rgba(44,35,40,0.45)',zIndex:9999,display:'flex',alignItems:'center',justifyContent:'center'}} onClick={()=>setShowPassModal(false)}>
+    <div style={{background:'white',borderRadius:24,padding:'36px',width:400,boxShadow:'0 20px 60px rgba(230,75,151,0.2)',border:`1px solid ${P_BORDER}`}} onClick={e=>e.stopPropagation()}>
+      <div style={{fontFamily:"'Playfair Display',serif",fontSize:20,fontWeight:700,color:'#3D1A2E',marginBottom:4}}>Alterar senha</div>
+      <div style={{fontSize:12,color:'#B08090',marginBottom:20}}>Conta: <strong>{auth.email}</strong></div>
+      {['Senha atual','Nova senha','Confirmar nova senha'].map((lbl,i)=>{
+        const vals=[passAtual,passNova,passConfirm];
+        const setters=[setPassAtual,setPassNova,setPassConfirm];
+        return<div key={i} style={{marginBottom:12}}>
+          <div style={{fontSize:10,fontWeight:700,color:'#C06090',marginBottom:4,textTransform:'uppercase',letterSpacing:0.6}}>{lbl}</div>
+          <input type="password" value={vals[i]} onChange={e=>setters[i](e.target.value)}
+            onKeyDown={e=>e.key==='Enter'&&trocarSenha()}
+            style={{width:'100%',border:`1px solid ${P_BORDER}`,borderRadius:10,padding:'10px 14px',fontSize:13,color:GRAFITE}}/>
+        </div>;
+      })}
+      {passErr&&<div style={{fontSize:12,color:'#DC2626',marginBottom:10,fontWeight:600}}>{passErr}</div>}
+      {passMsg&&<div style={{fontSize:12,color:'#15803D',marginBottom:10,fontWeight:700,background:'#DCFCE7',padding:'8px 12px',borderRadius:8}}>{passMsg}</div>}
+      <button onClick={trocarSenha} style={{width:'100%',background:P,color:'white',padding:'11px',borderRadius:12,fontSize:13,fontWeight:700,border:'none',cursor:'pointer',marginBottom:8}}>
+        Salvar nova senha
+      </button>
+      <button onClick={()=>setShowPassModal(false)} style={{width:'100%',background:'transparent',color:'#B08090',padding:'8px',borderRadius:12,fontSize:12,border:`1px solid ${P_BORDER}`,cursor:'pointer'}}>
+        Cancelar
+      </button>
     </div>
   </div>;
 
@@ -1306,6 +1349,7 @@ function App(){
           <div style={{fontSize:11,fontWeight:700,color:GRAFITE,marginBottom:2}}>{auth.name}</div>
           <div style={{fontSize:10,color:'#B08090',marginBottom:6}}>{auth.role==='admin'?'Administradora':auth.role==='editor'?'Editor':'Visualizador'}</div>
           {saveMsg&&<div style={{fontSize:11,color:'#15803D',fontWeight:700,background:'#DCFCE7',borderRadius:8,padding:'3px 8px',marginBottom:6}}>{saveMsg}</div>}
+          <button onClick={()=>{setShowPassModal(true);setPassErr('');setPassMsg('');setPassAtual('');setPassNova('');setPassConfirm('');}} style={{width:'100%',background:'transparent',color:P,border:`1px solid ${P_BORDER}`,borderRadius:8,padding:'5px',fontSize:11,cursor:'pointer',marginBottom:4}}>🔑 Alterar senha</button>
           <button onClick={doLogout} style={{width:'100%',background:'transparent',color:'#B08090',border:`1px solid ${P_BORDER}`,borderRadius:8,padding:'5px',fontSize:11,cursor:'pointer'}}>Sair</button>
         </div>
       </div>
