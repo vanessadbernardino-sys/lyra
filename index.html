@@ -824,6 +824,7 @@ function RelatorioView({clients,onUpdate,brunoDate,onSetDate}){
   const[preview,setPreview]=useState(null);
   const[error,setError]=useState('');
   const[msg,setMsg]=useState('');
+  const[perfModal,setPerfModal]=useState(null);
   const active=clients.filter(c=>c.status==='ativo').sort((a,b)=>['critico','atencao','sem_dados','saudavel'].indexOf(a.brunoStatus)-['critico','atencao','sem_dados','saudavel'].indexOf(b.brunoStatus));
   const si={border:`1px solid ${P_BORDER}`,borderRadius:8,padding:'6px 10px',fontSize:12,background:'white',color:GRAFITE,width:'100%'};
 
@@ -881,6 +882,55 @@ function RelatorioView({clients,onUpdate,brunoDate,onSetDate}){
   }
 
   return<div style={{flex:1,overflowY:'auto',padding:'28px 32px',background:P_BG}}>
+    {perfModal&&<div style={{position:'fixed',inset:0,background:'rgba(44,35,40,0.45)',zIndex:2000,display:'flex',alignItems:'center',justifyContent:'center'}} onClick={()=>setPerfModal(null)}>
+      <div style={{background:'white',borderRadius:20,width:400,boxShadow:'0 20px 60px rgba(230,75,151,0.2)',animation:'fadeIn 0.2s ease',overflow:'hidden'}} onClick={e=>e.stopPropagation()}>
+        <div style={{padding:'16px 20px',borderBottom:`1px solid ${P_BORDER}`,display:'flex',justifyContent:'space-between',alignItems:'center',background:P_BG}}>
+          <div>
+            <div style={{fontSize:15,fontWeight:700,color:GRAFITE}}>{perfModal.name}</div>
+            <div style={{fontSize:11,color:'#B08090',marginTop:2}}>{perfModal.gestor}</div>
+          </div>
+          <div style={{display:'flex',alignItems:'center',gap:10}}>
+            <BrunoBdg status={perfModal.brunoStatus}/>
+            <button onClick={()=>setPerfModal(null)} style={{background:'none',border:'none',fontSize:20,color:'#B08090',cursor:'pointer',lineHeight:1}}>&times;</button>
+          </div>
+        </div>
+        <div style={{padding:'20px'}}>
+          {(perfModal.brunoRoas==null&&perfModal.brunoCtr==null&&perfModal.brunoFreq==null&&perfModal.brunoCompras==null&&perfModal.brunoCpa==null&&perfModal.brunoSaldo==null&&!perfModal.brunoGasto)
+            ?<div style={{textAlign:'center',color:'#B08090',fontSize:13,padding:'12px 0'}}>Sem dados de performance ainda.<br/>Suba o relatório para atualizar.</div>
+            :<div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
+              {perfModal.brunoRoas!=null&&<div style={{background:P_BG,borderRadius:10,padding:'10px 14px'}}>
+                <div style={{fontSize:10,color:'#C06090',fontWeight:700,textTransform:'uppercase',letterSpacing:0.5,marginBottom:4}}>ROAS</div>
+                <div style={{fontSize:22,fontWeight:800,color:perfModal.brunoRoas<1?'#DC2626':perfModal.brunoRoas<2?'#D97706':'#16A34A'}}>{perfModal.brunoRoas}x</div>
+              </div>}
+              {perfModal.brunoGasto>0&&<div style={{background:P_BG,borderRadius:10,padding:'10px 14px'}}>
+                <div style={{fontSize:10,color:'#C06090',fontWeight:700,textTransform:'uppercase',letterSpacing:0.5,marginBottom:4}}>Gasto</div>
+                <div style={{fontSize:16,fontWeight:700,color:GRAFITE}}>R$ {perfModal.brunoGasto.toLocaleString('pt-BR',{minimumFractionDigits:2})}</div>
+              </div>}
+              {perfModal.brunoCtr!=null&&<div style={{background:P_BG,borderRadius:10,padding:'10px 14px'}}>
+                <div style={{fontSize:10,color:'#C06090',fontWeight:700,textTransform:'uppercase',letterSpacing:0.5,marginBottom:4}}>CTR</div>
+                <div style={{fontSize:18,fontWeight:700,color:perfModal.brunoCtr<1?'#DC2626':GRAFITE}}>{perfModal.brunoCtr}%</div>
+              </div>}
+              {perfModal.brunoFreq!=null&&<div style={{background:P_BG,borderRadius:10,padding:'10px 14px'}}>
+                <div style={{fontSize:10,color:'#C06090',fontWeight:700,textTransform:'uppercase',letterSpacing:0.5,marginBottom:4}}>Frequência</div>
+                <div style={{fontSize:18,fontWeight:700,color:perfModal.brunoFreq>=6?'#DC2626':perfModal.brunoFreq>=4?'#D97706':GRAFITE}}>{perfModal.brunoFreq}{perfModal.brunoFreq>=6?' ⚠':''}</div>
+              </div>}
+              {perfModal.brunoCompras!=null&&<div style={{background:P_BG,borderRadius:10,padding:'10px 14px'}}>
+                <div style={{fontSize:10,color:'#C06090',fontWeight:700,textTransform:'uppercase',letterSpacing:0.5,marginBottom:4}}>Compras</div>
+                <div style={{fontSize:18,fontWeight:700,color:perfModal.brunoCompras===0?'#DC2626':GRAFITE}}>{perfModal.brunoCompras}{perfModal.brunoCompras===0?' ⚠':''}</div>
+              </div>}
+              {perfModal.brunoCpa!=null&&<div style={{background:P_BG,borderRadius:10,padding:'10px 14px'}}>
+                <div style={{fontSize:10,color:'#C06090',fontWeight:700,textTransform:'uppercase',letterSpacing:0.5,marginBottom:4}}>CPA</div>
+                <div style={{fontSize:18,fontWeight:700,color:GRAFITE}}>{perfModal.brunoCpa}</div>
+              </div>}
+              {perfModal.brunoSaldo!=null&&<div style={{background:P_BG,borderRadius:10,padding:'10px 14px',gridColumn:'1/-1'}}>
+                <div style={{fontSize:10,color:'#C06090',fontWeight:700,textTransform:'uppercase',letterSpacing:0.5,marginBottom:4}}>Saldo</div>
+                <div style={{fontSize:14,fontWeight:600,color:GRAFITE}}>{perfModal.brunoSaldo}</div>
+              </div>}
+            </div>}
+          {brunoDate&&<div style={{marginTop:12,fontSize:10,color:'#B08090',textAlign:'right'}}>Relatório de {fmtFull(brunoDate)}</div>}
+        </div>
+      </div>
+    </div>}
     <div style={{fontFamily:"'Playfair Display',serif",fontSize:22,fontWeight:800,color:GRAFITE,marginBottom:4}}><i className="ti ti-chart-bar" style={{color:P,marginRight:10}}/>Relatório Operacional</div>
     <p style={{fontSize:12,color:'#B08090',marginBottom:20}}>Suba o relatório PDF — a IA lê e atualiza todos os clientes automaticamente</p>
     {msg&&<div style={{background:'#DCFCE7',color:'#15803D',padding:'10px 16px',borderRadius:10,marginBottom:14,fontSize:13,fontWeight:700}}>✓ {msg}</div>}
@@ -924,7 +974,17 @@ function RelatorioView({clients,onUpdate,brunoDate,onSetDate}){
       <div style={{padding:'11px 18px',borderBottom:`1px solid ${P_BORDER}`,background:P_BG}}><span style={{fontSize:12,fontWeight:700,color:GRAFITE}}>Atualização manual</span></div>
       <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(280px,1fr))'}}>
         {active.map(c=><div key={c.id} style={{display:'flex',alignItems:'center',gap:10,padding:'9px 16px',borderBottom:`1px solid #FCE4EC`}}>
-          <div style={{flex:1}}><div style={{fontSize:12,fontWeight:600,color:GRAFITE}}>{c.name}</div><div style={{fontSize:10,color:'#B08090'}}>{c.gestor}{c.brunoRoas!=null?` · ROAS ${c.brunoRoas}x`:''}</div></div>
+          <div style={{flex:1,cursor:'pointer'}} onClick={()=>setPerfModal(c)}>
+            <div style={{fontSize:12,fontWeight:600,color:GRAFITE}}>{c.name}</div>
+            <div style={{fontSize:10,color:'#B08090',marginTop:2}}>
+              {c.gestor}
+              {c.brunoRoas!=null&&<span style={{marginLeft:6,color:c.brunoRoas<1?'#DC2626':c.brunoRoas<2?'#D97706':'#16A34A',fontWeight:700}}>ROAS {c.brunoRoas}x</span>}
+              {c.brunoCtr!=null&&<span style={{marginLeft:6}}>CTR {c.brunoCtr}%</span>}
+              {c.brunoFreq!=null&&<span style={{marginLeft:6,color:c.brunoFreq>=6?'#DC2626':c.brunoFreq>=4?'#D97706':'inherit'}}>{c.brunoFreq>=6?'⚠ ':''}{c.brunoFreq>=4?'⚠ ':''}Freq {c.brunoFreq}</span>}
+              {c.brunoCompras!=null&&<span style={{marginLeft:6,color:c.brunoCompras===0?'#DC2626':'inherit'}}>{c.brunoCompras===0?'⚠ ':''}Compras {c.brunoCompras}</span>}
+            </div>
+            <div style={{fontSize:9,color:P,marginTop:2,opacity:0.7}}>clique para ver detalhes</div>
+          </div>
           <div style={{display:'flex',flexDirection:'column',gap:4,minWidth:110}}>
             <select value={c.brunoStatus} onChange={e=>onUpdate(c.id,{brunoStatus:e.target.value})} style={{...si,padding:'4px 6px',cursor:'pointer'}}>
               <option value="critico">Crítico</option><option value="atencao">Atenção</option><option value="saudavel">Saudável</option><option value="sem_dados">Sem dados</option>
