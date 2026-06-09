@@ -387,6 +387,19 @@ function DetailPanel({c,onClose,onSave,onDelete,today}){
         </div>
       </div>
 
+      {(f.brunoRoas!=null||f.brunoCtr!=null||f.brunoFreq!=null||f.brunoCompras!=null||f.brunoCpa!=null||f.brunoSaldo!=null)&&<div style={box}>
+        <div style={lbl}>Performance (último relatório)</div>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:6}}>
+          {f.brunoRoas!=null&&<div><div style={{fontSize:9,color:'#C06090',fontWeight:700,textTransform:'uppercase',letterSpacing:0.5}}>ROAS</div><div style={{fontSize:14,fontWeight:700,color:f.brunoRoas<1?'#DC2626':f.brunoRoas<2?'#D97706':'#16A34A'}}>{f.brunoRoas}x</div></div>}
+          {f.brunoGasto>0&&<div><div style={{fontSize:9,color:'#C06090',fontWeight:700,textTransform:'uppercase',letterSpacing:0.5}}>Gasto</div><div style={{fontSize:13,color:GRAFITE,fontWeight:600}}>{f.brunoGasto.toLocaleString('pt-BR',{minimumFractionDigits:2})}</div></div>}
+          {f.brunoCtr!=null&&<div><div style={{fontSize:9,color:'#C06090',fontWeight:700,textTransform:'uppercase',letterSpacing:0.5}}>CTR</div><div style={{fontSize:13,color:f.brunoCtr<1?'#DC2626':GRAFITE,fontWeight:600}}>{f.brunoCtr}%</div></div>}
+          {f.brunoFreq!=null&&<div><div style={{fontSize:9,color:'#C06090',fontWeight:700,textTransform:'uppercase',letterSpacing:0.5}}>Frequência</div><div style={{fontSize:13,color:f.brunoFreq>=6?'#DC2626':f.brunoFreq>=4?'#D97706':GRAFITE,fontWeight:f.brunoFreq>=6?700:600}}>{f.brunoFreq}{f.brunoFreq>=6?' ⚠':''}</div></div>}
+          {f.brunoCompras!=null&&<div><div style={{fontSize:9,color:'#C06090',fontWeight:700,textTransform:'uppercase',letterSpacing:0.5}}>Compras</div><div style={{fontSize:13,color:f.brunoCompras===0?'#DC2626':GRAFITE,fontWeight:600}}>{f.brunoCompras}{f.brunoCompras===0?' ⚠':''}</div></div>}
+          {f.brunoCpa!=null&&<div><div style={{fontSize:9,color:'#C06090',fontWeight:700,textTransform:'uppercase',letterSpacing:0.5}}>CPA</div><div style={{fontSize:13,color:GRAFITE,fontWeight:600}}>{f.brunoCpa}</div></div>}
+          {f.brunoSaldo!=null&&<div><div style={{fontSize:9,color:'#C06090',fontWeight:700,textTransform:'uppercase',letterSpacing:0.5}}>Saldo</div><div style={{fontSize:13,color:GRAFITE,fontWeight:600}}>{f.brunoSaldo}</div></div>}
+        </div>
+      </div>}
+
       <div style={box}>
         <div style={lbl}>Alerta churn</div>
         <select value={f.alerta||''} onChange={e=>upd('alerta',e.target.value||null)} style={{...si,cursor:'pointer'}}>
@@ -788,7 +801,7 @@ function RelatorioView({clients,onUpdate,brunoDate,onSetDate}){
     try{
       const b64=await fileToB64(file);
       const nomes=active.map(c=>c.name).join(', ');
-      const text=await askClaude(b64,'application/pdf',`Relatório de performance Jurassic Marketing. Clientes: ${nomes}\nRetorne APENAS JSON:\n{"clientes":[{"nome":"...","status":"critico|atencao|saudavel|sem_dados","roas":0.0,"gasto":0.0}]}\nRegras: critico=ROAS<1.0, atencao=1.0-2.0, saudavel>2.0, sem_dados=sem dados.`);
+      const text=await askClaude(b64,'application/pdf',`Relatório de performance Jurassic Marketing. Clientes cadastrados: ${nomes}\nExtraia TODOS os clientes do relatório. USE o status exato do relatório (não recalcule).\nRetorne APENAS JSON:\n{"clientes":[{"nome":"...","status":"critico|atencao|saudavel|sem_dados","roas":0.0,"gasto":0.0,"ctr":0.0,"freq":0.0,"compras":0,"cpa":0.0,"saldo":"texto ou null"}]}\nRegras de status: use o status que está no relatório — Crítico=critico, Atenção=atencao, Saudável=saudavel, Sem dados=sem_dados. Campos não encontrados: null.`);
       const parsed=JSON.parse(text.replace(/```json|```/g,'').trim());
       setPreview(parsed.clientes||[]);
     }catch(e){
@@ -801,8 +814,21 @@ function RelatorioView({clients,onUpdate,brunoDate,onSetDate}){
   function apply(){
     let n=0;
     preview.forEach(item=>{
-      const c=active.find(a=>a.name.toLowerCase().includes(item.nome.toLowerCase())||item.nome.toLowerCase().includes(a.name.toLowerCase()));
-      if(c){onUpdate(c.id,{brunoStatus:item.status,brunoRoas:item.roas,brunoGasto:item.gasto||c.brunoGasto});n++;}
+      const norm=s=>(s||'').toLowerCase().replace(/[^a-z0-9\s]/g,'').trim();
+      const c=active.find(a=>norm(a.name).includes(norm(item.nome))||norm(item.nome).includes(norm(a.name)));
+      if(c){
+        onUpdate(c.id,{
+          brunoStatus:item.status,
+          brunoRoas:item.roas,
+          brunoGasto:item.gasto||c.brunoGasto,
+          brunoCtr:item.ctr||null,
+          brunoFreq:item.freq||null,
+          brunoCompras:item.compras!=null?item.compras:null,
+          brunoCpa:item.cpa||null,
+          brunoSaldo:item.saldo||null,
+        });
+        n++;
+      }
     });
     if(date)onSetDate(date);
     setMsg(`${n} clientes atualizados!`);setPreview(null);setFile(null);setTimeout(()=>setMsg(''),4000);
@@ -828,9 +854,20 @@ function RelatorioView({clients,onUpdate,brunoDate,onSetDate}){
       <div style={{padding:'12px 20px',borderBottom:`1px solid ${P_BORDER}`,display:'flex',justifyContent:'space-between'}}>
         <span style={{fontSize:13,fontWeight:700,color:P}}>✦ IA identificou {preview.length} clientes — confirme</span>
       </div>
-      {preview.map((item,i)=>{const c=active.find(a=>a.name.toLowerCase().includes(item.nome.toLowerCase())||item.nome.toLowerCase().includes(a.name.toLowerCase()));return<div key={i} style={{display:'flex',alignItems:'center',gap:10,padding:'9px 20px',borderBottom:'1px solid #FCE4EC'}}>
-        <div style={{flex:1}}><span style={{fontSize:12,fontWeight:600}}>{item.nome}</span>{c&&<span style={{fontSize:10,color:'#15803D',marginLeft:6,fontWeight:600}}>→ {c.name}</span>}{!c&&<span style={{fontSize:10,color:'#DC2626',marginLeft:6}}>(não encontrado)</span>}</div>
-        <div style={{display:'flex',gap:8,alignItems:'center'}}>{item.roas!=null&&<span style={{fontSize:11,color:'#B08090'}}>ROAS {item.roas}x</span>}<BrunoBdg status={item.status}/></div>
+      {preview.map((item,i)=>{const norm=s=>(s||'').toLowerCase().replace(/[^a-z0-9\s]/g,'').trim();const c=active.find(a=>norm(a.name).includes(norm(item.nome))||norm(item.nome).includes(norm(a.name)));return<div key={i} style={{padding:'9px 20px',borderBottom:'1px solid #FCE4EC'}}>
+        <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:4}}>
+          <div style={{flex:1}}><span style={{fontSize:12,fontWeight:600}}>{item.nome}</span>{c&&<span style={{fontSize:10,color:'#15803D',marginLeft:6,fontWeight:600}}>→ {c.name}</span>}{!c&&<span style={{fontSize:10,color:'#DC2626',marginLeft:6}}>(não encontrado)</span>}</div>
+          <BrunoBdg status={item.status}/>
+        </div>
+        <div style={{display:'flex',flexWrap:'wrap',gap:5}}>
+          {item.roas!=null&&<span style={{fontSize:10,background:'#FFF0F6',color:P,padding:'2px 7px',borderRadius:20,fontWeight:600}}>ROAS {item.roas}x</span>}
+          {item.gasto!=null&&<span style={{fontSize:10,background:'#F3F4F6',color:'#6B7280',padding:'2px 7px',borderRadius:20}}>Gasto {item.gasto}</span>}
+          {item.ctr!=null&&<span style={{fontSize:10,background:'#F3F4F6',color:'#6B7280',padding:'2px 7px',borderRadius:20}}>CTR {item.ctr}%</span>}
+          {item.freq!=null&&<span style={{fontSize:10,background:item.freq>=6?'#FEF2F2':'#F3F4F6',color:item.freq>=6?'#DC2626':'#6B7280',padding:'2px 7px',borderRadius:20,fontWeight:item.freq>=6?700:400}}>Freq {item.freq}{item.freq>=6?' ⚠':''}</span>}
+          {item.compras!=null&&<span style={{fontSize:10,background:'#F3F4F6',color:'#6B7280',padding:'2px 7px',borderRadius:20}}>Compras {item.compras}</span>}
+          {item.cpa!=null&&<span style={{fontSize:10,background:'#F3F4F6',color:'#6B7280',padding:'2px 7px',borderRadius:20}}>CPA {item.cpa}</span>}
+          {item.saldo!=null&&<span style={{fontSize:10,background:'#F3F4F6',color:'#6B7280',padding:'2px 7px',borderRadius:20}}>Saldo {item.saldo}</span>}
+        </div>
       </div>;})}
       <div style={{padding:'12px 20px',display:'flex',gap:10}}>
         <button onClick={apply} style={{flex:1,background:'#15803D',color:'white',padding:'9px',borderRadius:10,fontSize:13,fontWeight:700,border:'none',cursor:'pointer'}}>✓ Confirmar e atualizar</button>
