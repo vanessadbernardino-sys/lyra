@@ -865,13 +865,13 @@ function RelatorioView({clients,onUpdate,brunoDate,onSetDate}){
       matches.forEach(c=>{
         onUpdate(c.id,{
           brunoStatus:item.status,
-          brunoRoas:item.roas,
-          brunoGasto:item.gasto||c.brunoGasto,
-          brunoCtr:item.ctr||null,
-          brunoFreq:item.freq||null,
+          brunoRoas:item.roas!=null?item.roas:c.brunoRoas,
+          brunoGasto:item.gasto!=null?item.gasto:c.brunoGasto,
+          brunoCtr:item.ctr!=null?item.ctr:null,
+          brunoFreq:item.freq!=null?item.freq:null,
           brunoCompras:item.compras!=null?item.compras:null,
-          brunoCpa:item.cpa||null,
-          brunoSaldo:item.saldo||null,
+          brunoCpa:item.cpa!=null?item.cpa:null,
+          brunoSaldo:item.saldo!=null?item.saldo:null,
         });
         n++;
       });
@@ -1097,7 +1097,9 @@ function App(){
   // Salva no localStorage sempre que data muda (após loading)
   useEffect(()=>{
     if(!data||loading)return;
-    try{localStorage.setItem(KEY,JSON.stringify(data));}catch(e){}
+    const json=JSON.stringify(data);
+    try{localStorage.setItem(KEY,json);}catch(e){}
+    try{localStorage.setItem(KEY_BACKUP,json);}catch(e){}
   },[data,loading]);
 
   // Reset lista do dia quando a data muda
