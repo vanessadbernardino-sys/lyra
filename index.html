@@ -27,7 +27,7 @@
   <script type="text/babel" data-presets="react">
 const { useState, useEffect, useMemo, useCallback } = React;
 
-const KEY = "lyra-cs-v2";
+const KEY = "lyra-cs-v3";
 
 // ─── LYRA PALETTE ─────────────────────────────────────────────────────────────
 const P = "#E64B97";
@@ -48,7 +48,7 @@ const CLIENTS_DEFAULT = [
   {id:5,name:'Casa Yala',gestor:'Felício',contato:'Filipe',tel:'+351 919 291 908',tipo:'—',eventoDate:null,davi:false,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:null,contratoVal:'—',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'Novo cliente sem dados',ultimoContato:null},
   {id:6,name:'Complexo Fora do Eixo',gestor:'Gabriel',contato:'Thiago',tel:'+55 11 93002 1600',tipo:'Casa Noturna / Hub',eventoDate:null,davi:false,status:'ativo',brunoStatus:'atencao',brunoRoas:2.16,brunoGasto:1894.39,contratoVenc:'2026-09-23',contratoVal:'R$ 2.800',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
   {id:7,name:'Dust Pub',gestor:'Gabriel',contato:'João',tel:'+55 18 99693 5607',tipo:'Casa Noturna / Pub',eventoDate:null,davi:false,status:'ativo',brunoStatus:'saudavel',brunoRoas:28.57,brunoGasto:1089.85,contratoVenc:'2026-05-30',contratoVal:'R$ 2.200',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
-  {id:8,name:'SOMOS ENTRE',gestor:'—',contato:'Camila Nasser',tel:'+55 11 99253-5646',tipo:'Treinamento / Parceria',eventoDate:'2026-07-06',davi:false,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:'2026-08-01',contratoVal:'Permuta',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'Permuta',ultimoContato:null},
+  {id:8,name:'SOMOS ENTRE',gestor:'Felício',contato:'Camila Nasser',tel:'+55 11 99253-5646',tipo:'Treinamento / Parceria',eventoDate:'2026-07-06',davi:false,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:'2026-08-01',contratoVal:'Permuta',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'Permuta · Eventos: 06/07, 16/07 e 29/07/2026',ultimoContato:null},
   {id:9,name:'Feijoada do Serginho',gestor:'Felício',contato:'Sérgio',tel:'+55 18 98100 5575',tipo:'Evento Cultural',eventoDate:'2026-07-12',davi:false,status:'ativo',brunoStatus:'saudavel',brunoRoas:3.38,brunoGasto:1935.67,contratoVenc:'2026-10-24',contratoVal:'R$ 3.000',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
   {id:10,name:'Floresta Infectada',gestor:'Felício',contato:'Hebert Murilo de Souza',tel:'+55 11 91784-0020',tipo:'Festival Psicodélico',eventoDate:'2026-07-18',davi:false,status:'ativo',brunoStatus:'critico',brunoRoas:0.74,brunoGasto:736.01,contratoVenc:'2026-11-12',contratoVal:'R$ 4.000',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
   {id:11,name:'Friends Fuel',gestor:'Felício',contato:'Pedro Fabri',tel:'+55 34 99270 1234',tipo:'Evento Automotivo',eventoDate:'2026-06-11',davi:false,status:'ativo',brunoStatus:'atencao',brunoRoas:2.59,brunoGasto:845.58,contratoVenc:'2026-11-18',contratoVal:'R$ 2.000',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
@@ -59,7 +59,7 @@ const CLIENTS_DEFAULT = [
   {id:16,name:'Magic Boom Tour',gestor:'Gabriel',contato:'Daniel',tel:'+55 91 99146 9146',tipo:'Evento',eventoDate:'2026-06-13',davi:false,status:'ativo',brunoStatus:'saudavel',brunoRoas:3.71,brunoGasto:1355.32,contratoVenc:'2026-06-15',contratoVal:'R$ 1.000',reuniaoStatus:'realizado',reuniaoData:'2026-06-03',alerta:null,obs:'Pausa após evento 13/06.',ultimoContato:'2026-06-03'},
   {id:17,name:'Moving Festival',gestor:'Felício',contato:'Henry',tel:'+55 51 99297 6832',tipo:'Festival',eventoDate:'2026-10-17',davi:false,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:null,contratoVal:'—',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'Em negociação',ultimoContato:null},
   {id:18,name:'Na Pegada',gestor:'Felício',contato:'JP Daia',tel:'+55 62 98117 8955',tipo:'Festa Sertaneja',eventoDate:'2026-10-17',davi:false,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:'2026-10-17',contratoVal:'R$ 13.500',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'Pagamento único realizado',ultimoContato:null},
-  {id:19,name:'Neutratech',gestor:'—',contato:'—',tel:'—',tipo:'Em negociação',eventoDate:null,davi:true,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:null,contratoVal:'—',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'Negociação com Davi',ultimoContato:null},
+  {id:19,name:'Neutratech & New Sheet',gestor:'Gabriel',contato:'Ju Machado',tel:'+351 913 611 636',tipo:'Projeto conjunto',eventoDate:null,davi:true,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:null,contratoVal:'—',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'Projeto conjunto Neutratech + New Sheet',ultimoContato:null},
   {id:20,name:'New Sheet',gestor:'Gabriel',contato:'Ju Machado',tel:'+351 913 611 636',tipo:'Ativação de Marca / Vegano',eventoDate:'2026-07-19',davi:false,status:'ativo',brunoStatus:'saudavel',brunoRoas:null,brunoGasto:2326.31,contratoVenc:'2026-07-30',contratoVal:'€ 700',reuniaoStatus:'realizado',reuniaoData:'2026-06-03',alerta:null,obs:'Evento GRATUITO — ROAS não se aplica.',ultimoContato:'2026-06-03'},
   {id:21,name:'Puma Punku Festival',gestor:'Gabriel',contato:'Ruan',tel:'+55 12 98282 4615',tipo:'Festival Psicodélico',eventoDate:'2026-07-04',davi:false,status:'ativo',brunoStatus:'saudavel',brunoRoas:8.51,brunoGasto:1733.33,contratoVenc:'2026-07-05',contratoVal:'R$ 1.750',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
   {id:22,name:'Retrogyn',gestor:'Felício',contato:'JP Daia',tel:'+55 62 98117 8955',tipo:'Festa Sertaneja',eventoDate:'2026-09-05',davi:false,status:'ativo',brunoStatus:'critico',brunoRoas:0.82,brunoGasto:795.21,contratoVenc:'2026-09-03',contratoVal:'R$ 9.750',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'Pagamento único realizado',ultimoContato:null},
@@ -199,7 +199,7 @@ function LyraLogo({collapsed=false}){
   );
   return(
     <div style={{display:'flex',alignItems:'center',justifyContent:'center',padding:'8px 12px'}}>
-      <img src={LOGO_B64} alt="LYRA" style={{width:'100%',maxWidth:180,maxHeight:72,objectFit:'contain'}}/>
+      <img src={LOGO_B64} alt="LYRA" style={{width:'100%',maxWidth:190,maxHeight:110,objectFit:'contain'}}/>
     </div>
   );
 }
@@ -804,8 +804,12 @@ function NovoClienteView({clients,onAddClient,onUpdateClient}){
       const parsed=JSON.parse(text.replace(/```json|```/g,'').trim());
       const f={...parsed,gestor:'Samuel',eventoDate:null,davi:false};
       setForm(f);
-      const match=clients.find(c=>c.name.toLowerCase().includes((parsed.nome||'').toLowerCase())||(parsed.nome||'').toLowerCase().includes(c.name.toLowerCase()));
-      if(match){setExisting(match);setMode(match.status==='ativo'?'renovacao':'novo');}else{setMode('novo');}
+      const nome=(parsed.nome||'').toLowerCase();
+      const match=clients.find(c=>c.name.toLowerCase().includes(nome)||nome.includes(c.name.toLowerCase()));
+      if(match){
+        setExisting(match);
+        setMode(match.brunoStatus==='sem_dados'?'atualizar':match.status==='ativo'?'renovacao':'novo');
+      }else{setMode('novo');}
     }catch(e){
       if(e.message==='API_KEY_MISSING')setError('Chave API não configurada. Recarregue a página para inserir.');
       else setError('Erro ao ler o contrato: '+e.message);
@@ -826,6 +830,22 @@ function NovoClienteView({clients,onAddClient,onUpdateClient}){
     setMsg(`Contrato de ${existing.name} renovado!`);setForm(null);setFile(null);setExisting(null);setTimeout(()=>setMsg(''),5000);
   }
 
+  function confirmAtualizar(){
+    if(!existing||!form)return;
+    onUpdateClient(existing.id,{
+      contato:form.responsavel||existing.contato,
+      tel:form.tel||existing.tel,
+      tipo:form.tipo||existing.tipo,
+      contratoVenc:form.dataFim||existing.contratoVenc,
+      contratoVal:form.valorMensal||existing.contratoVal,
+      eventoDate:form.eventoDate||existing.eventoDate,
+      gestor:form.gestor||existing.gestor,
+      obs:form.obs||existing.obs,
+      brunoStatus:'sem_dados',
+    });
+    setMsg(`Dados de ${existing.name} preenchidos com sucesso!`);setForm(null);setFile(null);setExisting(null);setTimeout(()=>setMsg(''),5000);
+  }
+
   const upd=(k,v)=>setForm(p=>({...p,[k]:v}));
 
   return<div style={{flex:1,overflowY:'auto',padding:'28px 32px',background:P_BG}}>
@@ -843,12 +863,20 @@ function NovoClienteView({clients,onAddClient,onUpdateClient}){
         {loading?'Lendo contrato...':'✦ Extrair dados com IA'}
       </button>
     </div>
-    {existing&&<div style={{background:'#F3E8FF',border:`1px solid ${LAVANDA}40`,borderRadius:16,padding:'16px 20px',marginBottom:16}}>
-      <div style={{fontSize:14,fontWeight:700,color:'#7E22CE',marginBottom:8}}>🔄 Renovação detectada!</div>
-      <div style={{fontSize:12,color:'#6D28D9',marginBottom:12}}>O cliente <strong>{existing.name}</strong> já está na base.</div>
+    {existing&&<div style={{background:existing.brunoStatus==='sem_dados'?'#FFF5F8':'#F3E8FF',border:`1px solid ${existing.brunoStatus==='sem_dados'?P_BORDER:LAVANDA+'40'}`,borderRadius:16,padding:'16px 20px',marginBottom:16}}>
+      <div style={{fontSize:14,fontWeight:700,color:existing.brunoStatus==='sem_dados'?P:'#7E22CE',marginBottom:6}}>
+        {existing.brunoStatus==='sem_dados'?'✦ Cliente sem dados encontrado!':'🔄 Cliente já cadastrado!'}
+      </div>
+      <div style={{fontSize:12,color:'#6D28D9',marginBottom:12}}>
+        {existing.brunoStatus==='sem_dados'
+          ?<>O cliente <strong>{existing.name}</strong> está na base mas sem informações. O contrato vai preencher todos os dados.</>
+          :<>O cliente <strong>{existing.name}</strong> já está na base.</>
+        }
+      </div>
       <div style={{display:'flex',gap:10}}>
-        <button onClick={()=>setMode('renovacao')} style={{flex:1,background:mode==='renovacao'?LAVANDA:'white',color:mode==='renovacao'?'white':LAVANDA,padding:'8px',borderRadius:8,fontSize:12,fontWeight:700,border:`1px solid ${LAVANDA}`,cursor:'pointer'}}>Renovar contrato</button>
-        <button onClick={()=>setMode('novo')} style={{flex:1,background:mode==='novo'?LAVANDA:'white',color:mode==='novo'?'white':LAVANDA,padding:'8px',borderRadius:8,fontSize:12,fontWeight:700,border:`1px solid ${LAVANDA}`,cursor:'pointer'}}>Criar como novo</button>
+        {existing.brunoStatus==='sem_dados'&&<button onClick={()=>setMode('atualizar')} style={{flex:1,background:mode==='atualizar'?P:'white',color:mode==='atualizar'?'white':P,padding:'8px',borderRadius:8,fontSize:12,fontWeight:700,border:`1px solid ${P}`,cursor:'pointer'}}>✦ Preencher dados</button>}
+        {existing.brunoStatus!=='sem_dados'&&<button onClick={()=>setMode('renovacao')} style={{flex:1,background:mode==='renovacao'?LAVANDA:'white',color:mode==='renovacao'?'white':LAVANDA,padding:'8px',borderRadius:8,fontSize:12,fontWeight:700,border:`1px solid ${LAVANDA}`,cursor:'pointer'}}>Renovar contrato</button>}
+        <button onClick={()=>setMode('novo')} style={{flex:1,background:mode==='novo'?'#6B7280':'white',color:mode==='novo'?'white':'#6B7280',padding:'8px',borderRadius:8,fontSize:12,fontWeight:700,border:'1px solid #D1D5DB',cursor:'pointer'}}>Criar como novo</button>
       </div>
     </div>}
     {form&&<div style={{background:'white',border:`1px solid ${P_BORDER}`,borderRadius:18,padding:'20px'}}>
@@ -862,9 +890,9 @@ function NovoClienteView({clients,onAddClient,onUpdateClient}){
       </div>
       {mode==='novo'&&<div style={{marginTop:12}}><div style={lbl}>Observações</div><textarea value={form.obs||''} onChange={e=>upd('obs',e.target.value)} rows={2} style={{...si,resize:'vertical'}}/></div>}
       <div style={{display:'flex',gap:10,marginTop:14}}>
-        <button onClick={mode==='renovacao'?confirmRenovacao:confirmNovo}
-          style={{flex:1,background:mode==='renovacao'?LAVANDA:P,color:'white',padding:'10px',borderRadius:12,fontSize:13,fontWeight:700,border:'none',cursor:'pointer'}}>
-          {mode==='renovacao'?'🔄 Confirmar renovação':'✓ Adicionar novo cliente'}
+        <button onClick={mode==='renovacao'?confirmRenovacao:mode==='atualizar'?confirmAtualizar:confirmNovo}
+          style={{flex:1,background:mode==='renovacao'?LAVANDA:mode==='atualizar'?P:P,color:'white',padding:'10px',borderRadius:12,fontSize:13,fontWeight:700,border:'none',cursor:'pointer'}}>
+          {mode==='renovacao'?'🔄 Confirmar renovação':mode==='atualizar'?'✦ Confirmar preenchimento':'✓ Adicionar novo cliente'}
         </button>
         <button onClick={()=>{setForm(null);setExisting(null);}} style={{padding:'10px 16px',borderRadius:12,fontSize:12,border:`1px solid ${P_BORDER}`,background:'transparent',color:'#B08090',cursor:'pointer'}}>Cancelar</button>
       </div>
@@ -889,23 +917,20 @@ function App(){
   useEffect(()=>{if(!data||loading)return;try{localStorage.setItem(KEY,JSON.stringify(data));}catch(e){}},[data,loading]);
   useEffect(()=>{if(!data)return;const td=todayStr();if(data.hojeData!==td)setData(p=>({...p,hojeData:td,hojeIds:[]}));},[data?.hojeData]);
 
-  // Auto-pausa clientes cujo evento já passou
+  // Auto-pausa clientes cujo evento já passou — roda uma vez quando dados carregam
   useEffect(()=>{
-    if(!data)return;
+    if(loading||!data)return;
     const t=today0();
-    const tooPause=data.clients.filter(c=>
-      c.status==='ativo' &&
-      c.eventoDate &&
-      daysTo(c.eventoDate,t)<0
-    );
-    if(tooPause.length>0){
-      setData(p=>({...p,clients:p.clients.map(c=>
-        tooPause.find(x=>x.id===c.id)
-          ?{...c,status:'pausado',obs:c.obs?`${c.obs} | Auto-pausado: evento ${fmtFull(c.eventoDate)} passou`:`Auto-pausado: evento ${fmtFull(c.eventoDate)} passou`}
-          :c
-      )}));
-    }
-  },[data?.clients?.length]);
+    const ids=data.clients
+      .filter(c=>c.status==='ativo'&&c.eventoDate&&daysTo(c.eventoDate,t)<0)
+      .map(c=>c.id);
+    if(ids.length===0)return;
+    setData(p=>({...p,clients:p.clients.map(c=>
+      ids.includes(c.id)
+        ?{...c,status:'pausado',obs:c.obs?`${c.obs} | Pausado: evento ${fmtFull(c.eventoDate)} passou`:`Pausado: evento ${fmtFull(c.eventoDate)} passou`}
+        :c
+    )}));
+  },[loading]);
 
   const updClient=useCallback((id,u)=>setData(p=>({...p,clients:p.clients.map(c=>c.id===id?{...c,...u}:c)})),[]);
   const saveClient=useCallback((id,f)=>{setData(p=>({...p,clients:p.clients.map(c=>c.id===id?{...f}:c)}));setSelId(null);},[]);
