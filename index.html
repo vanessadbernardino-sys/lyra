@@ -893,36 +893,31 @@ function App(){
 
   const[showApiModal,setShowApiModal]=useState(false);
   const[apiInput,setApiInput]=useState('');
-  useEffect(()=>{if(!getApiKey())setShowApiModal(true);},[]);
 
   if(loading)return<div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100vh',flexDirection:'column',gap:12,background:P_BG}}>
     <div style={{fontFamily:"'Playfair Display',serif",fontSize:36,fontWeight:800,color:'#5C1A3A'}}>Lyra<span style={{color:P}}>✦</span></div>
     <div style={{color:P,fontSize:13,fontWeight:600}}>Carregando...</div>
   </div>;
 
-  if(showApiModal)return<div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100vh',background:P_BG,flexDirection:'column',gap:0}}>
-    <div style={{background:'white',borderRadius:24,padding:'40px 36px',width:440,boxShadow:'0 20px 60px rgba(230,75,151,0.15)',border:`1px solid ${P_BORDER}`}}>
-      <div style={{fontFamily:"'Playfair Display',serif",fontSize:26,fontWeight:700,color:'#3D1A2E',marginBottom:6}}>LYRA <span style={{color:P}}>✦</span></div>
-      <div style={{fontSize:13,color:'#B08090',marginBottom:24,lineHeight:1.5}}>Para usar análise de PDF com IA, insira sua chave da API Anthropic.<br/><span style={{fontSize:11}}>A chave fica salva localmente no seu browser.</span></div>
-      <div style={{fontSize:10,fontWeight:700,color:'#C06090',marginBottom:6,textTransform:'uppercase',letterSpacing:0.6}}>Anthropic API Key</div>
-      <input
-        value={apiInput} onChange={e=>setApiInput(e.target.value)}
-        placeholder="sk-ant-..."
-        type="password"
-        style={{width:'100%',border:`1px solid ${P_BORDER}`,borderRadius:10,padding:'10px 14px',fontSize:13,marginBottom:16,color:GRAFITE}}
-      />
-      <button onClick={()=>{if(apiInput.trim()){localStorage.setItem('lyra-apikey',apiInput.trim());setShowApiModal(false);}}}
-        style={{width:'100%',background:P,color:'white',padding:'12px',borderRadius:12,fontSize:14,fontWeight:700,border:'none',cursor:'pointer',marginBottom:10}}>
-        Salvar e continuar
+  if(showApiModal)return<div style={{position:'fixed',inset:0,background:'rgba(44,35,40,0.45)',zIndex:9999,display:'flex',alignItems:'center',justifyContent:'center'}} onClick={()=>setShowApiModal(false)}>
+    <div style={{background:'white',borderRadius:24,padding:'36px',width:420,boxShadow:'0 20px 60px rgba(230,75,151,0.2)',border:`1px solid ${P_BORDER}`}} onClick={e=>e.stopPropagation()}>
+      <div style={{fontFamily:"'Playfair Display',serif",fontSize:22,fontWeight:700,color:'#3D1A2E',marginBottom:4}}>Análise de PDF com IA</div>
+      <div style={{fontSize:12,color:'#B08090',marginBottom:20,lineHeight:1.6}}>
+        Esta funcionalidade usa a API da Anthropic (paga).<br/>
+        Se você tiver uma chave, insira abaixo. Caso contrário, use o preenchimento manual.
+      </div>
+      <div style={{fontSize:10,fontWeight:700,color:'#C06090',marginBottom:6,textTransform:'uppercase',letterSpacing:0.6}}>API Key (sk-ant-...)</div>
+      <input value={apiInput} onChange={e=>setApiInput(e.target.value)} placeholder="sk-ant-..." type="password"
+        style={{width:'100%',border:`1px solid ${P_BORDER}`,borderRadius:10,padding:'10px 14px',fontSize:13,marginBottom:14,color:GRAFITE}}/>
+      <button onClick={()=>{if(apiInput.trim()){localStorage.setItem('lyra-apikey',apiInput.trim());}setShowApiModal(false);}}
+        style={{width:'100%',background:P,color:'white',padding:'11px',borderRadius:12,fontSize:13,fontWeight:700,border:'none',cursor:'pointer',marginBottom:8}}>
+        Salvar chave
       </button>
-      <button onClick={()=>setShowApiModal(false)}
-        style={{width:'100%',background:'transparent',color:'#B08090',padding:'8px',borderRadius:12,fontSize:12,border:'none',cursor:'pointer'}}>
-        Continuar sem IA (análise de PDF desativada)
-      </button>
+      {getApiKey()&&<button onClick={()=>{localStorage.removeItem('lyra-apikey');setApiInput('');setShowApiModal(false);}}
+        style={{width:'100%',background:'transparent',color:'#DC2626',padding:'8px',borderRadius:12,fontSize:11,border:'1px solid #FCA5A5',cursor:'pointer'}}>
+        Remover chave salva
+      </button>}
     </div>
-    <button onClick={()=>setShowApiModal(true)} style={{marginTop:16,fontSize:11,color:'#C06090',background:'none',border:'none',cursor:'pointer'}}>
-      🔑 Onde obtenho a chave? → console.anthropic.com → API Keys
-    </button>
   </div>;
 
   const sel=data.clients.find(c=>c.id===selId);
@@ -956,12 +951,8 @@ function App(){
             {n.badge>0&&<span style={{background:P_LIGHT,color:P_DARK,fontSize:10,padding:'1px 6px',borderRadius:20,fontWeight:700}}>{n.badge}</span>}
           </button>)}
         </nav>
-        <div style={{padding:'10px 14px',borderTop:`1px solid ${P_BORDER}`,display:'flex',flexDirection:'column',gap:4,alignItems:'center'}}>
+        <div style={{padding:'10px 14px',borderTop:`1px solid ${P_BORDER}`,textAlign:'center'}}>
           <div style={{fontSize:10,color:'#C0A0B0'}}>{new Date().toLocaleDateString('pt-BR')} · LYRA v2</div>
-          <button onClick={()=>{setApiInput(getApiKey());setShowApiModal(true);}}
-            style={{fontSize:10,color:getApiKey()?'#15803D':'#DC2626',background:'none',border:'none',cursor:'pointer',fontWeight:600}}>
-            {getApiKey()?'🔑 API configurada':'⚠ Configurar API key'}
-          </button>
         </div>
       </div>
 
