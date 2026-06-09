@@ -28,7 +28,17 @@
 const { useState, useEffect, useMemo, useCallback } = React;
 
 const KEY = "lyra-cs-v4";
-const DATA_PATCH = 2; // incrementar quando precisar corrigir dados sem apagar tudo
+const DATA_PATCH = 2;
+const AUTH_KEY = "lyra-auth";
+
+// ─── USUÁRIOS E PERMISSÕES ────────────────────────────────────────────────────
+const USERS=[
+  {email:'vanessa.dbernardino@gmail.com',  pass:'Lyra@2026',    role:'admin',  name:'Vanessa'},
+  {email:'diretoria@jurassicmarketing.com.br', pass:'Davi@2026', role:'editor', name:'Davi'},
+  {email:'timejurassic01@gmail.com',       pass:'Time@2026',    role:'viewer', name:'Time Jurassic'},
+  {email:'comercial@jurassicmarketing.com.br', pass:'Comercial@2026', role:'viewer', name:'Comercial'},
+];
+// role: admin = tudo | editor = editar sem excluir | viewer = só visualizar
 
 // ─── LYRA PALETTE ─────────────────────────────────────────────────────────────
 const P = "#E64B97";
@@ -420,7 +430,7 @@ function DetailPanel({c,onClose,onSave,onDelete,today}){
         </select>
       </div>
 
-      <div style={box}>
+      {onSave&&<div style={box}>
         <div style={lbl}>📄 Atualizar com contrato (PDF)</div>
         <label style={{display:'flex',alignItems:'center',gap:8,padding:'8px 10px',border:`1px dashed ${P_BORDER}`,borderRadius:10,cursor:'pointer',background:contrFile?'#F0FDF4':P_BG,marginBottom:8}}>
           <i className="ti ti-file-upload" style={{color:contrFile?'#16A34A':P,fontSize:16}}/>
@@ -431,11 +441,11 @@ function DetailPanel({c,onClose,onSave,onDelete,today}){
         <button onClick={analisarContrato} disabled={!contrFile||contrLoading} style={{width:'100%',background:!contrFile||contrLoading?'#F3F4F6':P,color:!contrFile||contrLoading?'#9CA3AF':'white',padding:'8px',borderRadius:10,fontSize:12,fontWeight:700,border:'none',cursor:!contrFile||contrLoading?'not-allowed':'pointer'}}>
           {contrLoading?'Lendo contrato...':'✦ Extrair dados com IA'}
         </button>
-      </div>
+      </div>}
 
-      <button onClick={()=>onSave(c.id,f)} style={{width:'100%',background:P,color:'white',padding:'12px',borderRadius:12,fontSize:14,fontWeight:700,border:'none',cursor:'pointer',marginBottom:8,letterSpacing:0.3}}>
+      {onSave&&<button onClick={()=>onSave(c.id,f)} style={{width:'100%',background:P,color:'white',padding:'12px',borderRadius:12,fontSize:14,fontWeight:700,border:'none',cursor:'pointer',marginBottom:8,letterSpacing:0.3}}>
         Salvar alterações
-      </button>
+      </button>}
       {onDelete&&<button onClick={()=>{if(window.confirm(`Excluir "${c.name}"? Esta ação não pode ser desfeita.`))onDelete(c.id);}} style={{width:'100%',background:'white',color:'#DC2626',padding:'10px',borderRadius:12,fontSize:12,fontWeight:600,border:'1px solid #FCA5A5',cursor:'pointer',marginBottom:4}}>
         🗑 Excluir cliente
       </button>}
@@ -959,13 +969,54 @@ function NovoClienteView({clients,onAddClient}){
   </div>;
 }
 
+// ─── LOGIN ────────────────────────────────────────────────────────────────────
+function LoginView({onLogin}){
+  const[email,setEmail]=useState('');
+  const[pass,setPass]=useState('');
+  const[error,setError]=useState('');
+  function login(){
+    const u=USERS.find(u=>u.email.toLowerCase()===email.toLowerCase().trim()&&u.pass===pass);
+    if(u){setError('');onLogin(u);}
+    else setError('E-mail ou senha incorretos.');
+  }
+  return<div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100vh',background:P_BG}}>
+    <div style={{background:'white',borderRadius:24,padding:'48px 40px',width:400,boxShadow:'0 20px 60px rgba(230,75,151,0.15)',border:`1px solid ${P_BORDER}`}}>
+      <div style={{display:'flex',flexDirection:'column',alignItems:'center',marginBottom:32}}>
+        <LyraLogo/>
+      </div>
+      <div style={{fontSize:10,fontWeight:700,color:'#C06090',marginBottom:5,textTransform:'uppercase',letterSpacing:0.6}}>E-mail</div>
+      <input value={email} onChange={e=>setEmail(e.target.value)} placeholder="seu@email.com" type="email"
+        style={{width:'100%',border:`1px solid ${P_BORDER}`,borderRadius:10,padding:'10px 14px',fontSize:13,marginBottom:12,color:GRAFITE,background:'white',boxSizing:'border-box'}}
+        onKeyDown={e=>e.key==='Enter'&&login()}/>
+      <div style={{fontSize:10,fontWeight:700,color:'#C06090',marginBottom:5,textTransform:'uppercase',letterSpacing:0.6}}>Senha</div>
+      <input value={pass} onChange={e=>setPass(e.target.value)} placeholder="••••••••" type="password"
+        style={{width:'100%',border:`1px solid ${P_BORDER}`,borderRadius:10,padding:'10px 14px',fontSize:13,marginBottom:16,color:GRAFITE,background:'white',boxSizing:'border-box'}}
+        onKeyDown={e=>e.key==='Enter'&&login()}/>
+      {error&&<div style={{color:'#DC2626',fontSize:12,marginBottom:12,textAlign:'center',fontWeight:600}}>{error}</div>}
+      <button onClick={login} style={{width:'100%',background:P,color:'white',padding:'12px',borderRadius:12,fontSize:14,fontWeight:700,border:'none',cursor:'pointer'}}>
+        Entrar no LYRA
+      </button>
+    </div>
+  </div>;
+}
+
 // ─── APP ──────────────────────────────────────────────────────────────────────
 function App(){
+  const[auth,setAuth]=useState(()=>{try{const a=localStorage.getItem(AUTH_KEY);return a?JSON.parse(a):null;}catch{return null;}});
   const[data,setData]=useState(null);
   const[loading,setLoading]=useState(true);
   const[view,setView]=useState('home');
   const[selId,setSelId]=useState(null);
   const today=useMemo(()=>today0(),[]);
+
+  function doLogin(user){setAuth(user);try{localStorage.setItem(AUTH_KEY,JSON.stringify(user));}catch(e){}}
+  function doLogout(){setAuth(null);try{localStorage.removeItem(AUTH_KEY);}catch(e){}}
+
+  if(!auth)return<LoginView onLogin={doLogin}/>;
+
+  const isAdmin=auth.role==='admin';
+  const canEdit=auth.role==='admin'||auth.role==='editor';
+  const canDelete=auth.role==='admin';
 
   useEffect(()=>{
     function applyPatches(d){
@@ -985,16 +1036,24 @@ function App(){
       CLIENTS_DEFAULT.filter(c=>!existingIds.has(c.id)).forEach(c=>clients.push(c));
       return{...d,clients,patchVersion:DATA_PATCH};
     }
-    try{
-      const r=localStorage.getItem(KEY);
-      if(r){
+    const r=localStorage.getItem(KEY);
+    if(r){
+      try{
         let parsed=JSON.parse(r);
-        parsed=applyPatches(parsed);
+        // Patch aplicado separadamente — erro aqui NUNCA apaga dados
+        try{parsed=applyPatches(parsed);}catch(pe){console.warn('Patch ignorado:',pe);}
         try{localStorage.setItem(KEY,JSON.stringify(parsed));}catch(e){}
         setData(parsed);
-      }else throw new Error();
+      }catch(e){
+        // JSON inválido — carrega padrão só nesse caso extremo
+        const d={clients:CLIENTS_DEFAULT,brunoDate:null,hojeData:todayStr(),hojeIds:[],patchVersion:DATA_PATCH};
+        setData(d);try{localStorage.setItem(KEY,JSON.stringify(d));}catch(se){}
+      }
+    }else{
+      // Primeira vez — sem dados salvos
+      const d={clients:CLIENTS_DEFAULT,brunoDate:null,hojeData:todayStr(),hojeIds:[],patchVersion:DATA_PATCH};
+      setData(d);try{localStorage.setItem(KEY,JSON.stringify(d));}catch(e){}
     }
-    catch{const d={...{clients:CLIENTS_DEFAULT,brunoDate:null,hojeData:todayStr(),hojeIds:[]},patchVersion:DATA_PATCH};setData(d);try{localStorage.setItem(KEY,JSON.stringify(d));}catch(e){}}
     setLoading(false);
   },[]);
 
@@ -1106,8 +1165,8 @@ function App(){
     {id:'agendamentos',icon:'ti-calendar-month',label:'Agendamentos'},
     {id:'renovacoes',icon:'ti-file-text',label:'Renovações',badge:nV},
     {id:'clientes',icon:'ti-users',label:'Clientes'},
-    {id:'relatorio',icon:'ti-chart-bar',label:'Relatório'},
-    {id:'novoCliente',icon:'ti-user-plus',label:'Novo cliente'},
+    ...(canEdit?[{id:'relatorio',icon:'ti-chart-bar',label:'Relatório'}]:[]),
+    ...(canEdit?[{id:'novoCliente',icon:'ti-user-plus',label:'Novo cliente'}]:[]),
   ];
 
   return<>
@@ -1129,11 +1188,11 @@ function App(){
             {n.badge>0&&<span style={{background:P_LIGHT,color:P_DARK,fontSize:10,padding:'1px 6px',borderRadius:20,fontWeight:700}}>{n.badge}</span>}
           </button>)}
         </nav>
-        <div style={{padding:'10px 14px',borderTop:`1px solid ${P_BORDER}`,textAlign:'center'}}>
-          {saveMsg
-            ?<div style={{fontSize:11,color:'#15803D',fontWeight:700,background:'#DCFCE7',borderRadius:8,padding:'3px 8px'}}>{saveMsg}</div>
-            :<div style={{fontSize:10,color:'#C0A0B0'}}>{new Date().toLocaleDateString('pt-BR')} · LYRA v2</div>
-          }
+        <div style={{padding:'10px 14px',borderTop:`1px solid ${P_BORDER}`}}>
+          <div style={{fontSize:11,fontWeight:700,color:GRAFITE,marginBottom:2}}>{auth.name}</div>
+          <div style={{fontSize:10,color:'#B08090',marginBottom:6}}>{auth.role==='admin'?'Administradora':auth.role==='editor'?'Editor':'Visualizador'}</div>
+          {saveMsg&&<div style={{fontSize:11,color:'#15803D',fontWeight:700,background:'#DCFCE7',borderRadius:8,padding:'3px 8px',marginBottom:6}}>{saveMsg}</div>}
+          <button onClick={doLogout} style={{width:'100%',background:'transparent',color:'#B08090',border:`1px solid ${P_BORDER}`,borderRadius:8,padding:'5px',fontSize:11,cursor:'pointer'}}>Sair</button>
         </div>
       </div>
 
@@ -1145,7 +1204,7 @@ function App(){
         {view==='clientes'&&<ClientesView clients={data.clients} onSelect={setSelId} today={today}/>}
         {view==='relatorio'&&<RelatorioView clients={data.clients} onUpdate={updClient} brunoDate={data.brunoDate} onSetDate={d=>setData(p=>({...p,brunoDate:d}))}/>}
         {view==='novoCliente'&&<NovoClienteView clients={data.clients} onAddClient={addClient}/>}
-        {sel&&<DetailPanel c={sel} onClose={()=>setSelId(null)} onSave={saveClient} onDelete={(id)=>{deleteClient(id);setSelId(null);}} today={today}/>}
+        {sel&&<DetailPanel c={sel} onClose={()=>setSelId(null)} onSave={canEdit?saveClient:null} onDelete={canDelete?(id)=>{deleteClient(id);setSelId(null);}:null} today={today}/>}
       </div>
     </div>
   </>;
