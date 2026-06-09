@@ -27,7 +27,7 @@
   <script type="text/babel" data-presets="react">
 const { useState, useEffect, useMemo, useCallback } = React;
 
-const KEY = "lyra-cs-v3";
+const KEY = "lyra-cs-v4";
 
 // ─── LYRA PALETTE ─────────────────────────────────────────────────────────────
 const P = "#E64B97";
@@ -826,6 +826,20 @@ function NovoClienteView({clients,onAddClient,onUpdateClient}){
   const si={border:`1px solid ${P_BORDER}`,borderRadius:8,padding:'6px 10px',fontSize:13,background:'white',color:GRAFITE,width:'100%'};
   const lbl={fontSize:10,fontWeight:700,color:'#C06090',marginBottom:3,textTransform:'uppercase',letterSpacing:0.5};
 
+  function fuzzyMatch(a,b){
+    // Normaliza: minúsculo, sem acentos, sem caracteres especiais
+    const norm=s=>(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9\s]/g,'').trim();
+    const na=norm(a), nb=norm(b);
+    if(!na||!nb)return false;
+    if(na.includes(nb)||nb.includes(na))return true;
+    // Match por palavras significativas (>3 chars)
+    const wordsA=na.split(/\s+/).filter(w=>w.length>3);
+    const wordsB=nb.split(/\s+/).filter(w=>w.length>3);
+    if(wordsA.length===0||wordsB.length===0)return false;
+    const shared=wordsA.filter(w=>wordsB.some(wb=>wb.includes(w)||w.includes(wb)));
+    return shared.length>=Math.min(wordsA.length,wordsB.length,2);
+  }
+
   async function analyze(){
     if(!file){setError('Selecione o PDF do contrato');return;}
     setLoading(true);setError('');setForm(null);setExisting(null);
@@ -833,10 +847,10 @@ function NovoClienteView({clients,onAddClient,onUpdateClient}){
       const b64=await fileToB64(file);
       const text=await askClaude(b64,'application/pdf','Analise este contrato. Extraia dados do CONTRATANTE (cliente, não a Jurassic).\nRetorne APENAS JSON:\n{"nome":"empresa","responsavel":"nome","tel":"telefone com DDI","email":"email","valorMensal":"R$ X.XXX","dataInicio":"YYYY-MM-DD","dataFim":"YYYY-MM-DD","tipo":"tipo de negócio","obs":"observação"}\nCampos não encontrados: null.');
       const parsed=JSON.parse(text.replace(/```json|```/g,'').trim());
-      const f={...parsed,gestor:'Samuel',eventoDate:null,davi:false};
+      // Tenta encontrar cliente existente com match robusto
+      const match=clients.find(c=>fuzzyMatch(c.name,parsed.nome));
+      const f={...parsed,gestor:match?match.gestor:'—',eventoDate:null,davi:false};
       setForm(f);
-      const nome=(parsed.nome||'').toLowerCase();
-      const match=clients.find(c=>c.name.toLowerCase().includes(nome)||nome.includes(c.name.toLowerCase()));
       if(match){
         setExisting(match);
         setMode(match.brunoStatus==='sem_dados'?'atualizar':match.status==='ativo'?'renovacao':'novo');
@@ -870,9 +884,9 @@ function NovoClienteView({clients,onAddClient,onUpdateClient}){
       contratoVenc:form.dataFim||existing.contratoVenc,
       contratoVal:form.valorMensal||existing.contratoVal,
       eventoDate:form.eventoDate||existing.eventoDate,
-      gestor:form.gestor||existing.gestor,
+      gestor:(form.gestor&&form.gestor!=='—')?form.gestor:existing.gestor,
       obs:form.obs||existing.obs,
-      brunoStatus:'sem_dados',
+      brunoStatus:existing.brunoStatus==='sem_dados'?'sem_dados':existing.brunoStatus,
     });
     setMsg(`Dados de ${existing.name} preenchidos com sucesso!`);setForm(null);setFile(null);setExisting(null);setTimeout(()=>setMsg(''),5000);
   }
@@ -916,7 +930,7 @@ function NovoClienteView({clients,onAddClient,onUpdateClient}){
         {[['Nome do cliente','nome'],['Responsável','responsavel'],['Telefone','tel'],['E-mail','email'],['Tipo / Negócio','tipo'],['Valor/mês','valorMensal']].map(([label,key])=><div key={key}><div style={lbl}>{label}</div><input value={form[key]||''} onChange={e=>upd(key,e.target.value)} style={si}/></div>)}
         <div><div style={lbl}>Início</div><input type="date" value={form.dataInicio||''} onChange={e=>upd('dataInicio',e.target.value)} style={si}/></div>
         <div><div style={lbl}>Vencimento</div><input type="date" value={form.dataFim||''} onChange={e=>upd('dataFim',e.target.value||null)} style={si}/></div>
-        {mode==='novo'&&<><div><div style={lbl}>Gestor</div><select value={form.gestor||'Samuel'} onChange={e=>upd('gestor',e.target.value)} style={{...si,cursor:'pointer'}}>{GESTORES.map(g=><option key={g} value={g}>{g}</option>)}</select></div>
+        {(mode==='novo'||mode==='atualizar')&&<><div><div style={lbl}>Gestor</div><select value={form.gestor||'—'} onChange={e=>upd('gestor',e.target.value)} style={{...si,cursor:'pointer'}}>{GESTORES.map(g=><option key={g} value={g}>{g}</option>)}</select></div>
         <div><div style={lbl}>Data do evento</div><input type="date" value={form.eventoDate||''} onChange={e=>upd('eventoDate',e.target.value||null)} style={si}/></div></>}
       </div>
       {mode==='novo'&&<div style={{marginTop:12}}><div style={lbl}>Observações</div><textarea value={form.obs||''} onChange={e=>upd('obs',e.target.value)} rows={2} style={{...si,resize:'vertical'}}/></div>}
