@@ -229,6 +229,9 @@ function LyraConstellation({size=72}){
 
 function LyraLogo({collapsed=false}){
   const C="#E64B97";
+  const Sparkle=({cx,cy,s=6,op=1})=><path
+    d={`M${cx},${cy-s} L${cx+s*.18},${cy-s*.18} L${cx+s},${cy} L${cx+s*.18},${cy+s*.18} L${cx},${cy+s} L${cx-s*.18},${cy+s*.18} L${cx-s},${cy} L${cx-s*.18},${cy-s*.18} Z`}
+    fill={C} opacity={op}/>;
   if(collapsed) return(
     <div style={{display:'flex',alignItems:'center',justifyContent:'center',padding:'6px 0'}}>
       <svg width="28" height="28" viewBox="0 0 48 48" fill="none">
@@ -237,36 +240,53 @@ function LyraLogo({collapsed=false}){
     </div>
   );
   return(
-    <div style={{width:'100%',padding:'16px 8px 14px',display:'flex',flexDirection:'column',alignItems:'center'}}>
-      {/* Constelação Lyra — rosa pastel suave, triângulo aberto com Vega no topo */}
-      <svg width="180" height="58" viewBox="0 0 180 58" fill="none">
-        {/* linhas muito suaves */}
-        <line x1="90" y1="8"  x2="62" y2="28" stroke="#E8A0C0" strokeWidth="1"   strokeLinecap="round"/>
-        <line x1="90" y1="8"  x2="114" y2="24" stroke="#E8A0C0" strokeWidth="1"  strokeLinecap="round"/>
-        <line x1="62" y1="28" x2="30"  y2="50" stroke="#E8A0C0" strokeWidth="1"  strokeLinecap="round"/>
-        <line x1="114" y1="24" x2="148" y2="44" stroke="#E8A0C0" strokeWidth="1" strokeLinecap="round"/>
-        <line x1="62" y1="28" x2="114" y2="24" stroke="#E8A0C0" strokeWidth="0.8" strokeLinecap="round" opacity="0.6"/>
+    <div style={{width:'100%',padding:'10px 4px 12px',display:'flex',flexDirection:'column',alignItems:'center'}}>
+      <svg viewBox="0 0 300 262" width="214" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="lyraG" x1="5%" y1="0%" x2="95%" y2="110%">
+            <stop offset="0%"   stopColor="#1E0812"/>
+            <stop offset="28%"  stopColor="#5C1840"/>
+            <stop offset="58%"  stopColor="#C8185C"/>
+            <stop offset="100%" stopColor="#200A18"/>
+          </linearGradient>
+        </defs>
 
-        {/* nós — rosa suave */}
-        <circle cx="62"  cy="28" r="3.2" fill="#E8A0C0"/>
-        <circle cx="114" cy="24" r="3.2" fill="#E8A0C0"/>
-        <circle cx="30"  cy="50" r="3.2" fill="#E8A0C0"/>
-        <circle cx="148" cy="44" r="3.2" fill="#E8A0C0"/>
+        {/* Arco orbital — tracejado */}
+        <path d="M 55,220 C 38,138 88,24 150,22 C 212,20 264,136 264,212"
+              fill="none" stroke={C} strokeWidth="1.3" strokeDasharray="3 4.5" strokeOpacity="0.52" strokeLinecap="round"/>
 
-        {/* Vega — sparkle 4 pontas, levemente maior */}
-        <path d="M90 1 C90 1 88.5 6 87 7.5 C85.5 9 81 10 81 10 C81 10 85.5 11 87 12.5 C88.5 14 90 19 90 19 C90 19 91.5 14 93 12.5 C94.5 11 99 10 99 10 C99 10 94.5 9 93 7.5 C91.5 6 90 1 90 1Z" fill="#E64B97"/>
-        <circle cx="101" cy="4" r="1.5" fill="#E8A0C0" opacity="0.7"/>
+        {/* Pontos sólidos no arco */}
+        <circle cx="68"  cy="186" r="5.5" fill={C}/>
+        <circle cx="150" cy="24"  r="6.2" fill={C}/>
+        <circle cx="252" cy="166" r="5"   fill={C}/>
+
+        {/* Pontos vazados no arco */}
+        <circle cx="102" cy="68"  r="4"   fill="none" stroke={C} strokeWidth="1.6" strokeOpacity="0.68"/>
+        <circle cx="220" cy="62"  r="3.6" fill="none" stroke={C} strokeWidth="1.5" strokeOpacity="0.68"/>
+
+        {/* Sparkles decorativos */}
+        <Sparkle cx={150} cy={10} s={8}/>
+        <Sparkle cx={275} cy={95} s={4.5} op={0.72}/>
+        <Sparkle cx={56}  cy={235} s={3.8} op={0.55}/>
+
+        {/* Texto LYRA com gradiente */}
+        <text x="150" y="200"
+              fontFamily="'Playfair Display',serif"
+              fontSize="100" fontWeight="700"
+              textAnchor="middle"
+              fill="url(#lyraG)">LYRA</text>
+
+        {/* Linha decorativa + sparkle entre texto e subtítulo */}
+        <line x1="78"  y1="215" x2="134" y2="215" stroke={C} strokeWidth="0.8" strokeOpacity="0.4"/>
+        <Sparkle cx={150} cy={215} s={4.5}/>
+        <line x1="166" y1="215" x2="222" y2="215" stroke={C} strokeWidth="0.8" strokeOpacity="0.4"/>
+
+        {/* Subtítulo */}
+        <text x="150" y="237" fontFamily="'Inter',sans-serif" fontSize="9.8" fontWeight="500"
+              textAnchor="middle" letterSpacing="3.8" fill="#6B5B62">CLIENT JOURNEY</text>
+        <text x="150" y="254" fontFamily="'Inter',sans-serif" fontSize="9.8" fontWeight="500"
+              textAnchor="middle" letterSpacing="3.2" fill="#6B5B62">INTELLIGENCE</text>
       </svg>
-
-      {/* LYRA — grande, limpo, vinho escuro */}
-      <div style={{fontFamily:"'Playfair Display',serif",fontSize:42,fontWeight:700,color:'#3D1A2E',letterSpacing:6,lineHeight:1,marginTop:2}}>
-        LYRA
-      </div>
-
-      {/* Subtítulo — cinza escuro, não rosa */}
-      <div style={{fontSize:8,color:'#6B5B62',letterSpacing:2.8,textTransform:'uppercase',fontFamily:"'Inter',sans-serif",textAlign:'center',marginTop:8,lineHeight:1.9,fontWeight:500}}>
-        CLIENT JOURNEY<br/>INTELLIGENCE
-      </div>
     </div>
   );
 }
