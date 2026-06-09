@@ -1299,7 +1299,7 @@ function App(){
         <div>
           <div style={{fontFamily:"'Playfair Display',serif",fontSize:20,fontWeight:700,color:'white'}}>{auth.name}</div>
           <div style={{fontSize:11,color:'rgba(255,255,255,0.75)',marginTop:2}}>{auth.email}</div>
-          <div style={{fontSize:10,color:'rgba(255,255,255,0.6)',marginTop:1}}>{auth.role==='admin'?'Administradora':auth.role==='editor'?'Editor':'Visualizador'}</div>
+          <div style={{fontSize:10,color:'rgba(255,255,255,0.6)',marginTop:1}}>{auth.role==='admin'?'Administradora':auth.role==='editor'?'CEO':'Visualizador'}</div>
         </div>
         <button onClick={()=>setShowPassModal(false)} style={{marginLeft:'auto',background:'none',border:'none',color:'rgba(255,255,255,0.7)',fontSize:22,cursor:'pointer',lineHeight:1,alignSelf:'flex-start'}}>&times;</button>
       </div>
@@ -1363,7 +1363,7 @@ function App(){
         </nav>
         <div style={{padding:'10px 14px',borderTop:`1px solid ${P_BORDER}`}}>
           <div style={{fontSize:11,fontWeight:700,color:GRAFITE,marginBottom:2}}>{auth.name}</div>
-          <div style={{fontSize:10,color:'#B08090',marginBottom:6}}>{auth.role==='admin'?'Administradora':auth.role==='editor'?'Editor':'Visualizador'}</div>
+          <div style={{fontSize:10,color:'#B08090',marginBottom:6}}>{auth.role==='admin'?'Administradora':auth.role==='editor'?'CEO':'Visualizador'}</div>
           {saveMsg&&<div style={{fontSize:11,color:'#15803D',fontWeight:700,background:'#DCFCE7',borderRadius:8,padding:'3px 8px',marginBottom:6}}>{saveMsg}</div>}
           <button onClick={()=>{setShowPassModal(true);setPassErr('');setPassMsg('');setPassAtual('');setPassNova('');setPassConfirm('');}} style={{width:'100%',background:'transparent',color:P,border:`1px solid ${P_BORDER}`,borderRadius:8,padding:'5px',fontSize:11,cursor:'pointer',marginBottom:4}}>👤 Perfil</button>
           <button onClick={doLogout} style={{width:'100%',background:'transparent',color:'#B08090',border:`1px solid ${P_BORDER}`,borderRadius:8,padding:'5px',fontSize:11,cursor:'pointer'}}>Sair</button>
