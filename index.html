@@ -171,30 +171,26 @@ function LyraConstellation({size=72}){
 function LyraLogo({collapsed=false}){
   if(collapsed) return(
     <div style={{display:'flex',alignItems:'center',justifyContent:'center',padding:'4px 0'}}>
-      <LyraConstellation size={38}/>
+      <LyraConstellation size={30}/>
     </div>
   );
   return(
-    <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:14,padding:'8px 0'}}>
-      {/* Símbolo constelação */}
-      <LyraConstellation size={68}/>
-      {/* Texto */}
-      <div style={{display:'flex',flexDirection:'column',gap:6}}>
+    <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:8,padding:'4px 0'}}>
+      <LyraConstellation size={44}/>
+      <div style={{display:'flex',flexDirection:'column',gap:3}}>
         <span style={{
           fontFamily:"'Playfair Display',serif",
-          fontSize:34, fontWeight:700,
+          fontSize:24,fontWeight:700,
           color:'#3D1A2E',
-          lineHeight:1, letterSpacing:3,
-          textTransform:'uppercase',
-          display:'block'
+          lineHeight:1,letterSpacing:2,
+          textTransform:'uppercase'
         }}>LYRA</span>
         <span style={{
-          fontSize:7.5, color:'#9B7080',
-          letterSpacing:2.5,
+          fontSize:6.5,color:'#9B7080',
+          letterSpacing:2,
           textTransform:'uppercase',
           fontWeight:500,
           fontFamily:"'Inter',sans-serif",
-          display:'block',
           whiteSpace:'nowrap'
         }}>Client Journey Intelligence</span>
       </div>
@@ -394,13 +390,17 @@ function LyraHome({clients,onSelect,onUpd,hoje,onToggleHoje,today}){
     <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:14,marginBottom:26}}>
       {kpis.map(k=><div key={k.l}
         onClick={()=>setKpiModal({title:k.l,list:k.list})}
-        style={{background:k.bg,borderRadius:18,padding:'20px 18px',color:'white',boxShadow:'0 4px 20px rgba(230,75,151,0.2)',cursor:'pointer',transition:'transform 0.15s,box-shadow 0.15s'}}
+        style={{background:k.bg,borderRadius:18,padding:'18px 20px',color:'white',boxShadow:'0 4px 20px rgba(230,75,151,0.2)',cursor:'pointer',transition:'transform 0.15s,box-shadow 0.15s',display:'flex',alignItems:'center',justifyContent:'space-between',gap:10}}
         onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-2px)';e.currentTarget.style.boxShadow='0 8px 28px rgba(230,75,151,0.3)';}}
         onMouseLeave={e=>{e.currentTarget.style.transform='';e.currentTarget.style.boxShadow='0 4px 20px rgba(230,75,151,0.2)';}}>
-        <i className={`ti ${k.icon}`} style={{fontSize:22,opacity:0.85,display:'block',marginBottom:10}}/>
-        <div style={{fontSize:38,fontWeight:800,lineHeight:1}}>{k.v}</div>
-        <div style={{fontSize:11,opacity:0.9,marginTop:5,fontWeight:600}}>{k.l}</div>
-        <div style={{fontSize:9,opacity:0.65,marginTop:2}}>clique para ver</div>
+        {/* esquerda: número + label */}
+        <div>
+          <div style={{fontSize:42,fontWeight:800,lineHeight:1}}>{k.v}</div>
+          <div style={{fontSize:11,opacity:0.9,marginTop:5,fontWeight:600}}>{k.l}</div>
+          <div style={{fontSize:9,opacity:0.6,marginTop:2}}>clique para ver</div>
+        </div>
+        {/* direita: ícone */}
+        <i className={`ti ${k.icon}`} style={{fontSize:32,opacity:0.35,flexShrink:0}}/>
       </div>)}
     </div>
 
