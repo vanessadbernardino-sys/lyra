@@ -28,6 +28,7 @@
 const { useState, useEffect, useMemo, useCallback } = React;
 
 const KEY = "lyra-cs-v4";
+const DATA_PATCH = 2; // incrementar quando precisar corrigir dados sem apagar tudo
 
 // ─── LYRA PALETTE ─────────────────────────────────────────────────────────────
 const P = "#E64B97";
@@ -954,8 +955,33 @@ function App(){
   const today=useMemo(()=>today0(),[]);
 
   useEffect(()=>{
-    try{const r=localStorage.getItem(KEY);if(r)setData(JSON.parse(r));else throw new Error();}
-    catch{const d={clients:CLIENTS_DEFAULT,brunoDate:null,hojeData:todayStr(),hojeIds:[]};setData(d);try{localStorage.setItem(KEY,JSON.stringify(d));}catch(e){}}
+    function applyPatches(d){
+      const pv=d.patchVersion||0;
+      if(pv>=DATA_PATCH)return d;
+      let clients=[...d.clients];
+      // Patch 1+2: sincroniza eventoDate e nome do CLIENTS_DEFAULT (corrige datas erradas sem apagar dados do usuário)
+      const baseMap={};
+      CLIENTS_DEFAULT.forEach(c=>{baseMap[c.id]={eventoDate:c.eventoDate,name:c.name,obs:c.obs};});
+      clients=clients.map(c=>{
+        const b=baseMap[c.id];
+        if(!b)return c;
+        return{...c,eventoDate:b.eventoDate};
+      });
+      // Garante que todos os clientes do CLIENTS_DEFAULT existem
+      const existingIds=new Set(clients.map(c=>c.id));
+      CLIENTS_DEFAULT.filter(c=>!existingIds.has(c.id)).forEach(c=>clients.push(c));
+      return{...d,clients,patchVersion:DATA_PATCH};
+    }
+    try{
+      const r=localStorage.getItem(KEY);
+      if(r){
+        let parsed=JSON.parse(r);
+        parsed=applyPatches(parsed);
+        try{localStorage.setItem(KEY,JSON.stringify(parsed));}catch(e){}
+        setData(parsed);
+      }else throw new Error();
+    }
+    catch{const d={...{clients:CLIENTS_DEFAULT,brunoDate:null,hojeData:todayStr(),hojeIds:[]},patchVersion:DATA_PATCH};setData(d);try{localStorage.setItem(KEY,JSON.stringify(d));}catch(e){}}
     setLoading(false);
   },[]);
 
