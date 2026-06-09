@@ -124,12 +124,33 @@ async function askClaude(b64,mtype,prompt){
 }
 
 // ─── LOGO ──────────────────────────────────────────────────────────────────────
+function SparkleIcon({size=32}){
+  return<svg width={size} height={size} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="sg" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#FF6EB4"/>
+        <stop offset="100%" stopColor="#E64B97"/>
+      </linearGradient>
+    </defs>
+    {/* estrela de 4 pontas principal */}
+    <path d="M28 8 C28 8 26 18 24 20 C22 22 12 24 12 24 C12 24 22 26 24 28 C26 30 28 40 28 40 C28 40 30 30 32 28 C34 26 44 24 44 24 C44 24 34 22 32 20 C30 18 28 8 28 8Z" fill="url(#sg)"/>
+    {/* mini estrela decorativa */}
+    <path d="M14 10 C14 10 13.2 13.2 12 14 C10.8 14.8 8 15.5 8 15.5 C8 15.5 10.8 16.2 12 17 C13.2 17.8 14 21 14 21 C14 21 14.8 17.8 16 17 C17.2 16.2 20 15.5 20 15.5 C20 15.5 17.2 14.8 16 14 C14.8 13.2 14 10 14 10Z" fill="#F7A8CC" opacity="0.8"/>
+    {/* ponto de brilho mini */}
+    <circle cx="36" cy="11" r="1.5" fill="#F7A8CC" opacity="0.7"/>
+  </svg>;
+}
+
 function LyraLogo({collapsed=false}){
-  return<div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:2}}>
-    <div style={{fontFamily:"'Playfair Display',serif",fontSize:collapsed?22:28,fontWeight:800,color:'#5C1A3A',lineHeight:1,letterSpacing:-0.5}}>
-      Lyra<span style={{color:P}}>✦</span>
+  if(collapsed)return<div style={{display:'flex',alignItems:'center',justifyContent:'center',padding:'4px 0'}}>
+    <SparkleIcon size={28}/>
+  </div>;
+  return<div style={{display:'flex',flexDirection:'column',alignItems:'flex-start',gap:4,padding:'4px 0'}}>
+    <div style={{display:'flex',alignItems:'flex-start',gap:2}}>
+      <span style={{fontFamily:"'Playfair Display',serif",fontSize:30,fontWeight:800,color:'#5C1A3A',lineHeight:1,letterSpacing:1,textTransform:'uppercase'}}>LYRA</span>
+      <SparkleIcon size={26}/>
     </div>
-    {!collapsed&&<div style={{fontSize:8,color:'#B08090',letterSpacing:2,textTransform:'uppercase',fontWeight:600}}>Client Journey Intelligence</div>}
+    <div style={{fontSize:8.5,color:'#9B7080',letterSpacing:2.5,textTransform:'uppercase',fontWeight:600,marginTop:-2}}>Client Journey Intelligence</div>
   </div>;
 }
 
