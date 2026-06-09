@@ -88,7 +88,7 @@ const CLIENTS_DEFAULT = [
 // ─── UTILS ────────────────────────────────────────────────────────────────────
 const todayStr=()=>new Date().toISOString().split('T')[0];
 function today0(){const d=new Date();d.setHours(0,0,0,0);return d;}
-function daysTo(s,t){if(!s)return null;return Math.ceil((new Date(s)-t)/86400000);}
+function daysTo(s,t){if(!s)return null;const[y,m,d]=s.split('-').map(Number);const dt=new Date(y,m-1,d);return Math.ceil((dt-t)/86400000);}
 function fmtDate(s){if(!s)return'—';const[y,m,d]=s.split('-');return`${d}/${m}`;}
 function fmtFull(s){if(!s)return'—';const[y,m,d]=s.split('-');return`${d}/${m}/${y}`;}
 
@@ -538,9 +538,9 @@ function AgendamentosView({clients,onSelect,today}){
     clients.filter(c=>c.status==='ativo').forEach(c=>{
       const add=(dateStr,type,color)=>{
         if(!dateStr)return;
-        const d=new Date(dateStr);
-        if(d.getFullYear()===year&&d.getMonth()===month){
-          const key=d.getDate();
+        const[yr,mo,dy]=dateStr.split('-').map(Number);
+        if(yr===year&&mo-1===month){
+          const key=dy;
           if(!ev[key])ev[key]=[];
           ev[key].push({type,name:c.name,color,id:c.id});
         }
