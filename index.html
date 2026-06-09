@@ -292,13 +292,37 @@ function KpiModal({title,clients,onSelect,onClose}){
 }
 
 // ─── DETAIL PANEL ──────────────────────────────────────────────────────────────
-function DetailPanel({c,onClose,onSave,today}){
+function DetailPanel({c,onClose,onSave,onDelete,today}){
   const[f,setF]=useState({...c});
   const upd=(k,v)=>setF(p=>({...p,[k]:v}));
   const ev=f.eventoDate?daysTo(f.eventoDate,today):null;
   const si={border:`1px solid ${P_BORDER}`,borderRadius:8,padding:'7px 10px',fontSize:13,background:'white',color:GRAFITE,width:'100%'};
   const box={background:P_BG,border:`1px solid ${P_BORDER}`,borderRadius:12,padding:'12px 14px',marginBottom:10};
   const lbl={fontSize:10,color:'#C06090',marginBottom:4,fontWeight:700,textTransform:'uppercase',letterSpacing:0.6};
+  const[contrFile,setContrFile]=useState(null);
+  const[contrLoading,setContrLoading]=useState(false);
+  const[contrMsg,setContrMsg]=useState('');
+
+  async function analisarContrato(){
+    if(!contrFile)return;
+    setContrLoading(true);setContrMsg('');
+    try{
+      const b64=await fileToB64(contrFile);
+      const text=await askClaude(b64,'application/pdf','Analise este contrato. Extraia dados do CONTRATANTE (cliente, não a Jurassic).\nRetorne APENAS JSON:\n{"responsavel":"nome","tel":"telefone com DDI","email":"email","valorMensal":"R$ X.XXX","dataInicio":"YYYY-MM-DD","dataFim":"YYYY-MM-DD","tipo":"tipo de negócio","obs":"observação"}\nCampos não encontrados: null.');
+      const parsed=JSON.parse(text.replace(/```json|```/g,'').trim());
+      setF(p=>({
+        ...p,
+        contato:parsed.responsavel||p.contato,
+        tel:parsed.tel||p.tel,
+        tipo:parsed.tipo||p.tipo,
+        contratoVenc:parsed.dataFim||p.contratoVenc,
+        contratoVal:parsed.valorMensal||p.contratoVal,
+        obs:parsed.obs?`${p.obs?p.obs+' | ':''}${parsed.obs}`:p.obs,
+      }));
+      setContrMsg('✓ Dados preenchidos! Revise e salve.');
+    }catch(e){setContrMsg('Erro: '+e.message);}
+    setContrLoading(false);
+  }
 
   return<div style={{width:430,borderLeft:`1px solid ${P_BORDER}`,background:'white',display:'flex',flexDirection:'column',overflow:'hidden',flexShrink:0}}>
     <div style={{padding:'16px 20px',borderBottom:`1px solid ${P_BORDER}`,display:'flex',justifyContent:'space-between',alignItems:'flex-start',background:P_BG}}>
@@ -383,9 +407,25 @@ function DetailPanel({c,onClose,onSave,today}){
         </select>
       </div>
 
+      <div style={box}>
+        <div style={lbl}>📄 Atualizar com contrato (PDF)</div>
+        <label style={{display:'flex',alignItems:'center',gap:8,padding:'8px 10px',border:`1px dashed ${P_BORDER}`,borderRadius:10,cursor:'pointer',background:contrFile?'#F0FDF4':P_BG,marginBottom:8}}>
+          <i className="ti ti-file-upload" style={{color:contrFile?'#16A34A':P,fontSize:16}}/>
+          <span style={{fontSize:12,color:contrFile?'#16A34A':P,fontWeight:600,flex:1,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{contrFile?contrFile.name:'Selecionar PDF do contrato'}</span>
+          <input type="file" accept=".pdf" onChange={e=>setContrFile(e.target.files[0])} style={{display:'none'}}/>
+        </label>
+        {contrMsg&&<div style={{fontSize:11,color:contrMsg.startsWith('✓')?'#16A34A':'#DC2626',marginBottom:6,fontWeight:600}}>{contrMsg}</div>}
+        <button onClick={analisarContrato} disabled={!contrFile||contrLoading} style={{width:'100%',background:!contrFile||contrLoading?'#F3F4F6':P,color:!contrFile||contrLoading?'#9CA3AF':'white',padding:'8px',borderRadius:10,fontSize:12,fontWeight:700,border:'none',cursor:!contrFile||contrLoading?'not-allowed':'pointer'}}>
+          {contrLoading?'Lendo contrato...':'✦ Extrair dados com IA'}
+        </button>
+      </div>
+
       <button onClick={()=>onSave(c.id,f)} style={{width:'100%',background:P,color:'white',padding:'12px',borderRadius:12,fontSize:14,fontWeight:700,border:'none',cursor:'pointer',marginBottom:8,letterSpacing:0.3}}>
         Salvar alterações
       </button>
+      {onDelete&&<button onClick={()=>{if(window.confirm(`Excluir "${c.name}"? Esta ação não pode ser desfeita.`))onDelete(c.id);}} style={{width:'100%',background:'white',color:'#DC2626',padding:'10px',borderRadius:12,fontSize:12,fontWeight:600,border:'1px solid #FCA5A5',cursor:'pointer',marginBottom:4}}>
+        🗑 Excluir cliente
+      </button>}
     </div>
   </div>;
 }
@@ -815,47 +855,24 @@ function RelatorioView({clients,onUpdate,brunoDate,onSetDate}){
 }
 
 // ─── NOVO CLIENTE ─────────────────────────────────────────────────────────────
-function NovoClienteView({clients,onAddClient,onUpdateClient}){
+function NovoClienteView({clients,onAddClient}){
   const[file,setFile]=useState(null);
   const[loading,setLoading]=useState(false);
   const[form,setForm]=useState(null);
-  const[existing,setExisting]=useState(null);
-  const[mode,setMode]=useState('novo');
   const[error,setError]=useState('');
   const[msg,setMsg]=useState('');
   const GESTORES=['Samuel','Felício','Gabriel','—'];
   const si={border:`1px solid ${P_BORDER}`,borderRadius:8,padding:'6px 10px',fontSize:13,background:'white',color:GRAFITE,width:'100%'};
   const lbl={fontSize:10,fontWeight:700,color:'#C06090',marginBottom:3,textTransform:'uppercase',letterSpacing:0.5};
 
-  function fuzzyMatch(a,b){
-    // Normaliza: minúsculo, sem acentos, sem caracteres especiais
-    const norm=s=>(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9\s]/g,'').trim();
-    const na=norm(a), nb=norm(b);
-    if(!na||!nb)return false;
-    if(na.includes(nb)||nb.includes(na))return true;
-    // Match por palavras significativas (>3 chars)
-    const wordsA=na.split(/\s+/).filter(w=>w.length>3);
-    const wordsB=nb.split(/\s+/).filter(w=>w.length>3);
-    if(wordsA.length===0||wordsB.length===0)return false;
-    const shared=wordsA.filter(w=>wordsB.some(wb=>wb.includes(w)||w.includes(wb)));
-    return shared.length>=Math.min(wordsA.length,wordsB.length,2);
-  }
-
   async function analyze(){
     if(!file){setError('Selecione o PDF do contrato');return;}
-    setLoading(true);setError('');setForm(null);setExisting(null);
+    setLoading(true);setError('');setForm(null);
     try{
       const b64=await fileToB64(file);
-      const text=await askClaude(b64,'application/pdf','Analise este contrato. Extraia dados do CONTRATANTE (cliente, não a Jurassic).\nRetorne APENAS JSON:\n{"nome":"empresa","responsavel":"nome","tel":"telefone com DDI","email":"email","valorMensal":"R$ X.XXX","dataInicio":"YYYY-MM-DD","dataFim":"YYYY-MM-DD","tipo":"tipo de negócio","obs":"observação"}\nCampos não encontrados: null.');
+      const text=await askClaude(b64,'application/pdf','Analise este contrato. Extraia dados do CONTRATANTE (cliente, não a Jurassic).\nRetorne APENAS JSON:\n{"nome":"empresa","responsavel":"nome","tel":"telefone com DDI","email":"email","valorMensal":"R$ X.XXX","dataInicio":"YYYY-MM-DD","dataFim":"YYYY-MM-DD","tipo":"tipo de negócio","eventoDate":"YYYY-MM-DD","obs":"observação"}\nCampos não encontrados: null.');
       const parsed=JSON.parse(text.replace(/```json|```/g,'').trim());
-      // Tenta encontrar cliente existente com match robusto
-      const match=clients.find(c=>fuzzyMatch(c.name,parsed.nome));
-      const f={...parsed,gestor:match?match.gestor:'—',eventoDate:null,davi:false};
-      setForm(f);
-      if(match){
-        setExisting(match);
-        setMode(match.brunoStatus==='sem_dados'?'atualizar':match.status==='ativo'?'renovacao':'novo');
-      }else{setMode('novo');}
+      setForm({...parsed,gestor:'—',davi:false});
     }catch(e){
       if(e.message==='API_KEY_MISSING')setError('Chave API não configurada. Recarregue a página para inserir.');
       else setError('Erro ao ler o contrato: '+e.message);
@@ -863,40 +880,19 @@ function NovoClienteView({clients,onAddClient,onUpdateClient}){
     setLoading(false);
   }
 
-  function confirmNovo(){
-    if(!form?.nome){setError('Nome é obrigatório');return;}
-    const newId=Math.max(...clients.map(c=>c.id))+1;
+  function confirmar(){
+    if(!form?.nome){setError('Nome do cliente é obrigatório');return;}
+    const newId=Math.max(0,...clients.map(c=>c.id))+1;
     onAddClient({id:newId,name:form.nome,gestor:form.gestor||'—',contato:form.responsavel||'—',tel:form.tel||'—',tipo:form.tipo||'—',eventoDate:form.eventoDate||null,davi:false,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:form.dataFim||null,contratoVal:form.valorMensal||'—',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:form.obs||'',ultimoContato:null});
-    setMsg(`${form.nome} adicionado!`);setForm(null);setFile(null);setTimeout(()=>setMsg(''),5000);
-  }
-
-  function confirmRenovacao(){
-    if(!existing||!form)return;
-    onUpdateClient(existing.id,{contratoVenc:form.dataFim||existing.contratoVenc,contratoVal:form.valorMensal||existing.contratoVal,obs:existing.obs?`${existing.obs} | Renovado ${todayStr()}`:''});
-    setMsg(`Contrato de ${existing.name} renovado!`);setForm(null);setFile(null);setExisting(null);setTimeout(()=>setMsg(''),5000);
-  }
-
-  function confirmAtualizar(){
-    if(!existing||!form)return;
-    onUpdateClient(existing.id,{
-      contato:form.responsavel||existing.contato,
-      tel:form.tel||existing.tel,
-      tipo:form.tipo||existing.tipo,
-      contratoVenc:form.dataFim||existing.contratoVenc,
-      contratoVal:form.valorMensal||existing.contratoVal,
-      eventoDate:form.eventoDate||existing.eventoDate,
-      gestor:(form.gestor&&form.gestor!=='—')?form.gestor:existing.gestor,
-      obs:form.obs||existing.obs,
-      brunoStatus:existing.brunoStatus==='sem_dados'?'sem_dados':existing.brunoStatus,
-    });
-    setMsg(`Dados de ${existing.name} preenchidos com sucesso!`);setForm(null);setFile(null);setExisting(null);setTimeout(()=>setMsg(''),5000);
+    setMsg(`${form.nome} adicionado com sucesso!`);setForm(null);setFile(null);setTimeout(()=>setMsg(''),5000);
   }
 
   const upd=(k,v)=>setForm(p=>({...p,[k]:v}));
 
   return<div style={{flex:1,overflowY:'auto',padding:'28px 32px',background:P_BG}}>
     <div style={{fontFamily:"'Playfair Display',serif",fontSize:22,fontWeight:800,color:GRAFITE,marginBottom:4}}><i className="ti ti-user-plus" style={{color:P,marginRight:10}}/>Novo cliente</div>
-    <p style={{fontSize:12,color:'#B08090',marginBottom:20}}>Suba o PDF do contrato — a IA detecta se é novo ou renovação</p>
+    <p style={{fontSize:12,color:'#B08090',marginBottom:4}}>Para <strong>clientes novos</strong> — suba o contrato e a IA preenche os dados.</p>
+    <p style={{fontSize:12,color:'#C06090',marginBottom:20,fontWeight:600}}>✦ Para atualizar um cliente existente, abra o cliente na lista e faça o upload por lá.</p>
     {msg&&<div style={{background:'#DCFCE7',color:'#15803D',padding:'10px 16px',borderRadius:10,marginBottom:14,fontSize:13,fontWeight:700}}>✓ {msg}</div>}
     <div style={{background:'white',border:`1px solid ${P_BORDER}`,borderRadius:18,padding:'20px',marginBottom:16}}>
       <label style={{display:'flex',flexDirection:'column',alignItems:'center',padding:'24px',border:`1px dashed ${P_BORDER}`,borderRadius:12,cursor:'pointer',marginBottom:12,background:file?'#DCFCE7':P_BG}}>
@@ -909,38 +905,18 @@ function NovoClienteView({clients,onAddClient,onUpdateClient}){
         {loading?'Lendo contrato...':'✦ Extrair dados com IA'}
       </button>
     </div>
-    {existing&&<div style={{background:existing.brunoStatus==='sem_dados'?'#FFF5F8':'#F3E8FF',border:`1px solid ${existing.brunoStatus==='sem_dados'?P_BORDER:LAVANDA+'40'}`,borderRadius:16,padding:'16px 20px',marginBottom:16}}>
-      <div style={{fontSize:14,fontWeight:700,color:existing.brunoStatus==='sem_dados'?P:'#7E22CE',marginBottom:6}}>
-        {existing.brunoStatus==='sem_dados'?'✦ Cliente sem dados encontrado!':'🔄 Cliente já cadastrado!'}
-      </div>
-      <div style={{fontSize:12,color:'#6D28D9',marginBottom:12}}>
-        {existing.brunoStatus==='sem_dados'
-          ?<>O cliente <strong>{existing.name}</strong> está na base mas sem informações. O contrato vai preencher todos os dados.</>
-          :<>O cliente <strong>{existing.name}</strong> já está na base.</>
-        }
-      </div>
-      <div style={{display:'flex',gap:10}}>
-        {existing.brunoStatus==='sem_dados'&&<button onClick={()=>setMode('atualizar')} style={{flex:1,background:mode==='atualizar'?P:'white',color:mode==='atualizar'?'white':P,padding:'8px',borderRadius:8,fontSize:12,fontWeight:700,border:`1px solid ${P}`,cursor:'pointer'}}>✦ Preencher dados</button>}
-        {existing.brunoStatus!=='sem_dados'&&<button onClick={()=>setMode('renovacao')} style={{flex:1,background:mode==='renovacao'?LAVANDA:'white',color:mode==='renovacao'?'white':LAVANDA,padding:'8px',borderRadius:8,fontSize:12,fontWeight:700,border:`1px solid ${LAVANDA}`,cursor:'pointer'}}>Renovar contrato</button>}
-        <button onClick={()=>setMode('novo')} style={{flex:1,background:mode==='novo'?'#6B7280':'white',color:mode==='novo'?'white':'#6B7280',padding:'8px',borderRadius:8,fontSize:12,fontWeight:700,border:'1px solid #D1D5DB',cursor:'pointer'}}>Criar como novo</button>
-      </div>
-    </div>}
     {form&&<div style={{background:'white',border:`1px solid ${P_BORDER}`,borderRadius:18,padding:'20px'}}>
       <div style={{fontSize:13,fontWeight:700,color:P,marginBottom:16}}>✦ Dados extraídos — revise e confirme</div>
       <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
         {[['Nome do cliente','nome'],['Responsável','responsavel'],['Telefone','tel'],['E-mail','email'],['Tipo / Negócio','tipo'],['Valor/mês','valorMensal']].map(([label,key])=><div key={key}><div style={lbl}>{label}</div><input value={form[key]||''} onChange={e=>upd(key,e.target.value)} style={si}/></div>)}
-        <div><div style={lbl}>Início</div><input type="date" value={form.dataInicio||''} onChange={e=>upd('dataInicio',e.target.value)} style={si}/></div>
         <div><div style={lbl}>Vencimento</div><input type="date" value={form.dataFim||''} onChange={e=>upd('dataFim',e.target.value||null)} style={si}/></div>
-        {(mode==='novo'||mode==='atualizar')&&<><div><div style={lbl}>Gestor</div><select value={form.gestor||'—'} onChange={e=>upd('gestor',e.target.value)} style={{...si,cursor:'pointer'}}>{GESTORES.map(g=><option key={g} value={g}>{g}</option>)}</select></div>
-        <div><div style={lbl}>Data do evento</div><input type="date" value={form.eventoDate||''} onChange={e=>upd('eventoDate',e.target.value||null)} style={si}/></div></>}
+        <div><div style={lbl}>Data do evento</div><input type="date" value={form.eventoDate||''} onChange={e=>upd('eventoDate',e.target.value||null)} style={si}/></div>
+        <div><div style={lbl}>Gestor</div><select value={form.gestor||'—'} onChange={e=>upd('gestor',e.target.value)} style={{...si,cursor:'pointer'}}>{GESTORES.map(g=><option key={g} value={g}>{g}</option>)}</select></div>
       </div>
-      {mode==='novo'&&<div style={{marginTop:12}}><div style={lbl}>Observações</div><textarea value={form.obs||''} onChange={e=>upd('obs',e.target.value)} rows={2} style={{...si,resize:'vertical'}}/></div>}
+      <div style={{marginTop:12}}><div style={lbl}>Observações</div><textarea value={form.obs||''} onChange={e=>upd('obs',e.target.value)} rows={2} style={{...si,resize:'vertical'}}/></div>
       <div style={{display:'flex',gap:10,marginTop:14}}>
-        <button onClick={mode==='renovacao'?confirmRenovacao:mode==='atualizar'?confirmAtualizar:confirmNovo}
-          style={{flex:1,background:mode==='renovacao'?LAVANDA:mode==='atualizar'?P:P,color:'white',padding:'10px',borderRadius:12,fontSize:13,fontWeight:700,border:'none',cursor:'pointer'}}>
-          {mode==='renovacao'?'🔄 Confirmar renovação':mode==='atualizar'?'✦ Confirmar preenchimento':'✓ Adicionar novo cliente'}
-        </button>
-        <button onClick={()=>{setForm(null);setExisting(null);}} style={{padding:'10px 16px',borderRadius:12,fontSize:12,border:`1px solid ${P_BORDER}`,background:'transparent',color:'#B08090',cursor:'pointer'}}>Cancelar</button>
+        <button onClick={confirmar} style={{flex:1,background:P,color:'white',padding:'10px',borderRadius:12,fontSize:13,fontWeight:700,border:'none',cursor:'pointer'}}>✓ Adicionar novo cliente</button>
+        <button onClick={()=>setForm(null)} style={{padding:'10px 16px',borderRadius:12,fontSize:12,border:`1px solid ${P_BORDER}`,background:'transparent',color:'#B08090',cursor:'pointer'}}>Cancelar</button>
       </div>
     </div>}
   </div>;
@@ -1043,6 +1019,12 @@ function App(){
     return next;
   }),[persist]);
 
+  const deleteClient=useCallback((id)=>setData(p=>{
+    const next={...p,clients:p.clients.filter(c=>c.id!==id),hojeIds:p.hojeIds.filter(x=>x!==id)};
+    persist(next);
+    return next;
+  }),[persist]);
+
   const toggleHoje=useCallback((id)=>setData(p=>{
     const ids=p.hojeIds.includes(id)?p.hojeIds.filter(x=>x!==id):[...p.hojeIds,id];
     const next={...p,hojeIds:ids};
@@ -1125,8 +1107,8 @@ function App(){
         {view==='renovacoes'&&<RenovacoesView clients={data.clients} onSelect={setSelId} today={today}/>}
         {view==='clientes'&&<ClientesView clients={data.clients} onSelect={setSelId} today={today}/>}
         {view==='relatorio'&&<RelatorioView clients={data.clients} onUpdate={updClient} brunoDate={data.brunoDate} onSetDate={d=>setData(p=>({...p,brunoDate:d}))}/>}
-        {view==='novoCliente'&&<NovoClienteView clients={data.clients} onAddClient={addClient} onUpdateClient={updClient}/>}
-        {sel&&<DetailPanel c={sel} onClose={()=>setSelId(null)} onSave={saveClient} today={today}/>}
+        {view==='novoCliente'&&<NovoClienteView clients={data.clients} onAddClient={addClient}/>}
+        {sel&&<DetailPanel c={sel} onClose={()=>setSelId(null)} onSave={saveClient} onDelete={(id)=>{deleteClient(id);setSelId(null);}} today={today}/>}
       </div>
     </div>
   </>;
