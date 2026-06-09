@@ -201,28 +201,41 @@ function LyraLogo({collapsed=false}){
     </div>
   );
   return(
-    <div style={{width:'100%',padding:'16px 12px 14px',display:'flex',flexDirection:'column',alignItems:'center',gap:0}}>
-      {/* Constelação — separada, acima do texto */}
-      <svg width="110" height="52" viewBox="0 0 110 52" fill="none">
-        {/* linhas */}
-        <line x1="28" y1="36" x2="44" y2="14" stroke={C} strokeWidth="1" opacity="0.55"/>
-        <line x1="44" y1="14" x2="56" y2="8"  stroke={C} strokeWidth="1" opacity="0.55"/>
-        <line x1="56" y1="8"  x2="74" y2="18" stroke={C} strokeWidth="1" opacity="0.55"/>
-        <line x1="74" y1="18" x2="82" y2="38" stroke={C} strokeWidth="1" opacity="0.55"/>
-        <line x1="28" y1="36" x2="82" y2="38" stroke={C} strokeWidth="1" opacity="0.55"/>
-        {/* nós preenchidos */}
-        <circle cx="28" cy="36" r="3"   fill={C} opacity="0.85"/>
-        <circle cx="74" cy="18" r="3"   fill={C} opacity="0.85"/>
-        <circle cx="82" cy="38" r="3"   fill={C} opacity="0.85"/>
-        {/* nó hollow */}
-        <circle cx="44" cy="14" r="2.8" fill="none" stroke={C} strokeWidth="1.4" opacity="0.85"/>
-        {/* Vega — sparkle */}
-        <path d="M56 1C56 1 54.8 5.5 53.5 7C52.2 8.5 48 9.5 48 9.5C48 9.5 52.2 10.5 53.5 12C54.8 13.5 56 18 56 18C56 18 57.2 13.5 58.5 12C59.8 10.5 64 9.5 64 9.5C64 9.5 59.8 8.5 58.5 7C57.2 5.5 56 1 56 1Z" fill={C}/>
-        <circle cx="66" cy="4" r="1.4" fill={C} opacity="0.55"/>
+    <div style={{width:'100%',padding:'14px 10px 12px',display:'flex',flexDirection:'column',alignItems:'center'}}>
+
+      {/* ── Constelação Lyra real ──
+          Vega (α) no topo com sparkle
+          ε¹ ε² par duplo à esquerda
+          Trapézio β γ ζ δ abaixo        */}
+      <svg width="160" height="56" viewBox="0 0 160 56" fill="none">
+        {/* Linhas da constelação */}
+        {/* Vega → ε esquerdo */}
+        <line x1="80" y1="6"  x2="58" y2="22" stroke={C} strokeWidth="1.1" strokeLinecap="round" opacity="0.6"/>
+        {/* Vega → ε direito */}
+        <line x1="80" y1="6"  x2="102" y2="22" stroke={C} strokeWidth="1.1" strokeLinecap="round" opacity="0.6"/>
+        {/* ε esquerdo → β (baixo esquerdo) */}
+        <line x1="58" y1="22" x2="42" y2="46" stroke={C} strokeWidth="1.1" strokeLinecap="round" opacity="0.6"/>
+        {/* ε direito → ζ (baixo direito) */}
+        <line x1="102" y1="22" x2="118" y2="46" stroke={C} strokeWidth="1.1" strokeLinecap="round" opacity="0.6"/>
+        {/* β → γ (base do trapézio) */}
+        <line x1="42" y1="46" x2="118" y2="46" stroke={C} strokeWidth="1.1" strokeLinecap="round" opacity="0.6"/>
+        {/* diagonal interna ε esq → ζ */}
+        <line x1="58" y1="22" x2="118" y2="46" stroke={C} strokeWidth="0.7" strokeLinecap="round" opacity="0.35"/>
+
+        {/* Estrelas — círculos */}
+        <circle cx="58"  cy="22" r="3"   fill={C} opacity="0.9"/>
+        <circle cx="102" cy="22" r="2.5" fill={C} opacity="0.85"/>
+        <circle cx="42"  cy="46" r="3"   fill={C} opacity="0.9"/>
+        <circle cx="118" cy="46" r="2.5" fill={C} opacity="0.85"/>
+
+        {/* Vega — sparkle 4 pontas */}
+        <path d="M80 0 C80 0 78.6 4.8 77 6 C75.4 7.2 71 8 71 8 C71 8 75.4 8.8 77 10 C78.6 11.2 80 16 80 16 C80 16 81.4 11.2 83 10 C84.6 8.8 89 8 89 8 C89 8 84.6 7.2 83 6 C81.4 4.8 80 0 80 0Z" fill={C}/>
+        {/* mini ponto brilho */}
+        <circle cx="91" cy="3" r="1.5" fill={C} opacity="0.5"/>
       </svg>
 
       {/* LYRA */}
-      <div style={{fontFamily:"'Playfair Display',serif",fontSize:40,fontWeight:700,color:'#3D1A2E',letterSpacing:5,lineHeight:1,marginTop:2}}>
+      <div style={{fontFamily:"'Playfair Display',serif",fontSize:40,fontWeight:700,color:'#3D1A2E',letterSpacing:5,lineHeight:1,marginTop:4}}>
         LYRA
       </div>
 
