@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>TRILHA — Jornada do Cliente Jurassic</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.29.0/dist/tabler-icons.min.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html,body,#root{height:100%;overflow:hidden}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    button,input,select,textarea{font-family:inherit}
+    ::-webkit-scrollbar{width:5px;height:5px}
+    ::-webkit-scrollbar-track{background:#FFF5FA}
+    ::-webkit-scrollbar-thumb{background:#F8BBD0;border-radius:3px}
+    @keyframes spin{to{transform:rotate(360deg)}}
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.25.6/babel.min.js"></script>
+  <script type="text/babel" data-presets="react">
+const { useState, useEffect, useMemo, useCallback } = React;
+
+const KEY = "trilha-cs-v1";
+const LOGO = "data:image/png;base64,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";
+const PINK = "#E2317A";
+const PINK_DARK = "#A8204F";
+const PINK_LIGHT = "#FCE4EC";
+const PINK_BG = "#FFF5FA";
+const PINK_BORDER = "#F8BBD0";
+
+// ─── DATA ─────────────────────────────────────────────────────────────────────
+const CLIENTS_DEFAULT = [
+  {id:1,name:'Ápice',gestor:'Samuel',contato:'JP Cunha',tel:'+55 61 99571 2377',tipo:'Casa Noturna',eventoDate:null,davi:false,status:'ativo',brunoStatus:'atencao',brunoRoas:1.18,brunoGasto:2295.89,contratoVenc:'2026-10-27',contratoVal:'R$ 2.000',reuniaoStatus:'realizado',reuniaoData:'2026-06-02',alerta:null,obs:'Mesmo responsável Gomes',ultimoContato:'2026-06-02'},
+  {id:2,name:'Baile de Ouro',gestor:'Felício',contato:'Alisson Castanho Gatti',tel:'+55 11 98089-6070',tipo:'Evento',eventoDate:'2026-06-27',davi:false,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:'2026-11-29',contratoVal:'R$ 2.800',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'Novo cliente',ultimoContato:null},
+  {id:3,name:'Buteco Costelão',gestor:'Gabriel',contato:'Elisangela Mendes',tel:'+55 11 99436 7756',tipo:'Evento Gastronômico',eventoDate:'2026-07-26',davi:true,status:'ativo',brunoStatus:'atencao',brunoRoas:2.92,brunoGasto:8073.93,contratoVenc:'2024-10-15',contratoVal:'R$ 1.500',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
+  {id:4,name:'Camarote Pride',gestor:'Samuel',contato:'Guto Melo',tel:'+55 11 99405 1010',tipo:'Evento Premium LGBTQIA+',eventoDate:'2026-06-07',davi:true,status:'ativo',brunoStatus:'critico',brunoRoas:null,brunoGasto:5930.24,contratoVenc:'2024-12-25',contratoVal:'Comissão 2,5%',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'Evento já aconteceu em 07/06',ultimoContato:null},
+  {id:5,name:'Complexo Fora do Eixo',gestor:'Gabriel',contato:'Thiago',tel:'+55 11 93002 1600',tipo:'Casa Noturna / Hub',eventoDate:null,davi:false,status:'ativo',brunoStatus:'atencao',brunoRoas:2.16,brunoGasto:1894.39,contratoVenc:'2026-09-23',contratoVal:'R$ 2.800',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
+  {id:6,name:'Dust Pub',gestor:'Gabriel',contato:'João',tel:'+55 18 99693 5607',tipo:'Casa Noturna / Pub',eventoDate:null,davi:false,status:'ativo',brunoStatus:'saudavel',brunoRoas:28.57,brunoGasto:1089.85,contratoVenc:'2026-05-30',contratoVal:'R$ 2.200',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
+  {id:7,name:'ENTRE',gestor:'—',contato:'Camila Nasser',tel:'+55 11 99253-5646',tipo:'Treinamento / Parceria',eventoDate:null,davi:false,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:'2026-08-01',contratoVal:'Permuta',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'Permuta',ultimoContato:null},
+  {id:8,name:'Feijoada do Serginho',gestor:'Felício',contato:'Sérgio',tel:'+55 18 98100 5575',tipo:'Evento Cultural',eventoDate:'2026-07-12',davi:false,status:'ativo',brunoStatus:'saudavel',brunoRoas:3.38,brunoGasto:1935.67,contratoVenc:'2026-10-24',contratoVal:'R$ 3.000',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
+  {id:9,name:'Floresta Infectada',gestor:'Felício',contato:'Hebert Murilo de Souza',tel:'+55 11 91784-0020',tipo:'Festival Psicodélico',eventoDate:'2026-07-18',davi:false,status:'ativo',brunoStatus:'critico',brunoRoas:0.74,brunoGasto:736.01,contratoVenc:'2026-11-12',contratoVal:'R$ 4.000',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
+  {id:10,name:'Friends Fuel',gestor:'Felício',contato:'Pedro Fabri',tel:'+55 34 99270 1234',tipo:'Evento Automotivo',eventoDate:'2026-06-11',davi:false,status:'ativo',brunoStatus:'atencao',brunoRoas:2.59,brunoGasto:845.58,contratoVenc:'2026-11-18',contratoVal:'R$ 2.000',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
+  {id:11,name:'From Heaven',gestor:'Felício',contato:'Silvio',tel:'+41 79 564 54 39',tipo:'Restaurante / Internacional',eventoDate:null,davi:false,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:'2026-01-05',contratoVal:'CHF 800',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'Renovar quando solicitarem',ultimoContato:null},
+  {id:12,name:'Hipnotica Festival',gestor:'Samuel',contato:'Murillo Kobot',tel:'+55 62 98491 4044',tipo:'Festival Eletrônico',eventoDate:'2026-06-20',davi:false,status:'ativo',brunoStatus:'saudavel',brunoRoas:11.49,brunoGasto:3552.95,contratoVenc:'2027-01-22',contratoVal:'R$ 6.000',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
+  {id:13,name:'Mad In Brazza',gestor:'Samuel',contato:'Thiago',tel:'+55 41 99660 2293',tipo:'Festival Multigênero',eventoDate:'2026-08-08',davi:false,status:'ativo',brunoStatus:'saudavel',brunoRoas:3.80,brunoGasto:28256.79,contratoVenc:'2026-08-08',contratoVal:'R$ 2.500',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
+  {id:14,name:'Mad In Brazza SP',gestor:'Samuel',contato:'Thiago',tel:'+55 41 99660 2293',tipo:'Festival Multigênero',eventoDate:'2026-08-09',davi:false,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:'2026-08-09',contratoVal:'R$ 2.500',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
+  {id:15,name:'Magic Boom Tour',gestor:'Gabriel',contato:'Daniel',tel:'+55 91 99146 9146',tipo:'Evento',eventoDate:'2026-06-13',davi:false,status:'ativo',brunoStatus:'saudavel',brunoRoas:3.71,brunoGasto:1355.32,contratoVenc:'2026-06-15',contratoVal:'R$ 1.000',reuniaoStatus:'realizado',reuniaoData:'2026-06-03',alerta:null,obs:'Pausa após evento 13/06.',ultimoContato:'2026-06-03'},
+  {id:16,name:'Moving Festival',gestor:'Felício',contato:'Henry',tel:'+55 51 99297 6832',tipo:'Festival',eventoDate:'2026-10-17',davi:false,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:null,contratoVal:'—',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'Em negociação',ultimoContato:null},
+  {id:17,name:'Na Pegada',gestor:'Felício',contato:'JP Daia',tel:'+55 62 98117 8955',tipo:'Festa Sertaneja',eventoDate:'2026-10-17',davi:false,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:'2026-10-17',contratoVal:'R$ 13.500',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'Pagamento único realizado',ultimoContato:null},
+  {id:18,name:'Neutratech',gestor:'—',contato:'—',tel:'—',tipo:'Em negociação',eventoDate:null,davi:true,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:null,contratoVal:'—',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'Negociação com Davi',ultimoContato:null},
+  {id:19,name:'New Sheet',gestor:'Gabriel',contato:'Ju Machado',tel:'+351 913 611 636',tipo:'Ativação de Marca / Vegano',eventoDate:'2026-07-19',davi:false,status:'ativo',brunoStatus:'saudavel',brunoRoas:null,brunoGasto:2326.31,contratoVenc:'2026-07-30',contratoVal:'€ 700',reuniaoStatus:'realizado',reuniaoData:'2026-06-03',alerta:null,obs:'Evento GRATUITO — ROAS não se aplica.',ultimoContato:'2026-06-03'},
+  {id:20,name:'Puma Punku Festival',gestor:'Gabriel',contato:'Ruan',tel:'+55 12 98282 4615',tipo:'Festival Psicodélico',eventoDate:'2026-07-04',davi:false,status:'ativo',brunoStatus:'saudavel',brunoRoas:8.51,brunoGasto:1733.33,contratoVenc:'2026-07-05',contratoVal:'R$ 1.750',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
+  {id:21,name:'Retrogyn',gestor:'Felício',contato:'JP Daia',tel:'+55 62 98117 8955',tipo:'Festa Sertaneja',eventoDate:'2026-09-05',davi:false,status:'ativo',brunoStatus:'critico',brunoRoas:0.82,brunoGasto:795.21,contratoVenc:'2026-09-03',contratoVal:'R$ 9.750',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'Pagamento único realizado',ultimoContato:null},
+  {id:22,name:'Savage',gestor:'Felício',contato:'Juliane',tel:'+55 48 99941 1076',tipo:'Festa Eletrônica',eventoDate:'2026-06-13',davi:false,status:'ativo',brunoStatus:'critico',brunoRoas:0.86,brunoGasto:4434.42,contratoVenc:'2026-10-02',contratoVal:'R$ 2.800',reuniaoStatus:'agendado',reuniaoData:'2026-06-05',alerta:null,obs:'',ultimoContato:'2026-06-03'},
+  {id:23,name:'Snapp',gestor:'Felício',contato:'Marcelo',tel:'+44 7495 865256',tipo:'Agência de Artistas',eventoDate:null,davi:false,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:'2026-11-22',contratoVal:'£ 150',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'Reativado',ultimoContato:null},
+  {id:24,name:'Starlight',gestor:'Samuel',contato:'Matheus Cavalca.',tel:'+55 61 98168 0095',tipo:'Festa Eletrônica',eventoDate:'2026-06-13',davi:true,status:'ativo',brunoStatus:'saudavel',brunoRoas:15.19,brunoGasto:7424.26,contratoVenc:'2025-12-26',contratoVal:'R$ 5.000',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'Mesmo responsável Gomes',ultimoContato:null},
+  {id:25,name:'Tardezinha',gestor:'Samuel',contato:'Brito',tel:'+55 61 99530 7575',tipo:'Pagode / Show',eventoDate:'2026-07-12',davi:false,status:'ativo',brunoStatus:'critico',brunoRoas:0.31,brunoGasto:1110.59,contratoVenc:'2026-07-12',contratoVal:'R$ 5.000',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'Pagamento único realizado',ultimoContato:null},
+  {id:26,name:'Terra Mágica',gestor:'Gabriel',contato:'Samurai',tel:'+55 92 99311 8076',tipo:'Parque Temático',eventoDate:'2026-08-15',davi:true,status:'ativo',brunoStatus:'saudavel',brunoRoas:3.45,brunoGasto:3281.02,contratoVenc:'2024-08-14',contratoVal:'R$ 600 + 10%',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
+  {id:27,name:'Terratronic',gestor:'Samuel',contato:'Marco Polo',tel:'+55 21 98323 1727',tipo:'Festa Eletrônica',eventoDate:'2026-07-11',davi:false,status:'ativo',brunoStatus:'saudavel',brunoRoas:16.66,brunoGasto:1680.38,contratoVenc:'2026-07-12',contratoVal:'R$ 4.000',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
+  {id:28,name:'Um Sonho (RMK)',gestor:'Felício',contato:'Marcelo',tel:'+44 7495 865256',tipo:'Remarketing / Cantor',eventoDate:null,davi:false,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:null,contratoVal:'R$ 150',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'Iniciando julho/2026',ultimoContato:null},
+  {id:29,name:'Use Isy',gestor:'Gabriel',contato:'Deisy',tel:'+55 85 98929 6215',tipo:'Loja de Roupas / E-commerce',eventoDate:null,davi:false,status:'ativo',brunoStatus:'saudavel',brunoRoas:3.12,brunoGasto:2607.14,contratoVenc:'2026-01-07',contratoVal:'R$ 1.500',reuniaoStatus:'realizado',reuniaoData:'2026-06-01',alerta:null,obs:'Renovar na primavera/verão',ultimoContato:'2026-06-01'},
+  {id:30,name:'Villa Sambô',gestor:'—',contato:'—',tel:'—',tipo:'Samba / Assessoria',eventoDate:null,davi:false,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:'2026-10-28',contratoVal:'€ 500',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'Reunião por demanda do cliente',ultimoContato:null},
+  {id:31,name:'You Can Productions',gestor:'Samuel',contato:'Otamyr',tel:'+1 778 861 3392',tipo:'Evento Social',eventoDate:'2026-06-20',davi:false,status:'ativo',brunoStatus:'atencao',brunoRoas:1.94,brunoGasto:1373.60,contratoVenc:'2025-08-30',contratoVal:'CA$ 500',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'Em negociação de renovação',ultimoContato:null},
+  {id:32,name:'404 (Fuschini)',gestor:'—',contato:'—',tel:'—',tipo:'Festa Funk',eventoDate:null,davi:false,status:'pausado',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:'2026-05-23',contratoVal:'R$ 2.000',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
+  {id:33,name:'4U',gestor:'—',contato:'—',tel:'—',tipo:'Festa Universitária',eventoDate:null,davi:false,status:'pausado',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:'2026-07-08',contratoVal:'R$ 3.200',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
+  {id:34,name:'Cbago',gestor:'—',contato:'—',tel:'—',tipo:'Congresso Veterinário',eventoDate:null,davi:false,status:'pausado',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:'2026-05-22',contratoVal:'R$ 5.000',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
+  {id:35,name:'Choppadinha',gestor:'—',contato:'—',tel:'—',tipo:'Festa Universitária',eventoDate:null,davi:false,status:'pausado',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:null,contratoVal:'—',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'Em renovação',ultimoContato:null},
+  {id:36,name:'Church Tech',gestor:'—',contato:'—',tel:'—',tipo:'Evento Religioso',eventoDate:null,davi:false,status:'pausado',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:'2026-05-27',contratoVal:'R$ 2.000',reuniaoStatus:'agendado',reuniaoData:'2026-06-03',alerta:null,obs:'Em negociação de renovação',ultimoContato:'2026-06-03'},
+  {id:37,name:'Diamond Experience',gestor:'—',contato:'—',tel:'—',tipo:'Imersão Empresarial',eventoDate:null,davi:false,status:'pausado',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:'2026-06-14',contratoVal:'€ 250',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
+  {id:38,name:'Drop Open Air',gestor:'—',contato:'—',tel:'—',tipo:'Festa Eletrônica',eventoDate:null,davi:false,status:'pausado',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:null,contratoVal:'—',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
+  {id:39,name:'GL Produções',gestor:'—',contato:'—',tel:'—',tipo:'Produtora',eventoDate:null,davi:false,status:'pausado',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:null,contratoVal:'—',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
+  {id:40,name:'Magic Boom',gestor:'—',contato:'—',tel:'—',tipo:'Festa Eletrônica',eventoDate:null,davi:false,status:'pausado',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:'2026-11-27',contratoVal:'R$ 2.000',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
+];
+
+// ─── UTILS ────────────────────────────────────────────────────────────────────
+const todayStr=()=>new Date().toISOString().split('T')[0];
+function today0(){const d=new Date();d.setHours(0,0,0,0);return d;}
+function daysTo(s,t){if(!s)return null;return Math.ceil((new Date(s)-t)/86400000);}
+function fmtDate(s){if(!s)return'—';const[y,m,d]=s.split('-');return`${d}/${m}`;}
+function fmtFull(s){if(!s)return'—';const[y,m,d]=s.split('-');return`${d}/${m}/${y}`;}
+
+function calcScore(c,t){
+  let s=0;
+  if(c.brunoStatus==='critico')s+=8;else if(c.brunoStatus==='atencao')s+=4;else if(c.brunoStatus==='sem_dados')s+=2;
+  if(c.eventoDate){const d=daysTo(c.eventoDate,t);if(d!=null&&d>=0){if(d<=10)s+=15;else if(d<=20)s+=8;else if(d<=30)s+=5;else if(d<=60)s+=2;else s+=1;}}
+  if(!c.davi&&c.contratoVenc){const v=daysTo(c.contratoVenc,t);if(v!=null){if(v<=0)s+=6;else if(v<=30)s+=3;}}
+  if(c.alerta==='reclamacao')s+=20;else if(c.alerta==='davi')s+=15;
+  if(c.reuniaoStatus==='realizado')s-=100;else if(c.reuniaoStatus==='agendado')s-=10;
+  return s+c.id*0.001;
+}
+function getMotivo(c,t){
+  const p=[];
+  if(c.brunoStatus==='critico')p.push('Performance crítica');
+  else if(c.brunoStatus==='atencao')p.push('Atenção');
+  if(c.eventoDate){const d=daysTo(c.eventoDate,t);if(d!=null&&d>=0&&d<=30)p.push(`Evento ${d}d${d<=10?' ⚠':''}`)}
+  if(!c.davi&&c.contratoVenc){const v=daysTo(c.contratoVenc,t);if(v!=null){if(v<=0)p.push('Contrato vencido');else if(v<=30)p.push(`Vence ${v}d`);}}
+  if(c.alerta==='reclamacao')p.push('Reclamação');
+  return p.join(' · ')||'Monitorar';
+}
+function renovSt(c,t){
+  if(c.davi)return'davi';if(!c.contratoVenc)return'none';
+  const d=daysTo(c.contratoVenc,t);if(d<=0)return'vencido';if(d<=30)return'avencer';return'vigente';
+}
+
+async function fileToB64(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result.split(',')[1]);r.onerror=rej;r.readAsDataURL(file);});}
+async function askClaude(b64,mtype,prompt){
+  const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,
+      messages:[{role:'user',content:[{type:'document',source:{type:'base64',media_type:mtype,data:b64}},{type:'text',text:prompt}]}]})});
+  const data=await resp.json();
+  return data.content?.map(b=>b.text||'').join('')||'';
+}
+
+// ─── BADGES ────────────────────────────────────────────────────────────────────
+function Bdg({type,label,size=11}){
+  const colors={
+    critico:{bg:'#FEE2E2',c:'#DC2626'},
+    atencao:{bg:'#FEF3C7',c:'#B45309'},
+    saudavel:{bg:'#D1FAE5',c:'#065F46'},
+    sem_dados:{bg:'#F3F4F6',c:'#6B7280'},
+    agendar:{bg:'#FEE2E2',c:'#DC2626'},
+    agendado:{bg:'#FEF3C7',c:'#B45309'},
+    realizado:{bg:'#D1FAE5',c:'#065F46'},
+    vencido:{bg:'#FEE2E2',c:'#DC2626'},
+    avencer:{bg:'#FEF3C7',c:'#B45309'},
+    vigente:{bg:'#D1FAE5',c:'#065F46'},
+    davi:{bg:'#EDE9FE',c:'#5B21B6'},
+    none:{bg:'#F3F4F6',c:'#6B7280'},
+    pink:{bg:PINK_LIGHT,c:PINK_DARK},
+  };
+  const s=colors[type]||colors.none;
+  return<span style={{background:s.bg,color:s.c,padding:'2px 8px',borderRadius:20,fontSize:size,fontWeight:600,whiteSpace:'nowrap'}}>{label}</span>;
+}
+
+function BrunoBdg({status}){const m={critico:'Crítico',atencao:'Atenção',saudavel:'Saudável',sem_dados:'Sem dados'};return<Bdg type={status} label={m[status]||'—'}/>;}
+function ReuniaBdg({status}){const m={agendar:'Agendar',agendado:'Agendado',realizado:'Realizado'};return<Bdg type={status} label={m[status]||'—'}/>;}
+function RenovBdg({status}){
+  if(status==='davi')return<Bdg type="davi" label="Davi"/>;
+  if(status==='vencido')return<Bdg type="vencido" label="Vencido"/>;
+  if(status==='avencer')return<Bdg type="avencer" label="À vencer"/>;
+  if(status==='vigente')return<Bdg type="vigente" label="Vigente"/>;
+  return<span style={{color:'#9CA3AF',fontSize:11}}>—</span>;
+}
+
+// ─── DETAIL PANEL ──────────────────────────────────────────────────────────────
+function DetailPanel({c,onClose,onSave,today}){
+  const[f,setF]=useState({...c});
+  const upd=(k,v)=>setF(p=>({...p,[k]:v}));
+  const ev=f.eventoDate?daysTo(f.eventoDate,today):null;
+  const si={border:'1px solid #F3E8EE',borderRadius:8,padding:'7px 10px',fontSize:13,background:'white',color:'#1a0a10',width:'100%'};
+  const box={background:'#FFF5FA',border:'1px solid #F8BBD0',borderRadius:10,padding:'12px 14px',marginBottom:10};
+  const lbl={fontSize:10,color:'#C06090',marginBottom:3,fontWeight:600,textTransform:'uppercase',letterSpacing:0.5};
+
+  return<div style={{width:420,borderLeft:`1px solid ${PINK_BORDER}`,background:'white',display:'flex',flexDirection:'column',overflow:'hidden',flexShrink:0}}>
+    <div style={{padding:'16px 18px',borderBottom:`1px solid ${PINK_BORDER}`,display:'flex',justifyContent:'space-between',alignItems:'flex-start',background:PINK_BG}}>
+      <div>
+        <div style={{fontSize:16,fontWeight:700,color:'#1a0a10',marginBottom:2}}>{f.name}</div>
+        <div style={{fontSize:11,color:'#9D4070',marginBottom:8}}>{f.tipo}</div>
+        <div style={{display:'flex',gap:6,flexWrap:'wrap'}}><BrunoBdg status={f.brunoStatus}/><RenovBdg status={renovSt(f,today)}/>{f.davi&&<Bdg type="davi" label="Davi"/>}</div>
+      </div>
+      <button onClick={onClose} style={{background:'none',color:'#C06090',fontSize:22,padding:'2px 8px',lineHeight:1,border:'none',cursor:'pointer'}}>&times;</button>
+    </div>
+    <div style={{flex:1,overflowY:'auto',padding:'14px 18px'}}>
+      <div style={{...box}}>
+        <div style={lbl}>Motivo na fila</div>
+        <div style={{fontSize:12,color:'#1a0a10'}}>{getMotivo(f,today)||'Monitoramento padrão'}</div>
+        <div style={{fontSize:10,color:'#C06090',marginTop:3}}>Score: {calcScore(f,today).toFixed(1)}</div>
+      </div>
+      <div style={box}>
+        <div style={lbl}>Contato</div>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8,marginBottom:8}}>
+          <div><div style={lbl}>Gestor</div><div style={{fontSize:13}}>{f.gestor}</div></div>
+          <div><div style={lbl}>Pessoa</div><div style={{fontSize:13}}>{f.contato}</div></div>
+        </div>
+        {f.tel!=='—'&&<a href={`https://wa.me/${f.tel.replace(/\D/g,'')}`} target="_blank" rel="noreferrer" style={{fontSize:12,color:PINK,textDecoration:'none',fontWeight:600}}>
+          <i className="ti ti-brand-whatsapp" style={{marginRight:4}}/>{f.tel}
+        </a>}
+      </div>
+      <div style={box}>
+        <div style={lbl}>Reunião</div>
+        <select value={f.reuniaoStatus} onChange={e=>upd('reuniaoStatus',e.target.value)} style={{...si,marginBottom:8,cursor:'pointer'}}>
+          <option value="agendar">Agendar</option><option value="agendado">Agendado</option><option value="realizado">Realizado</option>
+        </select>
+        {f.reuniaoStatus!=='agendar'&&<input type="date" value={f.reuniaoData||''} onChange={e=>upd('reuniaoData',e.target.value||null)} style={si}/>}
+      </div>
+      <div style={box}>
+        <div style={lbl}>Evento & Contrato</div>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8,marginBottom:8}}>
+          <div><div style={lbl}>Data do evento</div><input type="date" value={f.eventoDate||''} onChange={e=>upd('eventoDate',e.target.value||null)} style={si}/></div>
+          <div><div style={lbl}>Vencimento</div><input type="date" value={f.contratoVenc||''} onChange={e=>upd('contratoVenc',e.target.value||null)} style={si}/></div>
+        </div>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8}}>
+          <div><div style={lbl}>Valor/mês</div><div style={{fontSize:13,fontWeight:600}}>{f.contratoVal}</div></div>
+          <div><div style={lbl}>Dias p/ evento</div><div style={{fontSize:13,color:ev!=null&&ev<=10?'#DC2626':'#1a0a10',fontWeight:ev!=null&&ev<=10?700:400}}>{ev!=null?`${ev}d`:'—'}</div></div>
+        </div>
+      </div>
+      <div style={box}>
+        <div style={lbl}>Alerta churn</div>
+        <select value={f.alerta||''} onChange={e=>upd('alerta',e.target.value||null)} style={{...si,cursor:'pointer'}}>
+          <option value="">OK — sem alerta</option><option value="reclamacao">Reclamação (+20pts)</option><option value="davi">Davi solicitou (+15pts)</option>
+        </select>
+      </div>
+      <div style={box}>
+        <div style={lbl}>Observações</div>
+        <textarea value={f.obs||''} onChange={e=>upd('obs',e.target.value)} rows={3} placeholder="Anotações..." style={{...si,resize:'vertical',fontFamily:'inherit'}}/>
+        <div style={{marginTop:8}}><div style={lbl}>Último contato</div><input type="date" value={f.ultimoContato||''} onChange={e=>upd('ultimoContato',e.target.value||null)} style={si}/></div>
+      </div>
+      <div style={box}>
+        <div style={lbl}>Status do cliente</div>
+        <select value={f.status} onChange={e=>upd('status',e.target.value)} style={{...si,cursor:'pointer'}}>
+          <option value="ativo">Ativo</option><option value="pausado">Pausado</option>
+        </select>
+      </div>
+      <button onClick={()=>onSave(c.id,f)} style={{width:'100%',background:PINK,color:'white',padding:'11px',borderRadius:10,fontSize:14,fontWeight:700,border:'none',cursor:'pointer',marginBottom:8}}>
+        Salvar alterações
+      </button>
+    </div>
+  </div>;
+}
+
+// ─── TRILHA HOME (Agenda do dia) ───────────────────────────────────────────────
+function TrilhaHome({clients,onSelect,onUpd,hoje,onToggleHoje,today}){
+  const META=5;
+  const active=clients.filter(c=>c.status==='ativo');
+  const scored=active.map(c=>({...c,sc:calcScore(c,today)})).sort((a,b)=>b.sc-a.sc);
+  const queue=scored.filter(c=>c.sc>-50);
+  const agendados=scored.filter(c=>c.reuniaoStatus==='agendado');
+  const hojeList=clients.filter(c=>hoje.includes(c.id));
+  const done=hojeList.filter(c=>c.reuniaoStatus==='realizado').length;
+  const nC=active.filter(c=>c.brunoStatus==='critico').length;
+  const nA=active.filter(c=>c.brunoStatus==='atencao').length;
+  const nAg=active.filter(c=>c.reuniaoStatus==='agendar').length;
+  const nV=active.filter(c=>!c.davi&&c.contratoVenc&&daysTo(c.contratoVenc,today)<=30).length;
+  const hr=new Date().getHours();
+  const greeting=hr<12?'Bom dia':hr<18?'Boa tarde':'Boa noite';
+  const dateStr=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long'});
+
+  const rCol=(i)=>i<3?'#DC2626':i<6?'#B45309':'#1d4ed8';
+
+  return<div style={{flex:1,overflowY:'auto',padding:'24px 28px',background:PINK_BG}}>
+    {/* Header */}
+    <div style={{marginBottom:24}}>
+      <div style={{fontSize:26,fontWeight:800,color:'#1a0a10',marginBottom:4}}>{greeting}, Vanessa! 👋</div>
+      <div style={{fontSize:13,color:'#9D4070',textTransform:'capitalize'}}>{dateStr}</div>
+    </div>
+
+    {/* KPIs grandes */}
+    <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:14,marginBottom:24}}>
+      {[
+        {l:'Críticos',v:nC,bg:'linear-gradient(135deg,#FF6B6B,#E91E8C)',icon:'ti-alert-circle'},
+        {l:'Atenção',v:nA,bg:'linear-gradient(135deg,#FFB347,#FF6B6B)',icon:'ti-eye'},
+        {l:'Agendar',v:nAg,bg:'linear-gradient(135deg,#E91E8C,#C2156F)',icon:'ti-phone'},
+        {l:'Contratos',v:nV,bg:'linear-gradient(135deg,#A855F7,#E91E8C)',icon:'ti-file-text'},
+      ].map(k=><div key={k.l} style={{background:k.bg,borderRadius:16,padding:'20px 18px',color:'white',boxShadow:'0 4px 15px rgba(233,30,140,0.25)'}}>
+        <i className={`ti ${k.icon}`} style={{fontSize:24,opacity:0.8,display:'block',marginBottom:8}}/>
+        <div style={{fontSize:36,fontWeight:800,lineHeight:1}}>{k.v}</div>
+        <div style={{fontSize:12,opacity:0.85,marginTop:4}}>{k.l}</div>
+      </div>)}
+    </div>
+
+    {/* Meta do dia */}
+    <div style={{background:'white',border:`1px solid ${PINK_BORDER}`,borderRadius:16,padding:'18px 20px',marginBottom:18,boxShadow:'0 2px 8px rgba(233,30,140,0.08)'}}>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}}>
+        <div style={{fontSize:15,fontWeight:700,color:'#1a0a10'}}>
+          <i className="ti ti-target" style={{color:PINK,marginRight:8,fontSize:16}}/>
+          Meta do dia — {META} reuniões
+        </div>
+        <div style={{fontSize:12,color:'#9D4070',fontWeight:600}}>{done}/{META} realizadas · {hoje.length}/{META} selecionadas</div>
+      </div>
+      <div style={{background:'#F3E8EE',borderRadius:20,height:8,overflow:'hidden',marginBottom:14}}>
+        <div style={{background:`linear-gradient(90deg,${PINK},${PINK_DARK})`,height:'100%',width:`${Math.min(100,(done/META)*100)}%`,transition:'width 0.4s',borderRadius:20}}/>
+      </div>
+      {hojeList.length>0
+        ?<div style={{display:'flex',flexWrap:'wrap',gap:8}}>
+          {hojeList.map(c=><div key={c.id} style={{display:'flex',alignItems:'center',gap:6,background:PINK_LIGHT,border:`1px solid ${PINK_BORDER}`,borderRadius:20,padding:'4px 12px 4px 8px',fontSize:12}}>
+            <span style={{width:8,height:8,borderRadius:'50%',background:c.reuniaoStatus==='realizado'?'#16a34a':c.reuniaoStatus==='agendado'?'#B45309':PINK,flexShrink:0}}/>
+            <span onClick={()=>onSelect(c.id)} style={{cursor:'pointer',fontWeight:600,color:'#1a0a10'}}>{c.name}</span>
+            <button onClick={()=>onToggleHoje(c.id)} style={{background:'none',color:'#C06090',fontSize:16,lineHeight:1,padding:0,border:'none',cursor:'pointer'}}>×</button>
+          </div>)}
+        </div>
+        :<div style={{fontSize:12,color:'#C06090',textAlign:'center',padding:'4px 0'}}>Clique em "+ hoje" na fila abaixo para selecionar seus 5 clientes do dia</div>
+      }
+    </div>
+
+    {/* Agendados */}
+    {agendados.length>0&&<div style={{background:'white',border:'1px solid #FCD34D',borderRadius:16,overflow:'hidden',marginBottom:18}}>
+      <div style={{padding:'12px 18px',borderBottom:'1px solid #FEF3C7',background:'#FFFBEB',display:'flex',justifyContent:'space-between'}}>
+        <span style={{fontSize:13,fontWeight:700,color:'#B45309'}}><i className="ti ti-clock" style={{marginRight:6}}/>Reuniões agendadas — aguardando confirmação</span>
+        <span style={{fontSize:11,background:'#FEF3C7',color:'#B45309',padding:'2px 8px',borderRadius:20,fontWeight:700}}>{agendados.length}</span>
+      </div>
+      {agendados.map(c=><div key={c.id} style={{display:'flex',alignItems:'center',gap:12,padding:'11px 18px',borderBottom:'1px solid #FEF3C7',cursor:'pointer'}}
+        onClick={()=>onSelect(c.id)}
+        onMouseEnter={e=>e.currentTarget.style.background='#FFFBEB'}
+        onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
+        <div style={{flex:1}}><span style={{fontSize:13,fontWeight:600}}>{c.name}</span><span style={{fontSize:11,color:'#9D4070',marginLeft:8}}>{c.gestor}</span></div>
+        <span style={{fontSize:11,color:'#B45309'}}>{c.reuniaoData?fmtFull(c.reuniaoData):''}</span>
+        <button onClick={e=>{e.stopPropagation();onUpd(c.id,{reuniaoStatus:'realizado',reuniaoData:todayStr()});}}
+          style={{background:'#D1FAE5',color:'#065F46',border:'none',padding:'5px 12px',borderRadius:20,fontSize:11,fontWeight:700,cursor:'pointer'}}>
+          ✓ Realizado
+        </button>
+      </div>)}
+    </div>}
+
+    {/* Fila de prioridades */}
+    <div style={{background:'white',border:`1px solid ${PINK_BORDER}`,borderRadius:16,overflow:'hidden',boxShadow:'0 2px 8px rgba(233,30,140,0.06)'}}>
+      <div style={{padding:'14px 20px',borderBottom:`1px solid ${PINK_BORDER}`,display:'flex',justifyContent:'space-between',alignItems:'center',background:'white'}}>
+        <span style={{fontSize:15,fontWeight:700,color:'#1a0a10'}}><i className="ti ti-list" style={{color:PINK,marginRight:8}}/>Fila de prioridades</span>
+        <span style={{fontSize:11,background:PINK_LIGHT,color:PINK_DARK,padding:'3px 10px',borderRadius:20,fontWeight:700}}>{queue.length} clientes</span>
+      </div>
+      <div style={{display:'grid',gridTemplateColumns:'32px 180px 1fr 85px 85px 85px 100px',padding:'8px 20px',background:'#FFF5FA',borderBottom:`1px solid ${PINK_BORDER}`}}>
+        {['#','Cliente','Por que está aqui','Status','Evento','Contrato','Reunião'].map(h=><div key={h} style={{fontSize:10,fontWeight:700,color:'#C06090',letterSpacing:0.5}}>{h}</div>)}
+      </div>
+      {queue.length===0&&<div style={{padding:40,textAlign:'center',color:'#C06090'}}><i className="ti ti-confetti" style={{fontSize:32,display:'block',marginBottom:8}}/>Tudo em dia!</div>}
+      {queue.map((c,i)=>{
+        const ev=c.eventoDate?daysTo(c.eventoDate,today):null;
+        const isH=hoje.includes(c.id);
+        return<div key={c.id}
+          style={{display:'grid',gridTemplateColumns:'32px 180px 1fr 85px 85px 85px 100px',padding:'11px 20px',borderBottom:`1px solid #FCE4EC`,cursor:'pointer',transition:'background 0.1s',borderLeft:`3px solid ${isH?PINK:'transparent'}`}}
+          onClick={()=>onSelect(c.id)}
+          onMouseEnter={e=>e.currentTarget.style.background=PINK_BG}
+          onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
+          <div style={{fontSize:12,fontWeight:800,color:rCol(i),alignSelf:'center'}}>#{i+1}</div>
+          <div style={{alignSelf:'center'}}>
+            <div style={{fontSize:13,fontWeight:600,color:'#1a0a10'}}>{c.name}</div>
+            <div style={{marginTop:4}}>
+              {isH
+                ?<span style={{fontSize:10,background:PINK_LIGHT,color:PINK_DARK,padding:'2px 8px',borderRadius:20,fontWeight:700}}>✓ na lista de hoje</span>
+                :hoje.length<META&&<button onClick={e=>{e.stopPropagation();onToggleHoje(c.id);}}
+                  style={{fontSize:10,background:PINK_LIGHT,color:PINK,border:`1px solid ${PINK_BORDER}`,padding:'2px 8px',borderRadius:20,cursor:'pointer',fontWeight:600}}>+ hoje</button>
+              }
+            </div>
+          </div>
+          <div style={{alignSelf:'center',fontSize:11,color:'#9D4070',paddingRight:8}}>{getMotivo(c,today)}</div>
+          <div style={{alignSelf:'center'}}><BrunoBdg status={c.brunoStatus}/></div>
+          <div style={{alignSelf:'center',fontSize:11,color:ev!=null&&ev<=10?'#DC2626':'#6B7280',fontWeight:ev!=null&&ev<=10?700:400}}>
+            {ev!=null?`${fmtDate(c.eventoDate)} (${ev}d)`:'—'}
+          </div>
+          <div style={{alignSelf:'center'}}><RenovBdg status={renovSt(c,today)}/></div>
+          <div style={{alignSelf:'center'}}><ReuniaBdg status={c.reuniaoStatus}/></div>
+        </div>;
+      })}
+    </div>
+  </div>;
+}
+
+// ─── AGENDAMENTOS (Calendário) ──────────────────────────────────────────────────
+function AgendamentosView({clients,onSelect,today}){
+  const[curDate,setCurDate]=useState(new Date());
+  const year=curDate.getFullYear();
+  const month=curDate.getMonth();
+  const monthNames=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const dayNames=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+
+  const events=useMemo(()=>{
+    const ev={};
+    clients.filter(c=>c.status==='ativo').forEach(c=>{
+      const add=(dateStr,type,color)=>{
+        if(!dateStr)return;
+        const d=new Date(dateStr);
+        if(d.getFullYear()===year&&d.getMonth()===month){
+          const key=d.getDate();
+          if(!ev[key])ev[key]=[];
+          ev[key].push({type,name:c.name,color,id:c.id});
+        }
+      };
+      if(c.reuniaoStatus==='agendado')add(c.reuniaoData,'reuniao','#B45309');
+      add(c.eventoDate,'evento',PINK);
+      if(!c.davi)add(c.contratoVenc,'contrato','#7C3AED');
+    });
+    return ev;
+  },[clients,year,month]);
+
+  const daysInMonth=new Date(year,month+1,0).getDate();
+  const firstDay=new Date(year,month,1).getDay();
+  const todayDay=new Date().getDate();
+  const isCurrentMonth=new Date().getFullYear()===year&&new Date().getMonth()===month;
+
+  const cells=[];
+  for(let i=0;i<firstDay;i++)cells.push(null);
+  for(let d=1;d<=daysInMonth;d++)cells.push(d);
+
+  const selected=useMemo(()=>{
+    const all=[];
+    Object.entries(events).forEach(([day,evs])=>{
+      evs.forEach(ev=>all.push({...ev,day:parseInt(day)}));
+    });
+    return all.sort((a,b)=>a.day-b.day);
+  },[events]);
+
+  return<div style={{flex:1,overflowY:'auto',padding:'24px 28px',background:PINK_BG}}>
+    <div style={{fontSize:22,fontWeight:800,color:'#1a0a10',marginBottom:4}}>
+      <i className="ti ti-calendar-month" style={{color:PINK,marginRight:10,fontSize:20}}/>Agendamentos
+    </div>
+    <div style={{fontSize:12,color:'#9D4070',marginBottom:24}}>Visão mensal de reuniões, eventos e vencimentos de contrato</div>
+
+    <div style={{display:'grid',gridTemplateColumns:'1fr 320px',gap:20}}>
+      {/* Calendar */}
+      <div style={{background:'white',border:`1px solid ${PINK_BORDER}`,borderRadius:16,overflow:'hidden'}}>
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'14px 20px',background:`linear-gradient(135deg,${PINK},${PINK_DARK})`,color:'white'}}>
+          <button onClick={()=>setCurDate(new Date(year,month-1,1))} style={{background:'rgba(255,255,255,0.2)',border:'none',color:'white',width:32,height:32,borderRadius:'50%',cursor:'pointer',fontSize:16}}>‹</button>
+          <span style={{fontSize:16,fontWeight:700}}>{monthNames[month]} {year}</span>
+          <button onClick={()=>setCurDate(new Date(year,month+1,1))} style={{background:'rgba(255,255,255,0.2)',border:'none',color:'white',width:32,height:32,borderRadius:'50%',cursor:'pointer',fontSize:16}}>›</button>
+        </div>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(7,1fr)',padding:'12px 8px 4px'}}>
+          {dayNames.map(d=><div key={d} style={{textAlign:'center',fontSize:11,fontWeight:700,color:'#C06090',padding:'4px 0'}}>{d}</div>)}
+        </div>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(7,1fr)',padding:'4px 8px 16px',gap:2}}>
+          {cells.map((day,i)=>{
+            if(!day)return<div key={`e${i}`}/>;
+            const dayEvs=events[day]||[];
+            const isToday=isCurrentMonth&&day===todayDay;
+            return<div key={day} style={{padding:'6px 4px',borderRadius:8,background:isToday?PINK_LIGHT:'transparent',border:isToday?`2px solid ${PINK}`:'2px solid transparent',cursor:dayEvs.length?'pointer':'default',minHeight:52}}
+              onMouseEnter={e=>{if(dayEvs.length)e.currentTarget.style.background=PINK_LIGHT;}}
+              onMouseLeave={e=>{if(!isToday)e.currentTarget.style.background='transparent';}}>
+              <div style={{fontSize:12,fontWeight:isToday?800:500,color:isToday?PINK:'#1a0a10',textAlign:'center',marginBottom:3}}>{day}</div>
+              <div style={{display:'flex',flexWrap:'wrap',gap:2,justifyContent:'center'}}>
+                {dayEvs.slice(0,3).map((ev,ei)=><span key={ei} style={{width:6,height:6,borderRadius:'50%',background:ev.color,display:'inline-block'}}/>)}
+                {dayEvs.length>3&&<span style={{fontSize:8,color:'#9D4070',fontWeight:700}}>+{dayEvs.length-3}</span>}
+              </div>
+            </div>;
+          })}
+        </div>
+      </div>
+
+      {/* Events list */}
+      <div style={{background:'white',border:`1px solid ${PINK_BORDER}`,borderRadius:16,overflow:'hidden'}}>
+        <div style={{padding:'14px 16px',borderBottom:`1px solid ${PINK_BORDER}`,background:PINK_BG}}>
+          <div style={{fontSize:13,fontWeight:700,color:'#1a0a10'}}>Eventos do mês</div>
+          <div style={{display:'flex',gap:10,marginTop:8,flexWrap:'wrap'}}>
+            {[{c:PINK,l:'Evento'},{c:'#B45309',l:'Reunião'},{c:'#7C3AED',l:'Contrato'}].map(({c,l})=><span key={l} style={{display:'flex',alignItems:'center',gap:4,fontSize:11,color:'#6B7280'}}>
+              <span style={{width:8,height:8,borderRadius:'50%',background:c}}/>{l}
+            </span>)}
+          </div>
+        </div>
+        <div style={{overflowY:'auto',maxHeight:400}}>
+          {selected.length===0&&<div style={{padding:24,textAlign:'center',color:'#C06090',fontSize:12}}>
+            <i className="ti ti-calendar-off" style={{fontSize:24,display:'block',marginBottom:6}}/>Nenhum evento neste mês
+          </div>}
+          {selected.map((ev,i)=><div key={i} style={{display:'flex',alignItems:'center',gap:10,padding:'10px 16px',borderBottom:`1px solid #FCE4EC`,cursor:'pointer'}}
+            onClick={()=>ev.id&&onSelect(ev.id)}
+            onMouseEnter={e=>e.currentTarget.style.background=PINK_BG}
+            onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
+            <div style={{width:32,height:32,borderRadius:8,background:ev.color+'20',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
+              <span style={{fontSize:14,fontWeight:800,color:ev.color}}>{ev.day}</span>
+            </div>
+            <div style={{flex:1}}>
+              <div style={{fontSize:12,fontWeight:600,color:'#1a0a10'}}>{ev.name}</div>
+              <div style={{fontSize:10,color:ev.color,fontWeight:600,marginTop:1}}>{ev.type==='evento'?'Evento':ev.type==='reuniao'?'Reunião agendada':'Vencimento contrato'}</div>
+            </div>
+          </div>)}
+        </div>
+      </div>
+    </div>
+  </div>;
+}
+
+// ─── RENOVAÇÕES ──────────────────────────────────────────────────────────────
+function RenovacoesView({clients,onSelect,today}){
+  const active=clients.filter(c=>c.status==='ativo');
+  const vencidos=active.filter(c=>!c.davi&&c.contratoVenc&&daysTo(c.contratoVenc,today)<0).sort((a,b)=>daysTo(a.contratoVenc,today)-daysTo(b.contratoVenc,today));
+  const avencer=active.filter(c=>!c.davi&&c.contratoVenc&&daysTo(c.contratoVenc,today)>=0&&daysTo(c.contratoVenc,today)<=60).sort((a,b)=>daysTo(a.contratoVenc,today)-daysTo(b.contratoVenc,today));
+  const daviC=active.filter(c=>c.davi);
+
+  const Section=({title,items,color,icon})=>items.length>0&&<div style={{background:'white',border:`1px solid ${color}40`,borderRadius:16,overflow:'hidden',marginBottom:14}}>
+    <div style={{padding:'12px 18px',borderBottom:`1px solid ${color}20`,background:`${color}08`}}><span style={{fontSize:13,fontWeight:700,color}}><i className={`ti ${icon}`} style={{marginRight:8}}/>{title} ({items.length})</span></div>
+    {items.map(c=>{const d=c.contratoVenc?daysTo(c.contratoVenc,today):null;
+      return<div key={c.id} style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'11px 18px',borderBottom:'1px solid #FCE4EC',cursor:'pointer'}} onClick={()=>onSelect(c.id)} onMouseEnter={e=>e.currentTarget.style.background=PINK_BG} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
+        <div><div style={{fontSize:13,fontWeight:600,color:'#1a0a10'}}>{c.name}</div><div style={{fontSize:11,color:'#9D4070',marginTop:2}}>{c.gestor} · {c.contratoVal}/mês</div></div>
+        <div style={{display:'flex',gap:10,alignItems:'center'}}>
+          {d!=null&&<span style={{fontSize:12,color:d<0?'#DC2626':d<=30?'#B45309':'#6B7280'}}>{d<0?`Venceu há ${Math.abs(d)}d`:`Vence em ${d}d`} · {fmtFull(c.contratoVenc)}</span>}
+          <RenovBdg status={renovSt(c,today)}/>
+        </div>
+      </div>;
+    })}
+  </div>;
+
+  return<div style={{flex:1,overflowY:'auto',padding:'24px 28px',background:PINK_BG}}>
+    <div style={{fontSize:22,fontWeight:800,color:'#1a0a10',marginBottom:4}}><i className="ti ti-file-text" style={{color:PINK,marginRight:10}}/>Renovações de contrato</div>
+    <p style={{fontSize:12,color:'#9D4070',marginBottom:20}}>Contratos que precisam de atenção — clique para editar</p>
+    <Section title="Contratos vencidos" items={vencidos} color="#DC2626" icon="ti-alert-circle"/>
+    <Section title="Vencendo em 60 dias" items={avencer} color="#B45309" icon="ti-clock"/>
+    <Section title="Contratos com Davi" items={daviC} color="#7C3AED" icon="ti-user"/>
+    {!vencidos.length&&!avencer.length&&!daviC.length&&<div style={{textAlign:'center',padding:48,color:'#C06090'}}><i className="ti ti-circle-check" style={{fontSize:36,display:'block',marginBottom:10}}/><div style={{fontSize:14,fontWeight:600}}>Nenhum contrato urgente!</div></div>}
+  </div>;
+}
+
+// ─── CLIENTES (Lista) ─────────────────────────────────────────────────────────
+function ClientesView({clients,onSelect,today}){
+  const[tab,setTab]=useState('ativo');
+  const[search,setSearch]=useState('');
+  const[gestor,setGestor]=useState('');
+  const gestores=[...new Set(clients.filter(c=>c.status==='ativo'&&c.gestor!=='—').map(c=>c.gestor))].sort();
+  const list=clients.filter(c=>c.status===tab&&(!search||c.name.toLowerCase().includes(search.toLowerCase()))&&(!gestor||c.gestor===gestor));
+
+  return<div style={{flex:1,display:'flex',flexDirection:'column',overflow:'hidden',background:PINK_BG}}>
+    <div style={{padding:'20px 28px 0',flexShrink:0}}>
+      <div style={{fontSize:22,fontWeight:800,color:'#1a0a10',marginBottom:16}}><i className="ti ti-users" style={{color:PINK,marginRight:10}}/>Clientes</div>
+      <div style={{display:'flex',gap:10,marginBottom:16,flexWrap:'wrap'}}>
+        {['ativo','pausado'].map(t=><button key={t} onClick={()=>setTab(t)} style={{padding:'7px 18px',borderRadius:20,fontSize:12,fontWeight:700,cursor:'pointer',border:`1px solid ${tab===t?PINK:PINK_BORDER}`,background:tab===t?PINK:'white',color:tab===t?'white':PINK_DARK}}>
+          {t==='ativo'?`Ativos (${clients.filter(c=>c.status==='ativo').length})`:`Pausados (${clients.filter(c=>c.status==='pausado').length})`}
+        </button>)}
+        <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Buscar cliente..." style={{flex:1,minWidth:150,padding:'7px 14px',borderRadius:20,fontSize:12,border:`1px solid ${PINK_BORDER}`,background:'white',color:'#1a0a10'}}/>
+        {tab==='ativo'&&<select value={gestor} onChange={e=>setGestor(e.target.value)} style={{padding:'7px 14px',borderRadius:20,fontSize:12,border:`1px solid ${PINK_BORDER}`,background:'white',color:'#1a0a10',cursor:'pointer'}}>
+          <option value="">Todos os gestores</option>{gestores.map(g=><option key={g} value={g}>{g}</option>)}
+        </select>}
+      </div>
+    </div>
+
+    <div style={{flex:1,overflowY:'auto',padding:'0 28px 24px'}}>
+      <div style={{background:'white',border:`1px solid ${PINK_BORDER}`,borderRadius:16,overflow:'hidden'}}>
+        {/* Table header */}
+        <div style={{display:'grid',gridTemplateColumns:'1fr 90px 120px 90px 90px 90px 100px',padding:'10px 18px',background:'#FFF5FA',borderBottom:`1px solid ${PINK_BORDER}`}}>
+          {['Cliente','Gestor','Tipo','Status','Evento','Contrato','Reunião'].map(h=><div key={h} style={{fontSize:10,fontWeight:700,color:'#C06090',letterSpacing:0.5}}>{h}</div>)}
+        </div>
+        {list.length===0&&<div style={{padding:32,textAlign:'center',color:'#C06090',fontSize:13}}>Nenhum cliente encontrado</div>}
+        {list.map((c,i)=>{
+          const ev=c.eventoDate?daysTo(c.eventoDate,today):null;
+          return<div key={c.id}
+            style={{display:'grid',gridTemplateColumns:'1fr 90px 120px 90px 90px 90px 100px',padding:'11px 18px',borderBottom:'1px solid #FCE4EC',cursor:'pointer',transition:'background 0.1s'}}
+            onClick={()=>onSelect(c.id)}
+            onMouseEnter={e=>e.currentTarget.style.background=PINK_BG}
+            onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
+            <div>
+              <div style={{fontSize:13,fontWeight:600,color:'#1a0a10'}}>{c.name}</div>
+              {c.contato!=='—'&&<div style={{fontSize:10,color:'#9D4070',marginTop:1}}>{c.contato}</div>}
+              {c.obs&&<div style={{fontSize:10,color:'#C06090',marginTop:1,fontStyle:'italic'}}>{c.obs.substring(0,45)}{c.obs.length>45?'…':''}</div>}
+            </div>
+            <div style={{alignSelf:'center',fontSize:12,color:'#6B7280'}}>{c.gestor}</div>
+            <div style={{alignSelf:'center',fontSize:11,color:'#6B7280'}}>{c.tipo.substring(0,18)}{c.tipo.length>18?'…':''}</div>
+            <div style={{alignSelf:'center'}}>{c.status==='ativo'?<BrunoBdg status={c.brunoStatus}/>:<Bdg type="none" label="Pausado"/>}</div>
+            <div style={{alignSelf:'center',fontSize:11,color:ev!=null&&ev<=10?'#DC2626':'#6B7280',fontWeight:ev!=null&&ev<=10?700:400}}>
+              {ev!=null?`${fmtDate(c.eventoDate)} (${ev}d)`:'—'}
+            </div>
+            <div style={{alignSelf:'center'}}><RenovBdg status={renovSt(c,today)}/></div>
+            <div style={{alignSelf:'center'}}><ReuniaBdg status={c.reuniaoStatus}/></div>
+          </div>;
+        })}
+      </div>
+    </div>
+  </div>;
+}
+
+// ─── RELATÓRIO OPERACIONAL ─────────────────────────────────────────────────────
+function RelatorioView({clients,onUpdate,brunoDate,onSetDate}){
+  const[date,setDate]=useState(brunoDate||'');
+  const[file,setFile]=useState(null);
+  const[loading,setLoading]=useState(false);
+  const[preview,setPreview]=useState(null);
+  const[error,setError]=useState('');
+  const[msg,setMsg]=useState('');
+  const active=clients.filter(c=>c.status==='ativo').sort((a,b)=>['critico','atencao','sem_dados','saudavel'].indexOf(a.brunoStatus)-['critico','atencao','sem_dados','saudavel'].indexOf(b.brunoStatus));
+  const si={border:`1px solid ${PINK_BORDER}`,borderRadius:8,padding:'6px 10px',fontSize:12,background:'white',color:'#1a0a10',width:'100%'};
+
+  async function analyze(){
+    if(!file){setError('Selecione o PDF');return;}
+    setLoading(true);setError('');setPreview(null);
+    try{
+      const b64=await fileToB64(file);
+      const nomes=active.map(c=>c.name).join(', ');
+      const text=await askClaude(b64,'application/pdf',`Relatório de performance Jurassic Marketing. Clientes: ${nomes}\nRetorne APENAS JSON:\n{"clientes":[{"nome":"...","status":"critico|atencao|saudavel|sem_dados","roas":0.0,"gasto":0.0}]}\nRegras: critico=ROAS<1.0, atencao=1.0-2.0, saudavel>2.0, sem_dados=sem dados.`);
+      const parsed=JSON.parse(text.replace(/```json|```/g,'').trim());
+      setPreview(parsed.clientes||[]);
+    }catch(e){setError('Erro ao analisar. Tente novamente.');}
+    setLoading(false);
+  }
+
+  function apply(){
+    let n=0;
+    preview.forEach(item=>{
+      const c=active.find(a=>a.name.toLowerCase().includes(item.nome.toLowerCase())||item.nome.toLowerCase().includes(a.name.toLowerCase()));
+      if(c){onUpdate(c.id,{brunoStatus:item.status,brunoRoas:item.roas,brunoGasto:item.gasto||c.brunoGasto});n++;}
+    });
+    if(date)onSetDate(date);
+    setMsg(`${n} clientes atualizados!`);setPreview(null);setFile(null);setTimeout(()=>setMsg(''),4000);
+  }
+
+  return<div style={{flex:1,overflowY:'auto',padding:'24px 28px',background:PINK_BG}}>
+    <div style={{fontSize:22,fontWeight:800,color:'#1a0a10',marginBottom:4}}><i className="ti ti-chart-bar" style={{color:PINK,marginRight:10}}/>Relatório Operacional</div>
+    <p style={{fontSize:12,color:'#9D4070',marginBottom:20}}>Suba o relatório PDF — a IA lê e atualiza todos os clientes automaticamente</p>
+    {msg&&<div style={{background:'#D1FAE5',color:'#065F46',padding:'10px 16px',borderRadius:10,marginBottom:14,fontSize:13,fontWeight:700}}>✓ {msg}</div>}
+    <div style={{background:'white',border:`1px solid ${PINK_BORDER}`,borderRadius:16,padding:'20px',marginBottom:16}}>
+      <div style={{marginBottom:14}}><div style={{fontSize:10,fontWeight:700,color:'#C06090',marginBottom:4}}>DATA DO RELATÓRIO</div><input type="date" value={date} onChange={e=>setDate(e.target.value)} style={{...si,width:'auto'}}/></div>
+      <label style={{display:'flex',flexDirection:'column',alignItems:'center',padding:'24px',border:`1px dashed ${PINK_BORDER}`,borderRadius:12,cursor:'pointer',marginBottom:12,background:file?'#D1FAE5':PINK_BG}}>
+        <i className="ti ti-upload" style={{fontSize:24,color:file?'#065F46':PINK,marginBottom:8}}/>
+        <span style={{fontSize:12,color:file?'#065F46':PINK,fontWeight:600}}>{file?file.name:'Clique para selecionar o PDF do relatório'}</span>
+        <input type="file" accept=".pdf" onChange={e=>setFile(e.target.files[0])} style={{display:'none'}}/>
+      </label>
+      {error&&<div style={{color:'#DC2626',fontSize:12,marginBottom:8}}>{error}</div>}
+      <button onClick={analyze} disabled={loading||!file} style={{width:'100%',background:loading||!file?'#F3F4F6':PINK,color:loading||!file?'#9CA3AF':'white',padding:'11px',borderRadius:10,fontSize:13,fontWeight:700,border:'none',cursor:loading||!file?'not-allowed':'pointer'}}>
+        {loading?'Analisando com IA...':'✦ Analisar relatório com IA'}
+      </button>
+    </div>
+    {preview&&preview.length>0&&<div style={{background:'white',border:'1px solid #A855F720',borderRadius:16,overflow:'hidden',marginBottom:16}}>
+      <div style={{padding:'12px 18px',borderBottom:`1px solid ${PINK_BORDER}`,display:'flex',justifyContent:'space-between'}}><span style={{fontSize:13,fontWeight:700,color:PINK}}>✦ IA identificou {preview.length} clientes — confirme</span></div>
+      {preview.map((item,i)=>{const c=active.find(a=>a.name.toLowerCase().includes(item.nome.toLowerCase())||item.nome.toLowerCase().includes(a.name.toLowerCase()));return<div key={i} style={{display:'flex',alignItems:'center',gap:10,padding:'9px 18px',borderBottom:'1px solid #FCE4EC'}}>
+        <div style={{flex:1}}><span style={{fontSize:12,fontWeight:600}}>{item.nome}</span>{c&&<span style={{fontSize:10,color:'#065F46',marginLeft:6,fontWeight:600}}>→ {c.name}</span>}{!c&&<span style={{fontSize:10,color:'#DC2626',marginLeft:6}}>(não encontrado)</span>}</div>
+        <div style={{display:'flex',gap:8,alignItems:'center'}}>{item.roas!=null&&<span style={{fontSize:11,color:'#9D4070'}}>ROAS {item.roas}x</span>}<BrunoBdg status={item.status}/></div>
+      </div>;})}
+      <div style={{padding:'12px 18px',display:'flex',gap:10}}>
+        <button onClick={apply} style={{flex:1,background:'#16a34a',color:'white',padding:'9px',borderRadius:10,fontSize:13,fontWeight:700,border:'none',cursor:'pointer'}}>✓ Confirmar e atualizar</button>
+        <button onClick={()=>setPreview(null)} style={{padding:'9px 16px',borderRadius:10,fontSize:12,border:`1px solid ${PINK_BORDER}`,background:'transparent',color:'#9D4070',cursor:'pointer'}}>Cancelar</button>
+      </div>
+    </div>}
+    <div style={{background:'white',border:`1px solid ${PINK_BORDER}`,borderRadius:16,overflow:'hidden'}}>
+      <div style={{padding:'11px 16px',borderBottom:`1px solid ${PINK_BORDER}`,background:PINK_BG}}><span style={{fontSize:12,fontWeight:700,color:'#1a0a10'}}>Atualização manual</span></div>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(280px,1fr))'}}>
+        {active.map(c=><div key={c.id} style={{display:'flex',alignItems:'center',gap:10,padding:'9px 14px',borderBottom:`1px solid #FCE4EC`}}>
+          <div style={{flex:1}}><div style={{fontSize:12,fontWeight:600,color:'#1a0a10'}}>{c.name}</div><div style={{fontSize:10,color:'#9D4070'}}>{c.gestor}{c.brunoRoas!=null?` · ROAS ${c.brunoRoas}x`:''}</div></div>
+          <div style={{display:'flex',flexDirection:'column',gap:4,minWidth:110}}>
+            <select value={c.brunoStatus} onChange={e=>onUpdate(c.id,{brunoStatus:e.target.value})} style={{...si,padding:'4px 6px',cursor:'pointer'}}>
+              <option value="critico">Crítico</option><option value="atencao">Atenção</option><option value="saudavel">Saudável</option><option value="sem_dados">Sem dados</option>
+            </select>
+            <input type="number" placeholder="ROAS" step="0.01" value={c.brunoRoas||''} onChange={e=>onUpdate(c.id,{brunoRoas:e.target.value?parseFloat(e.target.value):null})} style={{...si,padding:'4px 6px'}}/>
+          </div>
+        </div>)}
+      </div>
+    </div>
+  </div>;
+}
+
+// ─── NOVO CLIENTE (com detecção de renovação) ──────────────────────────────────
+function NovoClienteView({clients,onAddClient,onUpdateClient}){
+  const[file,setFile]=useState(null);
+  const[loading,setLoading]=useState(false);
+  const[form,setForm]=useState(null);
+  const[existing,setExisting]=useState(null);
+  const[mode,setMode]=useState('novo'); // 'novo' | 'renovacao'
+  const[error,setError]=useState('');
+  const[msg,setMsg]=useState('');
+  const GESTORES=['Samuel','Felício','Gabriel','—'];
+  const si={border:`1px solid ${PINK_BORDER}`,borderRadius:8,padding:'6px 10px',fontSize:13,background:'white',color:'#1a0a10',width:'100%'};
+  const lbl={fontSize:10,fontWeight:700,color:'#C06090',marginBottom:3,textTransform:'uppercase',letterSpacing:0.5};
+
+  async function analyze(){
+    if(!file){setError('Selecione o PDF do contrato');return;}
+    setLoading(true);setError('');setForm(null);setExisting(null);
+    try{
+      const b64=await fileToB64(file);
+      const text=await askClaude(b64,'application/pdf','Analise este contrato. Extraia dados do CONTRATANTE (cliente, não a Jurassic).\nRetorne APENAS JSON:\n{"nome":"empresa","responsavel":"nome","tel":"telefone com DDI","email":"email","valorMensal":"R$ X.XXX","dataInicio":"YYYY-MM-DD","dataFim":"YYYY-MM-DD","tipo":"tipo de negócio","obs":"observação"}\nCampos não encontrados: null.');
+      const parsed=JSON.parse(text.replace(/```json|```/g,'').trim());
+      const f={...parsed,gestor:'Samuel',eventoDate:null,davi:false};
+      setForm(f);
+      // Detect renewal
+      const match=clients.find(c=>c.status==='ativo'&&(c.name.toLowerCase().includes((parsed.nome||'').toLowerCase())||(parsed.nome||'').toLowerCase().includes(c.name.toLowerCase())));
+      if(match){setExisting(match);setMode('renovacao');}else{setMode('novo');}
+    }catch(e){setError('Erro ao ler o contrato. Tente novamente.');}
+    setLoading(false);
+  }
+
+  function confirmNovo(){
+    if(!form?.nome){setError('Nome é obrigatório');return;}
+    const newId=Math.max(...clients.map(c=>c.id))+1;
+    onAddClient({id:newId,name:form.nome,gestor:form.gestor||'—',contato:form.responsavel||'—',tel:form.tel||'—',tipo:form.tipo||'—',eventoDate:form.eventoDate||null,davi:false,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:form.dataFim||null,contratoVal:form.valorMensal||'—',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:form.obs||'',ultimoContato:null});
+    setMsg(`${form.nome} adicionado como novo cliente ativo!`);setForm(null);setFile(null);setTimeout(()=>setMsg(''),5000);
+  }
+
+  function confirmRenovacao(){
+    if(!existing||!form)return;
+    onUpdateClient(existing.id,{contratoVenc:form.dataFim||existing.contratoVenc,contratoVal:form.valorMensal||existing.contratoVal,obs:existing.obs?`${existing.obs} | Renovado em ${todayStr()}`:''});
+    setMsg(`Contrato de ${existing.name} renovado com sucesso!`);setForm(null);setFile(null);setExisting(null);setTimeout(()=>setMsg(''),5000);
+  }
+
+  const upd=(k,v)=>setForm(p=>({...p,[k]:v}));
+
+  return<div style={{flex:1,overflowY:'auto',padding:'24px 28px',background:PINK_BG}}>
+    <div style={{fontSize:22,fontWeight:800,color:'#1a0a10',marginBottom:4}}><i className="ti ti-user-plus" style={{color:PINK,marginRight:10}}/>Novo cliente via contrato</div>
+    <p style={{fontSize:12,color:'#9D4070',marginBottom:20}}>Suba o PDF — a IA detecta se é cliente novo ou renovação automaticamente</p>
+    {msg&&<div style={{background:'#D1FAE5',color:'#065F46',padding:'10px 16px',borderRadius:10,marginBottom:14,fontSize:13,fontWeight:700}}>✓ {msg}</div>}
+    <div style={{background:'white',border:`1px solid ${PINK_BORDER}`,borderRadius:16,padding:'20px',marginBottom:16}}>
+      <label style={{display:'flex',flexDirection:'column',alignItems:'center',padding:'24px',border:`1px dashed ${PINK_BORDER}`,borderRadius:12,cursor:'pointer',marginBottom:12,background:file?'#D1FAE5':PINK_BG}}>
+        <i className="ti ti-file-upload" style={{fontSize:24,color:file?'#065F46':PINK,marginBottom:8}}/>
+        <span style={{fontSize:12,color:file?'#065F46':PINK,fontWeight:600}}>{file?file.name:'Clique para selecionar o contrato PDF'}</span>
+        <input type="file" accept=".pdf" onChange={e=>setFile(e.target.files[0])} style={{display:'none'}}/>
+      </label>
+      {error&&<div style={{color:'#DC2626',fontSize:12,marginBottom:8}}>{error}</div>}
+      <button onClick={analyze} disabled={loading||!file} style={{width:'100%',background:loading||!file?'#F3F4F6':PINK,color:loading||!file?'#9CA3AF':'white',padding:'11px',borderRadius:10,fontSize:13,fontWeight:700,border:'none',cursor:loading||!file?'not-allowed':'pointer'}}>
+        {loading?'Lendo contrato...':'✦ Extrair dados com IA'}
+      </button>
+    </div>
+
+    {/* Detecção de renovação */}
+    {existing&&mode==='renovacao'&&<div style={{background:'#EDE9FE',border:'1px solid #7C3AED40',borderRadius:16,padding:'16px 20px',marginBottom:16}}>
+      <div style={{fontSize:14,fontWeight:700,color:'#5B21B6',marginBottom:8}}>🔄 Renovação detectada!</div>
+      <div style={{fontSize:12,color:'#6D28D9',marginBottom:12}}>O cliente <strong>{existing.name}</strong> já está na base. Este parece ser um contrato de renovação. O que deseja fazer?</div>
+      <div style={{display:'flex',gap:10}}>
+        <button onClick={()=>setMode('renovacao')} style={{flex:1,background:mode==='renovacao'?'#7C3AED':'white',color:mode==='renovacao'?'white':'#7C3AED',padding:'8px',borderRadius:8,fontSize:12,fontWeight:700,border:'1px solid #7C3AED',cursor:'pointer'}}>Renovar contrato existente</button>
+        <button onClick={()=>setMode('novo')} style={{flex:1,background:mode==='novo'?'#7C3AED':'white',color:mode==='novo'?'white':'#7C3AED',padding:'8px',borderRadius:8,fontSize:12,fontWeight:700,border:'1px solid #7C3AED',cursor:'pointer'}}>Criar como novo cliente</button>
+      </div>
+    </div>}
+
+    {form&&<div style={{background:'white',border:`1px solid ${PINK_BORDER}`,borderRadius:16,padding:'20px'}}>
+      <div style={{fontSize:13,fontWeight:700,color:PINK,marginBottom:16}}>✦ Dados extraídos — revise e confirme</div>
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
+        {[['Nome do cliente','nome'],['Responsável','responsavel'],['Telefone','tel'],['E-mail','email'],['Tipo / Negócio','tipo'],['Valor/mês','valorMensal']].map(([label,key])=><div key={key}><div style={lbl}>{label}</div><input value={form[key]||''} onChange={e=>upd(key,e.target.value)} style={si}/></div>)}
+        <div><div style={lbl}>Início do contrato</div><input type="date" value={form.dataInicio||''} onChange={e=>upd('dataInicio',e.target.value)} style={si}/></div>
+        <div><div style={lbl}>Vencimento</div><input type="date" value={form.dataFim||''} onChange={e=>upd('dataFim',e.target.value||null)} style={si}/></div>
+        {mode==='novo'&&<><div><div style={lbl}>Gestor</div><select value={form.gestor||'Samuel'} onChange={e=>upd('gestor',e.target.value)} style={{...si,cursor:'pointer'}}>{GESTORES.map(g=><option key={g} value={g}>{g}</option>)}</select></div>
+        <div><div style={lbl}>Data do evento</div><input type="date" value={form.eventoDate||''} onChange={e=>upd('eventoDate',e.target.value||null)} style={si}/></div></>}
+      </div>
+      {mode==='novo'&&<div style={{marginTop:12}}><div style={lbl}>Observações</div><textarea value={form.obs||''} onChange={e=>upd('obs',e.target.value)} rows={2} style={{...si,resize:'vertical',fontFamily:'inherit'}}/></div>}
+      <div style={{display:'flex',gap:10,marginTop:14}}>
+        <button onClick={mode==='renovacao'?confirmRenovacao:confirmNovo}
+          style={{flex:1,background:mode==='renovacao'?'#7C3AED':PINK,color:'white',padding:'10px',borderRadius:10,fontSize:13,fontWeight:700,border:'none',cursor:'pointer'}}>
+          {mode==='renovacao'?'🔄 Confirmar renovação':'✓ Adicionar novo cliente'}
+        </button>
+        <button onClick={()=>{setForm(null);setExisting(null);}} style={{padding:'10px 16px',borderRadius:10,fontSize:12,border:`1px solid ${PINK_BORDER}`,background:'transparent',color:'#9D4070',cursor:'pointer'}}>Cancelar</button>
+      </div>
+    </div>}
+  </div>;
+}
+
+// ─── APP ────────────────────────────────────────────────────────────────────────
+function App(){
+  const[data,setData]=useState(null);
+  const[loading,setLoading]=useState(true);
+  const[view,setView]=useState('home');
+  const[selId,setSelId]=useState(null);
+  const today=useMemo(()=>today0(),[]);
+
+  useEffect(()=>{
+    (async()=>{
+      try{const r=localStorage.getItem(KEY);if(r)setData(JSON.parse(r));else throw new Error("no data");}
+      catch{const d={clients:CLIENTS_DEFAULT,brunoDate:null,hojeData:todayStr(),hojeIds:[]};setData(d);try{localStorage.setItem(KEY,JSON.stringify(d));}catch(e){}}
+      setLoading(false);
+    })();
+  },[]);
+
+  useEffect(()=>{if(!data||loading)return;try{localStorage.setItem(KEY,JSON.stringify(data));}catch(e){}},[data,loading]);
+  useEffect(()=>{if(!data)return;const td=todayStr();if(data.hojeData!==td)setData(p=>({...p,hojeData:td,hojeIds:[]}));},[data?.hojeData]);
+
+  const updClient=useCallback((id,u)=>setData(p=>({...p,clients:p.clients.map(c=>c.id===id?{...c,...u}:c)})),[]);
+  const saveClient=useCallback((id,f)=>{setData(p=>({...p,clients:p.clients.map(c=>c.id===id?{...f}:c)}));setSelId(null);},[]);
+  const addClient=useCallback((nc)=>setData(p=>({...p,clients:[...p.clients,nc]})),[]);
+  const toggleHoje=useCallback((id)=>setData(p=>({...p,hojeIds:p.hojeIds.includes(id)?p.hojeIds.filter(x=>x!==id):[...p.hojeIds,id]})),[]);
+
+  if(loading)return<div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100vh',flexDirection:'column',gap:12,background:PINK_BG}}>
+    <img src={LOGO} alt="TRILHA" style={{width:120,marginBottom:8,}}/>
+    <div style={{color:PINK,fontSize:13,fontWeight:600}}>Carregando...</div>
+    <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+  </div>;
+
+  const sel=data.clients.find(c=>c.id===selId);
+  const nAg=data.clients.filter(c=>c.status==='ativo'&&c.reuniaoStatus==='agendar').length;
+  const nV=data.clients.filter(c=>c.status==='ativo'&&!c.davi&&c.contratoVenc&&daysTo(c.contratoVenc,today)<=30).length;
+
+  const nav=[
+    {id:'home',icon:'ti-home',label:'TRILHA'},
+    {id:'agendamentos',icon:'ti-calendar-month',label:'Agendamentos'},
+    {id:'renovacoes',icon:'ti-file-text',label:'Renovações',badge:nV},
+    {id:'clientes',icon:'ti-users',label:'Clientes'},
+    {id:'relatorio',icon:'ti-chart-bar',label:'Relatório Operacional'},
+    {id:'novoCliente',icon:'ti-user-plus',label:'Novo cliente'},
+  ];
+
+  return<>
+    <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+    <div style={{display:'flex',height:'100vh',overflow:'hidden'}}>
+      {/* Sidebar */}
+      <div style={{width:210,background:`linear-gradient(180deg,#1a0a10 0%,#2d0a1e 100%)`,display:'flex',flexDirection:'column',flexShrink:0}}>
+        <div style={{padding:'20px 16px',borderBottom:'1px solid rgba(255,255,255,0.08)',display:'flex',flexDirection:'column',alignItems:'center'}}>
+          <img src={LOGO} alt="TRILHA" style={{width:110,marginBottom:8,}}/>
+          <div style={{fontSize:9,color:'rgba(255,255,255,0.4)',letterSpacing:2,textTransform:'uppercase'}}>Jornada do Cliente</div>
+        </div>
+        <nav style={{padding:'12px 8px',flex:1}}>
+          {nav.map(n=><button key={n.id} onClick={()=>setView(n.id)}
+            style={{width:'100%',display:'flex',alignItems:'center',gap:10,padding:'10px 12px',borderRadius:10,fontSize:12,fontWeight:600,
+              background:view===n.id?PINK:'transparent',color:view===n.id?'white':'rgba(255,255,255,0.6)',
+              border:'none',marginBottom:3,cursor:'pointer',textAlign:'left',transition:'all 0.15s'}}>
+            <i className={`ti ${n.icon}`} style={{fontSize:16}} aria-hidden="true"/>
+            <span style={{flex:1}}>{n.label}</span>
+            {n.badge>0&&<span style={{background:PINK_LIGHT,color:PINK_DARK,fontSize:10,padding:'1px 6px',borderRadius:20,fontWeight:700}}>{n.badge}</span>}
+          </button>)}
+        </nav>
+        <div style={{padding:'12px 16px',borderTop:'1px solid rgba(255,255,255,0.08)',fontSize:10,color:'rgba(255,255,255,0.3)',textAlign:'center'}}>
+          {new Date().toLocaleDateString('pt-BR')} · TRILHA v1
+        </div>
+      </div>
+
+      {/* Main */}
+      <div style={{flex:1,display:'flex',minWidth:0,overflow:'hidden'}}>
+        {view==='home'&&<TrilhaHome clients={data.clients} onSelect={setSelId} onUpd={updClient} hoje={data.hojeIds} onToggleHoje={toggleHoje} today={today}/>}
+        {view==='agendamentos'&&<AgendamentosView clients={data.clients} onSelect={setSelId} today={today}/>}
+        {view==='renovacoes'&&<RenovacoesView clients={data.clients} onSelect={setSelId} today={today}/>}
+        {view==='clientes'&&<ClientesView clients={data.clients} onSelect={setSelId} today={today}/>}
+        {view==='relatorio'&&<RelatorioView clients={data.clients} onUpdate={updClient} brunoDate={data.brunoDate} onSetDate={d=>setData(p=>({...p,brunoDate:d}))}/>}
+        {view==='novoCliente'&&<NovoClienteView clients={data.clients} onAddClient={addClient} onUpdateClient={updClient}/>}
+        {sel&&<DetailPanel c={sel} onClose={()=>setSelId(null)} onSave={saveClient} today={today}/>}
+      </div>
+    </div>
+  </>;
+}
+
+const root=ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App/>);
+  </script>
+</body>
+</html>
