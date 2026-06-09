@@ -28,6 +28,7 @@
 const { useState, useEffect, useMemo, useCallback } = React;
 
 const KEY = "lyra-cs-v4";
+const KEY_BACKUP = "lyra-cs-backup";
 const DATA_PATCH = 2;
 const AUTH_KEY = "lyra-auth";
 
@@ -1030,23 +1031,30 @@ function App(){
       CLIENTS_DEFAULT.filter(c=>!existingIds.has(c.id)).forEach(c=>clients.push(c));
       return{...d,clients,patchVersion:DATA_PATCH};
     }
+    function tryLoad(raw){
+      let parsed=JSON.parse(raw);
+      try{parsed=applyPatches(parsed);}catch(pe){console.warn('Patch ignorado:',pe);}
+      return parsed;
+    }
     const r=localStorage.getItem(KEY);
-    if(r){
-      try{
-        let parsed=JSON.parse(r);
-        // Patch aplicado separadamente — erro aqui NUNCA apaga dados
-        try{parsed=applyPatches(parsed);}catch(pe){console.warn('Patch ignorado:',pe);}
-        try{localStorage.setItem(KEY,JSON.stringify(parsed));}catch(e){}
-        setData(parsed);
-      }catch(e){
-        // JSON inválido — carrega padrão só nesse caso extremo
-        const d={clients:CLIENTS_DEFAULT,brunoDate:null,hojeData:todayStr(),hojeIds:[],patchVersion:DATA_PATCH};
-        setData(d);try{localStorage.setItem(KEY,JSON.stringify(d));}catch(se){}
-      }
+    const rb=localStorage.getItem(KEY_BACKUP);
+    let loaded=null;
+    // Tenta principal
+    if(r){try{loaded=tryLoad(r);}catch(e){console.warn('Principal corrompido, tentando backup...');}}
+    // Tenta backup se principal falhou
+    if(!loaded&&rb){try{loaded=tryLoad(rb);}catch(e){console.warn('Backup também corrompido.');}}
+    if(loaded){
+      const json=JSON.stringify(loaded);
+      try{localStorage.setItem(KEY,json);}catch(e){}
+      try{localStorage.setItem(KEY_BACKUP,json);}catch(e){}
+      setData(loaded);
     }else{
-      // Primeira vez — sem dados salvos
+      // Primeira vez ou tudo corrompido — carrega padrão
       const d={clients:CLIENTS_DEFAULT,brunoDate:null,hojeData:todayStr(),hojeIds:[],patchVersion:DATA_PATCH};
-      setData(d);try{localStorage.setItem(KEY,JSON.stringify(d));}catch(e){}
+      const json=JSON.stringify(d);
+      setData(d);
+      try{localStorage.setItem(KEY,json);}catch(e){}
+      try{localStorage.setItem(KEY_BACKUP,json);}catch(e){}
     }
     setLoading(false);
   },[]);
@@ -1081,8 +1089,12 @@ function App(){
     )}));
   },[loading,data]);
 
-  // Salva direto no localStorage — sem depender de useEffect
-  const persist=useCallback((next)=>{try{localStorage.setItem(KEY,JSON.stringify(next));}catch(e){}},[]);
+  // Salva direto no localStorage + backup automático
+  const persist=useCallback((next)=>{
+    const json=JSON.stringify(next);
+    try{localStorage.setItem(KEY,json);}catch(e){}
+    try{localStorage.setItem(KEY_BACKUP,json);}catch(e){}
+  },[]);
 
   const[saveMsg,setSaveMsg]=useState('');
 
