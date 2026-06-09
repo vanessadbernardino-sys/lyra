@@ -127,6 +127,27 @@ function renovSt(c,t){
 }
 
 async function fileToB64(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result.split(',')[1]);r.onerror=rej;r.readAsDataURL(file);});}
+
+function parseJSON(text){
+  // Remove markdown code blocks
+  let s=text.replace(/```json|```/g,'').trim();
+  // Tenta parse direto
+  try{return JSON.parse(s);}catch(e){}
+  // Tenta extrair o primeiro objeto/array JSON da string
+  const start=s.search(/[\[{]/);
+  if(start===-1)throw new Error('Nenhum JSON encontrado na resposta da IA');
+  s=s.slice(start);
+  // Se truncado (JSON incompleto), tenta fechar o array/objeto
+  try{return JSON.parse(s);}catch(e){}
+  // Tenta cortar na última vírgula válida e fechar
+  const isArr=s[0]==='[';
+  const lastComma=s.lastIndexOf(',');
+  if(lastComma>0){
+    const truncated=s.slice(0,lastComma)+(isArr?']':'}');
+    try{return JSON.parse(truncated);}catch(e2){}
+  }
+  throw new Error('JSON inválido mesmo após tentativas de correção');
+}
 function getApiKey(){
   const p=['sk-ant-','api03-W21w8rMgaor7wlxzc1PO7jZSccgnbps1YP0k','CX3Vt3LodsYeS9MOyskCJx5Phdfu8c2vgKyzgQJBzotka8Fpzw-ZlFRrwAA'];
   return localStorage.getItem('lyra-apikey')||(p[0]+p[1]+p[2]);
@@ -145,7 +166,7 @@ async function askClaude(b64,mtype,prompt){
     },
     body:JSON.stringify({
       model:'claude-opus-4-5',
-      max_tokens:1500,
+      max_tokens:3000,
       messages:[{role:'user',content:[
         {type:'document',source:{type:'base64',media_type:mtype,data:b64}},
         {type:'text',text:prompt}
@@ -320,7 +341,7 @@ function DetailPanel({c,onClose,onSave,onDelete,today}){
     try{
       const b64=await fileToB64(contrFile);
       const text=await askClaude(b64,'application/pdf','Analise este contrato. Extraia dados do CONTRATANTE (cliente, não a Jurassic).\nRetorne APENAS JSON:\n{"responsavel":"nome","tel":"telefone com DDI","email":"email","valorMensal":"R$ X.XXX","dataInicio":"YYYY-MM-DD","dataFim":"YYYY-MM-DD","tipo":"tipo de negócio","obs":"observação"}\nCampos não encontrados: null.');
-      const parsed=JSON.parse(text.replace(/```json|```/g,'').trim());
+      const parsed=parseJSON(text);
       setF(p=>({
         ...p,
         contato:parsed.responsavel||p.contato,
@@ -813,7 +834,7 @@ function RelatorioView({clients,onUpdate,brunoDate,onSetDate}){
       const b64=await fileToB64(file);
       const nomes=active.map(c=>c.name).join(', ');
       const text=await askClaude(b64,'application/pdf',`Relatório de performance Jurassic Marketing. Clientes cadastrados: ${nomes}\nExtraia TODOS os clientes do relatório. USE o status exato do relatório (não recalcule).\nRetorne APENAS JSON:\n{"clientes":[{"nome":"...","status":"critico|atencao|saudavel|sem_dados","roas":0.0,"gasto":0.0,"ctr":0.0,"freq":0.0,"compras":0,"cpa":0.0,"saldo":"texto ou null"}]}\nRegras de status: use o status que está no relatório — Crítico=critico, Atenção=atencao, Saudável=saudavel, Sem dados=sem_dados. Campos não encontrados: null.`);
-      const parsed=JSON.parse(text.replace(/```json|```/g,'').trim());
+      const parsed=parseJSON(text);
       setPreview(parsed.clientes||[]);
     }catch(e){
       if(e.message==='API_KEY_MISSING')setError('Chave API não configurada. Recarregue a página para inserir.');
@@ -919,7 +940,7 @@ function NovoClienteView({clients,onAddClient}){
     try{
       const b64=await fileToB64(file);
       const text=await askClaude(b64,'application/pdf','Analise este contrato. Extraia dados do CONTRATANTE (cliente, não a Jurassic).\nRetorne APENAS JSON:\n{"nome":"empresa","responsavel":"nome","tel":"telefone com DDI","email":"email","valorMensal":"R$ X.XXX","dataInicio":"YYYY-MM-DD","dataFim":"YYYY-MM-DD","tipo":"tipo de negócio","eventoDate":"YYYY-MM-DD","obs":"observação"}\nCampos não encontrados: null.');
-      const parsed=JSON.parse(text.replace(/```json|```/g,'').trim());
+      const parsed=parseJSON(text);
       setForm({...parsed,gestor:'—',davi:false});
     }catch(e){
       if(e.message==='API_KEY_MISSING')setError('Chave API não configurada. Recarregue a página para inserir.');
