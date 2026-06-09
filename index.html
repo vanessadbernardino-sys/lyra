@@ -483,7 +483,7 @@ function DetailPanel({c,onClose,onSave,onDelete,today}){
 }
 
 // ─── LYRA HOME ─────────────────────────────────────────────────────────────────
-function LyraHome({clients,onSelect,onUpd,hoje,onToggleHoje,today}){
+function LyraHome({clients,onSelect,onUpd,hoje,onToggleHoje,today,userName}){
   const META=5;
   const[kpiModal,setKpiModal]=useState(null);
   const active=clients.filter(c=>c.status==='ativo');
@@ -512,7 +512,7 @@ function LyraHome({clients,onSelect,onUpd,hoje,onToggleHoje,today}){
     {kpiModal&&<KpiModal title={kpiModal.title} clients={kpiModal.list} onSelect={onSelect} onClose={()=>setKpiModal(null)}/>}
 
     <div style={{marginBottom:28}}>
-      <div style={{fontFamily:"'Playfair Display',serif",fontSize:28,fontWeight:800,color:GRAFITE,marginBottom:4}}>{greeting}, Vanessa! ✦</div>
+      <div style={{fontFamily:"'Playfair Display',serif",fontSize:28,fontWeight:800,color:GRAFITE,marginBottom:4}}>{greeting}, {userName||''}! ✦</div>
       <div style={{fontSize:13,color:'#B08090',textTransform:'capitalize'}}>{dateStr}</div>
     </div>
 
@@ -1290,27 +1290,43 @@ function App(){
   </div>;
 
   if(showPassModal)return<div style={{position:'fixed',inset:0,background:'rgba(44,35,40,0.45)',zIndex:9999,display:'flex',alignItems:'center',justifyContent:'center'}} onClick={()=>setShowPassModal(false)}>
-    <div style={{background:'white',borderRadius:24,padding:'36px',width:400,boxShadow:'0 20px 60px rgba(230,75,151,0.2)',border:`1px solid ${P_BORDER}`}} onClick={e=>e.stopPropagation()}>
-      <div style={{fontFamily:"'Playfair Display',serif",fontSize:20,fontWeight:700,color:'#3D1A2E',marginBottom:4}}>Alterar senha</div>
-      <div style={{fontSize:12,color:'#B08090',marginBottom:20}}>Conta: <strong>{auth.email}</strong></div>
-      {['Senha atual','Nova senha','Confirmar nova senha'].map((lbl,i)=>{
-        const vals=[passAtual,passNova,passConfirm];
-        const setters=[setPassAtual,setPassNova,setPassConfirm];
-        return<div key={i} style={{marginBottom:12}}>
-          <div style={{fontSize:10,fontWeight:700,color:'#C06090',marginBottom:4,textTransform:'uppercase',letterSpacing:0.6}}>{lbl}</div>
-          <input type="password" value={vals[i]} onChange={e=>setters[i](e.target.value)}
-            onKeyDown={e=>e.key==='Enter'&&trocarSenha()}
-            style={{width:'100%',border:`1px solid ${P_BORDER}`,borderRadius:10,padding:'10px 14px',fontSize:13,color:GRAFITE}}/>
-        </div>;
-      })}
-      {passErr&&<div style={{fontSize:12,color:'#DC2626',marginBottom:10,fontWeight:600}}>{passErr}</div>}
-      {passMsg&&<div style={{fontSize:12,color:'#15803D',marginBottom:10,fontWeight:700,background:'#DCFCE7',padding:'8px 12px',borderRadius:8}}>{passMsg}</div>}
-      <button onClick={trocarSenha} style={{width:'100%',background:P,color:'white',padding:'11px',borderRadius:12,fontSize:13,fontWeight:700,border:'none',cursor:'pointer',marginBottom:8}}>
-        Salvar nova senha
-      </button>
-      <button onClick={()=>setShowPassModal(false)} style={{width:'100%',background:'transparent',color:'#B08090',padding:'8px',borderRadius:12,fontSize:12,border:`1px solid ${P_BORDER}`,cursor:'pointer'}}>
-        Cancelar
-      </button>
+    <div style={{background:'white',borderRadius:24,width:400,boxShadow:'0 20px 60px rgba(230,75,151,0.2)',border:`1px solid ${P_BORDER}`,overflow:'hidden'}} onClick={e=>e.stopPropagation()}>
+      {/* Cabeçalho perfil */}
+      <div style={{background:`linear-gradient(135deg,${P},${P_DARK})`,padding:'28px 32px 24px',display:'flex',alignItems:'center',gap:16}}>
+        <div style={{width:52,height:52,borderRadius:'50%',background:'rgba(255,255,255,0.25)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:22,flexShrink:0}}>
+          {auth.name[0]}
+        </div>
+        <div>
+          <div style={{fontFamily:"'Playfair Display',serif",fontSize:20,fontWeight:700,color:'white'}}>{auth.name}</div>
+          <div style={{fontSize:11,color:'rgba(255,255,255,0.75)',marginTop:2}}>{auth.email}</div>
+          <div style={{fontSize:10,color:'rgba(255,255,255,0.6)',marginTop:1}}>{auth.role==='admin'?'Administradora':auth.role==='editor'?'Editor':'Visualizador'}</div>
+        </div>
+        <button onClick={()=>setShowPassModal(false)} style={{marginLeft:'auto',background:'none',border:'none',color:'rgba(255,255,255,0.7)',fontSize:22,cursor:'pointer',lineHeight:1,alignSelf:'flex-start'}}>&times;</button>
+      </div>
+      {/* Seção alterar senha */}
+      <div style={{padding:'24px 28px'}}>
+        <div style={{fontSize:13,fontWeight:700,color:GRAFITE,marginBottom:16,display:'flex',alignItems:'center',gap:6}}>
+          <i className="ti ti-lock" style={{color:P,fontSize:15}}/>Alterar senha
+        </div>
+        {['Senha atual','Nova senha','Confirmar nova senha'].map((lbl,i)=>{
+          const vals=[passAtual,passNova,passConfirm];
+          const setters=[setPassAtual,setPassNova,setPassConfirm];
+          return<div key={i} style={{marginBottom:12}}>
+            <div style={{fontSize:10,fontWeight:700,color:'#C06090',marginBottom:4,textTransform:'uppercase',letterSpacing:0.6}}>{lbl}</div>
+            <input type="password" value={vals[i]} onChange={e=>setters[i](e.target.value)}
+              onKeyDown={e=>e.key==='Enter'&&trocarSenha()}
+              style={{width:'100%',border:`1px solid ${P_BORDER}`,borderRadius:10,padding:'10px 14px',fontSize:13,color:GRAFITE}}/>
+          </div>;
+        })}
+        {passErr&&<div style={{fontSize:12,color:'#DC2626',marginBottom:10,fontWeight:600}}>{passErr}</div>}
+        {passMsg&&<div style={{fontSize:12,color:'#15803D',marginBottom:10,fontWeight:700,background:'#DCFCE7',padding:'8px 12px',borderRadius:8}}>{passMsg}</div>}
+        <button onClick={trocarSenha} style={{width:'100%',background:P,color:'white',padding:'11px',borderRadius:12,fontSize:13,fontWeight:700,border:'none',cursor:'pointer',marginBottom:8}}>
+          Salvar nova senha
+        </button>
+        <button onClick={()=>setShowPassModal(false)} style={{width:'100%',background:'transparent',color:'#B08090',padding:'8px',borderRadius:12,fontSize:12,border:`1px solid ${P_BORDER}`,cursor:'pointer'}}>
+          Cancelar
+        </button>
+      </div>
     </div>
   </div>;
 
@@ -1349,14 +1365,14 @@ function App(){
           <div style={{fontSize:11,fontWeight:700,color:GRAFITE,marginBottom:2}}>{auth.name}</div>
           <div style={{fontSize:10,color:'#B08090',marginBottom:6}}>{auth.role==='admin'?'Administradora':auth.role==='editor'?'Editor':'Visualizador'}</div>
           {saveMsg&&<div style={{fontSize:11,color:'#15803D',fontWeight:700,background:'#DCFCE7',borderRadius:8,padding:'3px 8px',marginBottom:6}}>{saveMsg}</div>}
-          <button onClick={()=>{setShowPassModal(true);setPassErr('');setPassMsg('');setPassAtual('');setPassNova('');setPassConfirm('');}} style={{width:'100%',background:'transparent',color:P,border:`1px solid ${P_BORDER}`,borderRadius:8,padding:'5px',fontSize:11,cursor:'pointer',marginBottom:4}}>🔑 Alterar senha</button>
+          <button onClick={()=>{setShowPassModal(true);setPassErr('');setPassMsg('');setPassAtual('');setPassNova('');setPassConfirm('');}} style={{width:'100%',background:'transparent',color:P,border:`1px solid ${P_BORDER}`,borderRadius:8,padding:'5px',fontSize:11,cursor:'pointer',marginBottom:4}}>👤 Perfil</button>
           <button onClick={doLogout} style={{width:'100%',background:'transparent',color:'#B08090',border:`1px solid ${P_BORDER}`,borderRadius:8,padding:'5px',fontSize:11,cursor:'pointer'}}>Sair</button>
         </div>
       </div>
 
       {/* Main */}
       <div style={{flex:1,display:'flex',minWidth:0,overflow:'hidden'}}>
-        {view==='home'&&<LyraHome clients={data.clients} onSelect={setSelId} onUpd={updClient} hoje={data.hojeIds} onToggleHoje={toggleHoje} today={today}/>}
+        {view==='home'&&<LyraHome clients={data.clients} onSelect={setSelId} onUpd={updClient} hoje={data.hojeIds} onToggleHoje={toggleHoje} today={today} userName={auth.name}/>}
         {view==='agendamentos'&&<AgendamentosView clients={data.clients} onSelect={setSelId} today={today}/>}
         {view==='renovacoes'&&<RenovacoesView clients={data.clients} onSelect={setSelId} today={today}/>}
         {view==='clientes'&&<ClientesView clients={data.clients} onSelect={setSelId} today={today}/>}
