@@ -1012,12 +1012,6 @@ function App(){
   function doLogin(user){setAuth(user);try{localStorage.setItem(AUTH_KEY,JSON.stringify(user));}catch(e){}}
   function doLogout(){setAuth(null);try{localStorage.removeItem(AUTH_KEY);}catch(e){}}
 
-  if(!auth)return<LoginView onLogin={doLogin}/>;
-
-  const isAdmin=auth.role==='admin';
-  const canEdit=auth.role==='admin'||auth.role==='editor';
-  const canDelete=auth.role==='admin';
-
   useEffect(()=>{
     function applyPatches(d){
       const pv=d.patchVersion||0;
@@ -1130,6 +1124,13 @@ function App(){
 
   const[showApiModal,setShowApiModal]=useState(false);
   const[apiInput,setApiInput]=useState('');
+
+  // ─── Guards (após todos os hooks) ───────────────────────────────────────────
+  if(!auth)return<LoginView onLogin={doLogin}/>;
+
+  const isAdmin=auth.role==='admin';
+  const canEdit=auth.role==='admin'||auth.role==='editor';
+  const canDelete=auth.role==='admin';
 
   if(loading)return<div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100vh',flexDirection:'column',gap:12,background:P_BG}}>
     <div style={{fontFamily:"'Playfair Display',serif",fontSize:36,fontWeight:800,color:'#5C1A3A'}}>Lyra<span style={{color:P}}>✦</span></div>
