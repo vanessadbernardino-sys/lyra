@@ -936,12 +936,24 @@ function App(){
     setLoading(false);
   },[]);
 
-  useEffect(()=>{if(!data||loading)return;try{localStorage.setItem(KEY,JSON.stringify(data));}catch(e){}},[data,loading]);
-  useEffect(()=>{if(!data)return;const td=todayStr();if(data.hojeData!==td)setData(p=>({...p,hojeData:td,hojeIds:[]}));},[data?.hojeData]);
-
-  // Auto-pausa clientes cujo evento já passou — roda uma vez quando dados carregam
+  // Salva no localStorage sempre que data muda (após loading)
   useEffect(()=>{
-    if(loading||!data)return;
+    if(!data||loading)return;
+    try{localStorage.setItem(KEY,JSON.stringify(data));}catch(e){}
+  },[data,loading]);
+
+  // Reset lista do dia quando a data muda
+  useEffect(()=>{
+    if(!data)return;
+    const td=todayStr();
+    if(data.hojeData!==td)setData(p=>({...p,hojeData:td,hojeIds:[]}));
+  },[data?.hojeData]);
+
+  // Auto-pausa: roda UMA VEZ após load, só pausa clientes ainda marcados como ativo
+  const autoPausadoRef=React.useRef(false);
+  useEffect(()=>{
+    if(loading||!data||autoPausadoRef.current)return;
+    autoPausadoRef.current=true;
     const t=today0();
     const ids=data.clients
       .filter(c=>c.status==='ativo'&&c.eventoDate&&daysTo(c.eventoDate,t)<0)
@@ -949,13 +961,19 @@ function App(){
     if(ids.length===0)return;
     setData(p=>({...p,clients:p.clients.map(c=>
       ids.includes(c.id)
-        ?{...c,status:'pausado',obs:c.obs?`${c.obs} | Pausado: evento ${fmtFull(c.eventoDate)} passou`:`Pausado: evento ${fmtFull(c.eventoDate)} passou`}
+        ?{...c,status:'pausado',obs:(c.obs||'')+` | Pausado: evento ${fmtFull(c.eventoDate)} passou`}
         :c
     )}));
-  },[loading]);
+  },[loading,data]);
 
+  const[saveMsg,setSaveMsg]=useState('');
   const updClient=useCallback((id,u)=>setData(p=>({...p,clients:p.clients.map(c=>c.id===id?{...c,...u}:c)})),[]);
-  const saveClient=useCallback((id,f)=>{setData(p=>({...p,clients:p.clients.map(c=>c.id===id?{...f}:c)}));setSelId(null);},[]);
+  const saveClient=useCallback((id,f)=>{
+    setData(p=>({...p,clients:p.clients.map(c=>c.id===id?{...f}:c)}));
+    setSelId(null);
+    setSaveMsg('✓ Salvo');
+    setTimeout(()=>setSaveMsg(''),2500);
+  },[]);
   const addClient=useCallback((nc)=>setData(p=>({...p,clients:[...p.clients,nc]})),[]);
   const toggleHoje=useCallback((id)=>setData(p=>({...p,hojeIds:p.hojeIds.includes(id)?p.hojeIds.filter(x=>x!==id):[...p.hojeIds,id]})),[]);
 
@@ -1020,7 +1038,10 @@ function App(){
           </button>)}
         </nav>
         <div style={{padding:'10px 14px',borderTop:`1px solid ${P_BORDER}`,textAlign:'center'}}>
-          <div style={{fontSize:10,color:'#C0A0B0'}}>{new Date().toLocaleDateString('pt-BR')} · LYRA v2</div>
+          {saveMsg
+            ?<div style={{fontSize:11,color:'#15803D',fontWeight:700,background:'#DCFCE7',borderRadius:8,padding:'3px 8px'}}>{saveMsg}</div>
+            :<div style={{fontSize:10,color:'#C0A0B0'}}>{new Date().toLocaleDateString('pt-BR')} · LYRA v2</div>
+          }
         </div>
       </div>
 
