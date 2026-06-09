@@ -975,16 +975,40 @@ function App(){
     )}));
   },[loading,data]);
 
+  // Salva direto no localStorage — sem depender de useEffect
+  const persist=useCallback((next)=>{try{localStorage.setItem(KEY,JSON.stringify(next));}catch(e){}},[]);
+
   const[saveMsg,setSaveMsg]=useState('');
-  const updClient=useCallback((id,u)=>setData(p=>({...p,clients:p.clients.map(c=>c.id===id?{...c,...u}:c)})),[]);
+
+  const updClient=useCallback((id,u)=>setData(p=>{
+    const next={...p,clients:p.clients.map(c=>c.id===id?{...c,...u}:c)};
+    persist(next);
+    return next;
+  }),[persist]);
+
   const saveClient=useCallback((id,f)=>{
-    setData(p=>({...p,clients:p.clients.map(c=>c.id===id?{...f}:c)}));
+    setData(p=>{
+      const next={...p,clients:p.clients.map(c=>c.id===id?{...f}:c)};
+      persist(next);
+      return next;
+    });
     setSelId(null);
     setSaveMsg('✓ Salvo');
     setTimeout(()=>setSaveMsg(''),2500);
-  },[]);
-  const addClient=useCallback((nc)=>setData(p=>({...p,clients:[...p.clients,nc]})),[]);
-  const toggleHoje=useCallback((id)=>setData(p=>({...p,hojeIds:p.hojeIds.includes(id)?p.hojeIds.filter(x=>x!==id):[...p.hojeIds,id]})),[]);
+  },[persist]);
+
+  const addClient=useCallback((nc)=>setData(p=>{
+    const next={...p,clients:[...p.clients,nc]};
+    persist(next);
+    return next;
+  }),[persist]);
+
+  const toggleHoje=useCallback((id)=>setData(p=>{
+    const ids=p.hojeIds.includes(id)?p.hojeIds.filter(x=>x!==id):[...p.hojeIds,id];
+    const next={...p,hojeIds:ids};
+    persist(next);
+    return next;
+  }),[persist]);
 
   const[showApiModal,setShowApiModal]=useState(false);
   const[apiInput,setApiInput]=useState('');
