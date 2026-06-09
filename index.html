@@ -46,13 +46,15 @@ const USERS=[
 
 // ─── LYRA PALETTE ─────────────────────────────────────────────────────────────
 const P = "#E64B97";
-const P_DARK = "#B5306E";
-const P_LIGHT = "#F7D9E8";
-const P_BG = "#FFF5F8";
-const P_BORDER = "#F0C4D8";
-const GRAFITE = "#2C2328";
-const LAVANDA = "#C86BFA";
-const PESSEGO = "#F7B267";
+const P_DARK = "#D93E82";
+const P_LIGHT = "#FAD5E5";
+const P_BG = "#FFF1F5";
+const P_BORDER = "#F1D4E1";
+const GRAFITE = "#4A1035";
+const LAVANDA = "#B86EFF";
+const PESSEGO = "#FF8F73";
+const CORAL = "#FF8F73";
+const TEXT_SEC = "#7B5B6C";
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
 const CLIENTS_DEFAULT = [
@@ -229,63 +231,85 @@ function LyraConstellation({size=72}){
 
 function LyraLogo({collapsed=false}){
   const C="#E64B97";
-  const Sparkle=({cx,cy,s=6,op=1})=><path
-    d={`M${cx},${cy-s} L${cx+s*.18},${cy-s*.18} L${cx+s},${cy} L${cx+s*.18},${cy+s*.18} L${cx},${cy+s} L${cx-s*.18},${cy+s*.18} L${cx-s},${cy} L${cx-s*.18},${cy-s*.18} Z`}
-    fill={C} opacity={op}/>;
+  const Sp=({cx,cy,s=5,op=1})=><path d={`M${cx},${cy-s} L${cx+s*.18},${cy-s*.18} L${cx+s},${cy} L${cx+s*.18},${cy+s*.18} L${cx},${cy+s} L${cx-s*.18},${cy+s*.18} L${cx-s},${cy} L${cx-s*.18},${cy-s*.18} Z`} fill={C} opacity={op}/>;
   if(collapsed) return(
     <div style={{display:'flex',alignItems:'center',justifyContent:'center',padding:'6px 0'}}>
       <svg width="28" height="28" viewBox="0 0 48 48" fill="none">
-        <path d="M24 4C24 4 22.5 11 21 13C19.5 15 14 16 14 16C14 16 19.5 17 21 19C22.5 21 24 28 24 28C24 28 25.5 21 27 19C28.5 17 34 16 34 16C34 16 28.5 15 27 13C25.5 11 24 4 24 4Z" fill={C}/>
+        <defs>
+          <linearGradient id="yGradC" x1="0.5" y1="0" x2="0.5" y2="1">
+            <stop offset="0%" stopColor="#E64B97"/>
+            <stop offset="100%" stopColor="#4A1035"/>
+          </linearGradient>
+        </defs>
+        <text x="24" y="40" fontFamily="'Playfair Display',serif" fontSize="44" fontWeight="700"
+              textAnchor="middle" fill="url(#yGradC)">Y</text>
       </svg>
     </div>
   );
   return(
-    <div style={{width:'100%',padding:'10px 4px 12px',display:'flex',flexDirection:'column',alignItems:'center'}}>
-      <svg viewBox="0 0 300 262" width="214" xmlns="http://www.w3.org/2000/svg">
+    <div style={{width:'100%',padding:'20px 4px 14px',display:'flex',flexDirection:'column',alignItems:'center'}}>
+      <svg viewBox="0 0 300 260" width="210" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <linearGradient id="lyraG" x1="5%" y1="0%" x2="95%" y2="110%">
-            <stop offset="0%"   stopColor="#1E0812"/>
-            <stop offset="28%"  stopColor="#5C1840"/>
-            <stop offset="58%"  stopColor="#C8185C"/>
-            <stop offset="100%" stopColor="#200A18"/>
+          {/* Gradiente do Y: rosa vibrante no topo → vinho escuro na base */}
+          <linearGradient id="yGrad" x1="0.5" y1="0" x2="0.5" y2="1">
+            <stop offset="0%" stopColor="#E64B97"/>
+            <stop offset="52%" stopColor="#C8387E"/>
+            <stop offset="100%" stopColor="#4A1035"/>
           </linearGradient>
         </defs>
 
-        {/* Arco orbital — tracejado */}
-        <path d="M 55,220 C 38,138 88,24 150,22 C 212,20 264,136 264,212"
-              fill="none" stroke={C} strokeWidth="1.3" strokeDasharray="3 4.5" strokeOpacity="0.52" strokeLinecap="round"/>
+        {/* ── Arco orbital principal (tracejado) ── */}
+        <path d="M 52,200 C 18,100 78,14 152,12 C 226,10 278,100 282,180"
+              fill="none" stroke={C} strokeWidth="0.9" strokeDasharray="2.5 4" strokeOpacity="0.45" strokeLinecap="round"/>
 
-        {/* Pontos sólidos no arco */}
-        <circle cx="68"  cy="186" r="5.5" fill={C}/>
-        <circle cx="150" cy="24"  r="6.2" fill={C}/>
-        <circle cx="252" cy="166" r="5"   fill={C}/>
+        {/* ── Linhas da constelação ── */}
+        <line x1="58"  y1="192" x2="98"  y2="72"  stroke={C} strokeWidth="0.6" strokeOpacity="0.25"/>
+        <line x1="98"  y1="72"  x2="152" y2="48"  stroke={C} strokeWidth="0.6" strokeOpacity="0.28"/>
+        <line x1="152" y1="48"  x2="210" y2="65"  stroke={C} strokeWidth="0.6" strokeOpacity="0.28"/>
+        <line x1="210" y1="65"  x2="262" y2="108" stroke={C} strokeWidth="0.6" strokeOpacity="0.22"/>
+        <line x1="98"  y1="72"  x2="210" y2="65"  stroke={C} strokeWidth="0.5" strokeOpacity="0.18"/>
 
-        {/* Pontos vazados no arco */}
-        <circle cx="102" cy="68"  r="4"   fill="none" stroke={C} strokeWidth="1.6" strokeOpacity="0.68"/>
-        <circle cx="220" cy="62"  r="3.6" fill="none" stroke={C} strokeWidth="1.5" strokeOpacity="0.68"/>
+        {/* ── Pontos sólidos ── */}
+        <circle cx="52"  cy="200" r="6.5" fill={C}/>
+        <circle cx="262" cy="108" r="6"   fill={C}/>
+        <circle cx="152" cy="18"  r="4.5" fill={C}/>
 
-        {/* Sparkles decorativos */}
-        <Sparkle cx={150} cy={10} s={8}/>
-        <Sparkle cx={275} cy={95} s={4.5} op={0.72}/>
-        <Sparkle cx={56}  cy={235} s={3.8} op={0.55}/>
+        {/* ── Pontos vazados ── */}
+        <circle cx="98"  cy="72"  r="3.5" fill="none" stroke={C} strokeWidth="1.2" strokeOpacity="0.55"/>
+        <circle cx="210" cy="65"  r="2.8" fill="none" stroke={C} strokeWidth="1.1" strokeOpacity="0.55"/>
+        <circle cx="165" cy="155" r="2.5" fill="none" stroke={C} strokeWidth="1"   strokeOpacity="0.45"/>
 
-        {/* Texto LYRA com gradiente */}
-        <text x="150" y="200"
-              fontFamily="'Playfair Display',serif"
-              fontSize="100" fontWeight="700"
-              textAnchor="middle"
-              fill="url(#lyraG)">LYRA</text>
+        {/* ── Sparkles ── */}
+        <Sp cx={152} cy={8}   s={6.5}/>
+        <Sp cx={278} cy={132} s={3.8} op={0.6}/>
+        <Sp cx={42}  cy={225} s={3}   op={0.5}/>
 
-        {/* Linha decorativa + sparkle entre texto e subtítulo */}
-        <line x1="78"  y1="215" x2="134" y2="215" stroke={C} strokeWidth="0.8" strokeOpacity="0.4"/>
-        <Sparkle cx={150} cy={215} s={4.5}/>
-        <line x1="166" y1="215" x2="222" y2="215" stroke={C} strokeWidth="0.8" strokeOpacity="0.4"/>
+        {/* ── LYRA base (vinho escuro) ── */}
+        <text x="150" y="192"
+              fontFamily="'Playfair Display',serif" fontSize="96" fontWeight="700"
+              textAnchor="middle" fill="#4A1035">LYRA</text>
 
-        {/* Subtítulo */}
-        <text x="150" y="237" fontFamily="'Inter',sans-serif" fontSize="9.8" fontWeight="500"
-              textAnchor="middle" letterSpacing="3.8" fill="#6B5B62">CLIENT JOURNEY</text>
-        <text x="150" y="254" fontFamily="'Inter',sans-serif" fontSize="9.8" fontWeight="500"
-              textAnchor="middle" letterSpacing="3.2" fill="#6B5B62">INTELLIGENCE</text>
+        {/* ── Y com gradiente rosa sobreposto ── */}
+        {/* Posição aproximada do Y: LYRA centralizado em 150, L≈52px, Y começa ~x=83 */}
+        <text x="83" y="192"
+              fontFamily="'Playfair Display',serif" fontSize="96" fontWeight="700"
+              textAnchor="start" fill="url(#yGrad)">Y</text>
+
+        {/* ── Sparkle na junção do Y ── */}
+        <Sp cx={115} cy={128} s={5} op={0.85}/>
+
+        {/* ── Linha decorativa + sparkles ── */}
+        <line x1="72"  y1="208" x2="130" y2="208" stroke={C} strokeWidth="0.7" strokeOpacity="0.4"/>
+        <Sp cx={150} cy={208} s={4.2}/>
+        <line x1="170" y1="208" x2="228" y2="208" stroke={C} strokeWidth="0.7" strokeOpacity="0.4"/>
+        <Sp cx={63}   cy={208} s={2.8} op={0.55}/>
+        <Sp cx={237}  cy={208} s={2.8} op={0.55}/>
+
+        {/* ── Subtítulo ── */}
+        <text x="150" y="230" fontFamily="'Inter',sans-serif" fontSize="9.2" fontWeight="500"
+              textAnchor="middle" letterSpacing="4.5" fill="#9B7B8C">CLIENT JOURNEY</text>
+        <text x="150" y="248" fontFamily="'Inter',sans-serif" fontSize="9.2" fontWeight="500"
+              textAnchor="middle" letterSpacing="3.8" fill="#9B7B8C">INTELLIGENCE</text>
       </svg>
     </div>
   );
@@ -492,7 +516,7 @@ function DetailPanel({c,onClose,onSave,onDelete,today}){
         </button>
       </div>}
 
-      {onSave&&<button onClick={()=>onSave(c.id,f)} style={{width:'100%',background:P,color:'white',padding:'12px',borderRadius:12,fontSize:14,fontWeight:700,border:'none',cursor:'pointer',marginBottom:8,letterSpacing:0.3}}>
+      {onSave&&<button onClick={()=>onSave(c.id,f)} style={{width:'100%',background:`linear-gradient(135deg,${P},${P_DARK})`,color:'white',padding:'12px',borderRadius:16,fontSize:14,fontWeight:700,border:'none',cursor:'pointer',marginBottom:8,letterSpacing:0.3}}>
         Salvar alterações
       </button>}
       {onDelete&&<button onClick={()=>{if(window.confirm(`Excluir "${c.name}"? Esta ação não pode ser desfeita.`))onDelete(c.id);}} style={{width:'100%',background:'white',color:'#DC2626',padding:'10px',borderRadius:12,fontSize:12,fontWeight:600,border:'1px solid #FCA5A5',cursor:'pointer',marginBottom:4}}>
@@ -522,13 +546,13 @@ function LyraHome({clients,onSelect,onUpd,hoje,onToggleHoje,today,userName}){
   const rCol=(i)=>i<3?'#DC2626':i<6?'#B45309':'#2563EB';
 
   const kpis=[
-    {l:'Críticos',v:nC.length,list:nC,bg:`linear-gradient(135deg,#FF6B8A,${P})`,icon:'ti-alert-circle',key:'critico'},
-    {l:'Atenção',v:nA.length,list:nA,bg:'linear-gradient(135deg,#FFB347,#FF6B8A)',icon:'ti-eye',key:'atencao'},
-    {l:'Agendar',v:nAg.length,list:nAg,bg:`linear-gradient(135deg,${P},${P_DARK})`,icon:'ti-phone',key:'agendar'},
-    {l:'Contratos',v:nV.length,list:nV,bg:`linear-gradient(135deg,${LAVANDA},${P})`,icon:'ti-file-text',key:'contratos'},
+    {l:'Críticos',v:nC.length,list:nC,bg:'linear-gradient(135deg,#F9C8DD,#E64B97)',icon:'ti-alert-circle',key:'critico'},
+    {l:'Atenção',v:nA.length,list:nA,bg:'linear-gradient(135deg,#FFD0B3,#FF8F73)',icon:'ti-eye',key:'atencao'},
+    {l:'Agendar',v:nAg.length,list:nAg,bg:'linear-gradient(135deg,#E64B97,#D93E82)',icon:'ti-phone',key:'agendar'},
+    {l:'Contratos',v:nV.length,list:nV,bg:'linear-gradient(135deg,#D7B8FF,#B86EFF)',icon:'ti-file-text',key:'contratos'},
   ];
 
-  return<div style={{flex:1,overflowY:'auto',padding:'28px 32px',background:P_BG}}>
+  return<div style={{flex:1,overflowY:'auto',padding:'28px 32px',background:'transparent'}}>
     {kpiModal&&<KpiModal title={kpiModal.title} clients={kpiModal.list} onSelect={onSelect} onClose={()=>setKpiModal(null)}/>}
 
     <div style={{marginBottom:28}}>
@@ -540,7 +564,7 @@ function LyraHome({clients,onSelect,onUpd,hoje,onToggleHoje,today,userName}){
     <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:14,marginBottom:26}}>
       {kpis.map(k=><div key={k.l}
         onClick={()=>setKpiModal({title:k.l,list:k.list})}
-        style={{background:k.bg,borderRadius:18,padding:'18px 20px',color:'white',boxShadow:'0 4px 20px rgba(230,75,151,0.2)',cursor:'pointer',transition:'transform 0.15s,box-shadow 0.15s',display:'flex',alignItems:'center',justifyContent:'space-between',gap:10}}
+        style={{background:k.bg,borderRadius:24,padding:'20px 22px',color:'white',boxShadow:'0 10px 30px rgba(230,75,151,0.12)',cursor:'pointer',transition:'transform 0.15s,box-shadow 0.15s',display:'flex',alignItems:'center',justifyContent:'space-between',gap:10}}
         onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-2px)';e.currentTarget.style.boxShadow='0 8px 28px rgba(230,75,151,0.3)';}}
         onMouseLeave={e=>{e.currentTarget.style.transform='';e.currentTarget.style.boxShadow='0 4px 20px rgba(230,75,151,0.2)';}}>
         {/* esquerda: número + label */}
@@ -555,7 +579,7 @@ function LyraHome({clients,onSelect,onUpd,hoje,onToggleHoje,today,userName}){
     </div>
 
     {/* Meta do dia */}
-    <div style={{background:'white',border:`1px solid ${P_BORDER}`,borderRadius:18,padding:'18px 22px',marginBottom:18,boxShadow:'0 2px 12px rgba(230,75,151,0.07)'}}>
+    <div style={{background:'white',border:`1px solid ${P_BORDER}`,borderRadius:24,padding:'18px 22px',marginBottom:18,boxShadow:'0 10px 30px rgba(230,75,151,0.08)'}}>
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}}>
         <div style={{fontSize:15,fontWeight:700,color:GRAFITE}}>
           <i className="ti ti-target" style={{color:P,marginRight:8,fontSize:16}}/>Meta do dia — {META} reuniões
@@ -595,7 +619,7 @@ function LyraHome({clients,onSelect,onUpd,hoje,onToggleHoje,today,userName}){
     </div>}
 
     {/* Fila de prioridades */}
-    <div style={{background:'white',border:`1px solid ${P_BORDER}`,borderRadius:18,overflow:'hidden',boxShadow:'0 2px 12px rgba(230,75,151,0.06)'}}>
+    <div style={{background:'white',border:`1px solid ${P_BORDER}`,borderRadius:24,overflow:'hidden',boxShadow:'0 10px 30px rgba(230,75,151,0.08)'}}>
       <div style={{padding:'14px 22px',borderBottom:`1px solid ${P_BORDER}`,display:'flex',justifyContent:'space-between',alignItems:'center'}}>
         <span style={{fontSize:15,fontWeight:700,color:GRAFITE}}><i className="ti ti-list-numbers" style={{color:P,marginRight:8}}/>Fila de prioridades</span>
         <span style={{fontSize:11,background:P_LIGHT,color:P_DARK,padding:'3px 10px',borderRadius:20,fontWeight:700}}>{queue.length} clientes</span>
@@ -683,14 +707,14 @@ function AgendamentosView({clients,onSelect,today}){
     return all.sort((a,b)=>a.day-b.day);
   },[events,selectedDay]);
 
-  return<div style={{flex:1,overflowY:'auto',padding:'28px 32px',background:P_BG}}>
+  return<div style={{flex:1,overflowY:'auto',padding:'28px 32px',background:'transparent'}}>
     <div style={{fontFamily:"'Playfair Display',serif",fontSize:22,fontWeight:800,color:GRAFITE,marginBottom:4}}>
       <i className="ti ti-calendar-month" style={{color:P,marginRight:10,fontSize:20}}/>Agendamentos
     </div>
     <div style={{fontSize:12,color:'#B08090',marginBottom:24}}>Clique em um dia para ver os eventos · visão mensal</div>
 
     <div style={{display:'grid',gridTemplateColumns:'1fr 320px',gap:20}}>
-      <div style={{background:'white',border:`1px solid ${P_BORDER}`,borderRadius:18,overflow:'hidden'}}>
+      <div style={{background:'white',border:`1px solid ${P_BORDER}`,borderRadius:24,overflow:'hidden'}}>
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'14px 20px',background:`linear-gradient(135deg,${P},${P_DARK})`,color:'white'}}>
           <button onClick={()=>{setCurDate(new Date(year,month-1,1));setSelectedDay(null);}} style={{background:'rgba(255,255,255,0.2)',border:'none',color:'white',width:32,height:32,borderRadius:'50%',cursor:'pointer',fontSize:16}}>‹</button>
           <span style={{fontSize:16,fontWeight:700}}>{monthNames[month]} {year}</span>
@@ -720,7 +744,7 @@ function AgendamentosView({clients,onSelect,today}){
         </div>
       </div>
 
-      <div style={{background:'white',border:`1px solid ${P_BORDER}`,borderRadius:18,overflow:'hidden'}}>
+      <div style={{background:'white',border:`1px solid ${P_BORDER}`,borderRadius:24,overflow:'hidden'}}>
         <div style={{padding:'14px 16px',borderBottom:`1px solid ${P_BORDER}`,background:P_BG}}>
           <div style={{fontSize:13,fontWeight:700,color:GRAFITE}}>
             {selectedDay?`Dia ${selectedDay} — ${listToShow.length} evento(s)`:'Eventos do mês'}
@@ -779,7 +803,7 @@ function RenovacoesView({clients,onSelect,today}){
     })}
   </div>;
 
-  return<div style={{flex:1,overflowY:'auto',padding:'28px 32px',background:P_BG}}>
+  return<div style={{flex:1,overflowY:'auto',padding:'28px 32px',background:'transparent'}}>
     <div style={{fontFamily:"'Playfair Display',serif",fontSize:22,fontWeight:800,color:GRAFITE,marginBottom:4}}><i className="ti ti-file-text" style={{color:P,marginRight:10}}/>Renovações</div>
     <p style={{fontSize:12,color:'#B08090',marginBottom:20}}>Contratos que precisam de atenção — clique para editar</p>
     <Section title="Contratos vencidos" items={vencidos} color="#DC2626" icon="ti-alert-circle"/>
@@ -813,7 +837,7 @@ function ClientesView({clients,onSelect,today}){
       </div>
     </div>
     <div style={{flex:1,overflowY:'auto',padding:'0 32px 24px'}}>
-      <div style={{background:'white',border:`1px solid ${P_BORDER}`,borderRadius:18,overflow:'hidden'}}>
+      <div style={{background:'white',border:`1px solid ${P_BORDER}`,borderRadius:24,overflow:'hidden'}}>
         <div style={{display:'grid',gridTemplateColumns:'1fr 90px 120px 90px 90px 90px 100px',padding:'10px 20px',background:P_BG,borderBottom:`1px solid ${P_BORDER}`}}>
           {['Cliente','Gestor','Tipo','Status','Evento','Contrato','Reunião'].map(h=><div key={h} style={{fontSize:10,fontWeight:700,color:'#C06090',letterSpacing:0.5}}>{h}</div>)}
         </div>
@@ -908,7 +932,7 @@ function RelatorioView({clients,onUpdate,brunoDate,onSetDate}){
     setMsg(`${n} clientes atualizados!`);setPreview(null);setFile(null);setTimeout(()=>setMsg(''),4000);
   }
 
-  return<div style={{flex:1,overflowY:'auto',padding:'28px 32px',background:P_BG}}>
+  return<div style={{flex:1,overflowY:'auto',padding:'28px 32px',background:'transparent'}}>
     {perfModal&&<div style={{position:'fixed',inset:0,background:'rgba(44,35,40,0.45)',zIndex:2000,display:'flex',alignItems:'center',justifyContent:'center'}} onClick={()=>setPerfModal(null)}>
       <div style={{background:'white',borderRadius:20,width:400,boxShadow:'0 20px 60px rgba(230,75,151,0.2)',animation:'fadeIn 0.2s ease',overflow:'hidden'}} onClick={e=>e.stopPropagation()}>
         <div style={{padding:'16px 20px',borderBottom:`1px solid ${P_BORDER}`,display:'flex',justifyContent:'space-between',alignItems:'center',background:P_BG}}>
@@ -961,7 +985,7 @@ function RelatorioView({clients,onUpdate,brunoDate,onSetDate}){
     <div style={{fontFamily:"'Playfair Display',serif",fontSize:22,fontWeight:800,color:GRAFITE,marginBottom:4}}><i className="ti ti-chart-bar" style={{color:P,marginRight:10}}/>Relatório Operacional</div>
     <p style={{fontSize:12,color:'#B08090',marginBottom:20}}>Suba o relatório PDF — a IA lê e atualiza todos os clientes automaticamente</p>
     {msg&&<div style={{background:'#DCFCE7',color:'#15803D',padding:'10px 16px',borderRadius:10,marginBottom:14,fontSize:13,fontWeight:700}}>✓ {msg}</div>}
-    <div style={{background:'white',border:`1px solid ${P_BORDER}`,borderRadius:18,padding:'20px',marginBottom:16}}>
+    <div style={{background:'white',border:`1px solid ${P_BORDER}`,borderRadius:24,padding:'20px',marginBottom:16}}>
       <div style={{marginBottom:14}}><div style={{fontSize:10,fontWeight:700,color:'#C06090',marginBottom:4}}>DATA DO RELATÓRIO</div><input type="date" value={date} onChange={e=>setDate(e.target.value)} style={{...si,width:'auto'}}/></div>
       <label style={{display:'flex',flexDirection:'column',alignItems:'center',padding:'24px',border:`1px dashed ${P_BORDER}`,borderRadius:12,cursor:'pointer',marginBottom:12,background:file?'#DCFCE7':P_BG}}>
         <i className="ti ti-upload" style={{fontSize:24,color:file?'#15803D':P,marginBottom:8}}/>
@@ -997,7 +1021,7 @@ function RelatorioView({clients,onUpdate,brunoDate,onSetDate}){
         <button onClick={()=>setPreview(null)} style={{padding:'9px 16px',borderRadius:10,fontSize:12,border:`1px solid ${P_BORDER}`,background:'transparent',color:'#B08090',cursor:'pointer'}}>Cancelar</button>
       </div>
     </div>}
-    <div style={{background:'white',border:`1px solid ${P_BORDER}`,borderRadius:18,overflow:'hidden'}}>
+    <div style={{background:'white',border:`1px solid ${P_BORDER}`,borderRadius:24,overflow:'hidden'}}>
       <div style={{padding:'11px 18px',borderBottom:`1px solid ${P_BORDER}`,background:P_BG}}><span style={{fontSize:12,fontWeight:700,color:GRAFITE}}>Atualização manual</span></div>
       <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(280px,1fr))'}}>
         {active.map(c=><div key={c.id} style={{display:'flex',alignItems:'center',gap:10,padding:'9px 16px',borderBottom:`1px solid #FCE4EC`}}>
@@ -1059,12 +1083,12 @@ function NovoClienteView({clients,onAddClient}){
 
   const upd=(k,v)=>setForm(p=>({...p,[k]:v}));
 
-  return<div style={{flex:1,overflowY:'auto',padding:'28px 32px',background:P_BG}}>
+  return<div style={{flex:1,overflowY:'auto',padding:'28px 32px',background:'transparent'}}>
     <div style={{fontFamily:"'Playfair Display',serif",fontSize:22,fontWeight:800,color:GRAFITE,marginBottom:4}}><i className="ti ti-user-plus" style={{color:P,marginRight:10}}/>Novo cliente</div>
     <p style={{fontSize:12,color:'#B08090',marginBottom:4}}>Para <strong>clientes novos</strong> — suba o contrato e a IA preenche os dados.</p>
     <p style={{fontSize:12,color:'#C06090',marginBottom:20,fontWeight:600}}>✦ Para atualizar um cliente existente, abra o cliente na lista e faça o upload por lá.</p>
     {msg&&<div style={{background:'#DCFCE7',color:'#15803D',padding:'10px 16px',borderRadius:10,marginBottom:14,fontSize:13,fontWeight:700}}>✓ {msg}</div>}
-    <div style={{background:'white',border:`1px solid ${P_BORDER}`,borderRadius:18,padding:'20px',marginBottom:16}}>
+    <div style={{background:'white',border:`1px solid ${P_BORDER}`,borderRadius:24,padding:'20px',marginBottom:16}}>
       <label style={{display:'flex',flexDirection:'column',alignItems:'center',padding:'24px',border:`1px dashed ${P_BORDER}`,borderRadius:12,cursor:'pointer',marginBottom:12,background:file?'#DCFCE7':P_BG}}>
         <i className="ti ti-file-upload" style={{fontSize:24,color:file?'#15803D':P,marginBottom:8}}/>
         <span style={{fontSize:12,color:file?'#15803D':P,fontWeight:600}}>{file?file.name:'Clique para selecionar o contrato PDF'}</span>
@@ -1075,7 +1099,7 @@ function NovoClienteView({clients,onAddClient}){
         {loading?'Lendo contrato...':'✦ Extrair dados com IA'}
       </button>
     </div>
-    {form&&<div style={{background:'white',border:`1px solid ${P_BORDER}`,borderRadius:18,padding:'20px'}}>
+    {form&&<div style={{background:'white',border:`1px solid ${P_BORDER}`,borderRadius:24,padding:'20px'}}>
       <div style={{fontSize:13,fontWeight:700,color:P,marginBottom:16}}>✦ Dados extraídos — revise e confirme</div>
       <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
         {[['Nome do cliente','nome'],['Responsável','responsavel'],['Telefone','tel'],['E-mail','email'],['Tipo / Negócio','tipo'],['Valor/mês','valorMensal']].map(([label,key])=><div key={key}><div style={lbl}>{label}</div><input value={form[key]||''} onChange={e=>upd(key,e.target.value)} style={si}/></div>)}
@@ -1102,21 +1126,21 @@ function LoginView({onLogin}){
     if(u&&getPass(u.email)===pass){setError('');onLogin(u);}
     else setError('E-mail ou senha incorretos.');
   }
-  return<div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100vh',background:P_BG}}>
-    <div style={{background:'white',borderRadius:24,padding:'48px 40px',width:400,boxShadow:'0 20px 60px rgba(230,75,151,0.15)',border:`1px solid ${P_BORDER}`}}>
-      <div style={{display:'flex',flexDirection:'column',alignItems:'center',marginBottom:32}}>
+  return<div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100vh',background:'linear-gradient(180deg,#FFF8FB 0%,#FFF0F6 100%)'}}>
+    <div style={{background:'#FFFFFF',borderRadius:32,padding:'48px 44px',width:420,boxShadow:'0 10px 30px rgba(230,75,151,0.08)',border:`1px solid ${P_BORDER}`}}>
+      <div style={{display:'flex',flexDirection:'column',alignItems:'center',marginBottom:28}}>
         <LyraLogo/>
       </div>
-      <div style={{fontSize:10,fontWeight:700,color:'#C06090',marginBottom:5,textTransform:'uppercase',letterSpacing:0.6}}>E-mail</div>
+      <div style={{fontSize:10,fontWeight:700,color:'#C06090',marginBottom:6,textTransform:'uppercase',letterSpacing:1}}>E-mail</div>
       <input value={email} onChange={e=>setEmail(e.target.value)} placeholder="seu@email.com" type="email"
-        style={{width:'100%',border:`1px solid ${P_BORDER}`,borderRadius:10,padding:'10px 14px',fontSize:13,marginBottom:12,color:GRAFITE,background:'white',boxSizing:'border-box'}}
+        style={{width:'100%',border:`1px solid ${P_BORDER}`,borderRadius:16,padding:'11px 16px',fontSize:13,marginBottom:14,color:GRAFITE,background:'white',boxSizing:'border-box',outline:'none'}}
         onKeyDown={e=>e.key==='Enter'&&login()}/>
-      <div style={{fontSize:10,fontWeight:700,color:'#C06090',marginBottom:5,textTransform:'uppercase',letterSpacing:0.6}}>Senha</div>
+      <div style={{fontSize:10,fontWeight:700,color:'#C06090',marginBottom:6,textTransform:'uppercase',letterSpacing:1}}>Senha</div>
       <input value={pass} onChange={e=>setPass(e.target.value)} placeholder="••••••••" type="password"
-        style={{width:'100%',border:`1px solid ${P_BORDER}`,borderRadius:10,padding:'10px 14px',fontSize:13,marginBottom:16,color:GRAFITE,background:'white',boxSizing:'border-box'}}
+        style={{width:'100%',border:`1px solid ${P_BORDER}`,borderRadius:16,padding:'11px 16px',fontSize:13,marginBottom:20,color:GRAFITE,background:'white',boxSizing:'border-box',outline:'none'}}
         onKeyDown={e=>e.key==='Enter'&&login()}/>
       {error&&<div style={{color:'#DC2626',fontSize:12,marginBottom:12,textAlign:'center',fontWeight:600}}>{error}</div>}
-      <button onClick={login} style={{width:'100%',background:P,color:'white',padding:'12px',borderRadius:12,fontSize:14,fontWeight:700,border:'none',cursor:'pointer'}}>
+      <button onClick={login} style={{width:'100%',background:'linear-gradient(135deg,#E64B97,#FF8F73)',color:'white',padding:'13px',borderRadius:16,fontSize:14,fontWeight:700,border:'none',cursor:'pointer',letterSpacing:0.3}}>
         Entrar no LYRA
       </button>
     </div>
@@ -1364,29 +1388,31 @@ function App(){
 
   return<>
     <style>{`@keyframes spin{to{transform:rotate(360deg)}}@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}`}</style>
-    <div style={{display:'flex',height:'100vh',overflow:'hidden'}}>
-      {/* Sidebar — branca */}
-      <div style={{width:250,background:'white',borderRight:`1px solid ${P_BORDER}`,display:'flex',flexDirection:'column',flexShrink:0}}>
-        <div style={{padding:'24px 16px 20px',borderBottom:`1px solid ${P_BORDER}`,display:'flex',justifyContent:'center'}}>
+    <div style={{display:'flex',height:'100vh',overflow:'hidden',background:'linear-gradient(180deg,#FFF8FB 0%,#FFF6F8 100%)'}}>
+      {/* Sidebar */}
+      <div style={{width:250,background:'#FFF1F5',borderRight:`1px solid ${P_BORDER}`,display:'flex',flexDirection:'column',flexShrink:0}}>
+        <div style={{padding:'16px 16px 12px',borderBottom:`1px solid ${P_BORDER}`,display:'flex',justifyContent:'center'}}>
           <LyraLogo/>
         </div>
         <nav style={{padding:'12px 10px',flex:1}}>
           {nav.map(n=><button key={n.id} onClick={()=>setView(n.id)}
-            style={{width:'100%',display:'flex',alignItems:'center',gap:10,padding:'10px 12px',borderRadius:10,fontSize:13,fontWeight:600,
-              background:view===n.id?P_LIGHT:'transparent',
+            onMouseEnter={e=>{if(view!==n.id)e.currentTarget.style.background='#FFE8F1';}}
+            onMouseLeave={e=>{if(view!==n.id)e.currentTarget.style.background='transparent';}}
+            style={{width:'100%',display:'flex',alignItems:'center',gap:10,padding:'10px 14px',borderRadius:16,fontSize:13,fontWeight:600,
+              background:view===n.id?'#FAD5E5':'transparent',
               color:view===n.id?P:GRAFITE,
               border:'none',marginBottom:2,cursor:'pointer',textAlign:'left',transition:'all 0.15s'}}>
-            <i className={`ti ${n.icon}`} style={{fontSize:16,color:view===n.id?P:'#B08090'}} aria-hidden="true"/>
+            <i className={`ti ${n.icon}`} style={{fontSize:16,color:view===n.id?P:TEXT_SEC}} aria-hidden="true"/>
             <span style={{flex:1}}>{n.label}</span>
-            {n.badge>0&&<span style={{background:P_LIGHT,color:P_DARK,fontSize:10,padding:'1px 6px',borderRadius:20,fontWeight:700}}>{n.badge}</span>}
+            {n.badge>0&&<span style={{background:P,color:'#FFFFFF',fontSize:10,padding:'1px 7px',borderRadius:20,fontWeight:700}}>{n.badge}</span>}
           </button>)}
         </nav>
         <div style={{padding:'10px 14px',borderTop:`1px solid ${P_BORDER}`}}>
           <div style={{fontSize:11,fontWeight:700,color:GRAFITE,marginBottom:2}}>{auth.name}</div>
-          <div style={{fontSize:10,color:'#B08090',marginBottom:6}}>{auth.role==='admin'?'Administradora':auth.role==='editor'?'CEO':'Visualizador'}</div>
-          {saveMsg&&<div style={{fontSize:11,color:'#15803D',fontWeight:700,background:'#DCFCE7',borderRadius:8,padding:'3px 8px',marginBottom:6}}>{saveMsg}</div>}
-          <button onClick={()=>{setShowPassModal(true);setPassErr('');setPassMsg('');setPassAtual('');setPassNova('');setPassConfirm('');}} style={{width:'100%',background:'transparent',color:P,border:`1px solid ${P_BORDER}`,borderRadius:8,padding:'5px',fontSize:11,cursor:'pointer',marginBottom:4}}>👤 Perfil</button>
-          <button onClick={doLogout} style={{width:'100%',background:'transparent',color:'#B08090',border:`1px solid ${P_BORDER}`,borderRadius:8,padding:'5px',fontSize:11,cursor:'pointer'}}>Sair</button>
+          <div style={{fontSize:10,color:TEXT_SEC,marginBottom:6}}>{auth.role==='admin'?'Administradora':auth.role==='editor'?'CEO':'Visualizador'}</div>
+          {saveMsg&&<div style={{fontSize:11,color:'#15803D',fontWeight:700,background:'#DCFCE7',borderRadius:10,padding:'3px 8px',marginBottom:6}}>{saveMsg}</div>}
+          <button onClick={()=>{setShowPassModal(true);setPassErr('');setPassMsg('');setPassAtual('');setPassNova('');setPassConfirm('');}} style={{width:'100%',background:'transparent',color:P,border:`1px solid ${P_BORDER}`,borderRadius:12,padding:'6px',fontSize:11,cursor:'pointer',marginBottom:4,fontWeight:600}}>👤 Perfil</button>
+          <button onClick={doLogout} style={{width:'100%',background:'transparent',color:TEXT_SEC,border:`1px solid ${P_BORDER}`,borderRadius:12,padding:'6px',fontSize:11,cursor:'pointer',fontWeight:500}}>Sair</button>
         </div>
       </div>
 
