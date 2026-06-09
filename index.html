@@ -325,10 +325,11 @@ function KpiModal({title,clients,onSelect,onClose}){
 
 // ─── DETAIL PANEL ──────────────────────────────────────────────────────────────
 function DetailPanel({c,onClose,onSave,onDelete,today}){
+  const ro=!onSave; // read-only para viewers
   const[f,setF]=useState({...c});
-  const upd=(k,v)=>setF(p=>({...p,[k]:v}));
+  const upd=(k,v)=>{if(ro)return;setF(p=>({...p,[k]:v}));};
   const ev=f.eventoDate?daysTo(f.eventoDate,today):null;
-  const si={border:`1px solid ${P_BORDER}`,borderRadius:8,padding:'7px 10px',fontSize:13,background:'white',color:GRAFITE,width:'100%'};
+  const si={border:`1px solid ${ro?'#F3E4EC':P_BORDER}`,borderRadius:8,padding:'7px 10px',fontSize:13,background:ro?P_BG:'white',color:ro?'#B08090':GRAFITE,width:'100%',cursor:ro?'default':'auto'};
   const box={background:P_BG,border:`1px solid ${P_BORDER}`,borderRadius:12,padding:'12px 14px',marginBottom:10};
   const lbl={fontSize:10,color:'#C06090',marginBottom:4,fontWeight:700,textTransform:'uppercase',letterSpacing:0.6};
   const[contrFile,setContrFile]=useState(null);
@@ -361,7 +362,10 @@ function DetailPanel({c,onClose,onSave,onDelete,today}){
       <div>
         <div style={{fontFamily:"'Playfair Display',serif",fontSize:17,fontWeight:700,color:GRAFITE,marginBottom:2}}>{f.name}</div>
         <div style={{fontSize:11,color:'#B08090',marginBottom:8}}>{f.tipo}</div>
-        <div style={{display:'flex',gap:6,flexWrap:'wrap'}}><BrunoBdg status={f.brunoStatus}/><RenovBdg status={renovSt(f,today)}/>{f.davi&&<Bdg type="davi" label="Davi"/>}</div>
+        <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
+          <BrunoBdg status={f.brunoStatus}/><RenovBdg status={renovSt(f,today)}/>{f.davi&&<Bdg type="davi" label="Davi"/>}
+          {ro&&<span style={{fontSize:10,background:'#F3F4F6',color:'#6B7280',padding:'2px 8px',borderRadius:20,fontWeight:600}}>🔒 Somente leitura</span>}
+        </div>
       </div>
       <button onClick={onClose} style={{background:'none',color:'#C06090',fontSize:22,padding:'2px 8px',lineHeight:1,border:'none',cursor:'pointer'}}>&times;</button>
     </div>
@@ -377,18 +381,18 @@ function DetailPanel({c,onClose,onSave,onDelete,today}){
         <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8,marginBottom:8}}>
           <div>
             <div style={lbl}>Gestor</div>
-            <select value={f.gestor} onChange={e=>upd('gestor',e.target.value)} style={{...si,cursor:'pointer'}}>
+            <select value={f.gestor} onChange={e=>upd('gestor',e.target.value)} disabled={ro} style={{...si,cursor:ro?'default':'pointer'}}>
               {['Samuel','Felício','Gabriel','—'].map(g=><option key={g} value={g}>{g}</option>)}
             </select>
           </div>
           <div>
             <div style={lbl}>Pessoa</div>
-            <input value={f.contato} onChange={e=>upd('contato',e.target.value)} style={si}/>
+            <input value={f.contato} onChange={e=>upd('contato',e.target.value)} readOnly={ro} style={si}/>
           </div>
         </div>
         <div style={lbl}>Telefone / WhatsApp</div>
         <div style={{display:'flex',gap:8,alignItems:'center'}}>
-          <input value={f.tel} onChange={e=>upd('tel',e.target.value)} style={{...si,flex:1}}/>
+          <input value={f.tel} onChange={e=>upd('tel',e.target.value)} readOnly={ro} style={{...si,flex:1}}/>
           {f.tel&&f.tel!=='—'&&<a href={`https://wa.me/${f.tel.replace(/\D/g,'')}`} target="_blank" rel="noreferrer"
             style={{color:'#25D366',fontSize:20,textDecoration:'none',flexShrink:0}}>
             <i className="ti ti-brand-whatsapp"/>
@@ -398,22 +402,22 @@ function DetailPanel({c,onClose,onSave,onDelete,today}){
 
       <div style={box}>
         <div style={lbl}>Reunião</div>
-        <select value={f.reuniaoStatus} onChange={e=>upd('reuniaoStatus',e.target.value)} style={{...si,marginBottom:8,cursor:'pointer'}}>
+        <select value={f.reuniaoStatus} onChange={e=>upd('reuniaoStatus',e.target.value)} disabled={ro} style={{...si,marginBottom:8,cursor:ro?'default':'pointer'}}>
           <option value="agendar">Agendar</option><option value="agendado">Agendado</option><option value="realizado">Realizado</option>
         </select>
-        {f.reuniaoStatus!=='agendar'&&<input type="date" value={f.reuniaoData||''} onChange={e=>upd('reuniaoData',e.target.value||null)} style={si}/>}
+        {f.reuniaoStatus!=='agendar'&&<input type="date" value={f.reuniaoData||''} onChange={e=>upd('reuniaoData',e.target.value||null)} readOnly={ro} style={si}/>}
       </div>
 
       <div style={box}>
         <div style={lbl}>Evento & Contrato</div>
         <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8,marginBottom:8}}>
-          <div><div style={lbl}>Data do evento</div><input type="date" value={f.eventoDate||''} onChange={e=>upd('eventoDate',e.target.value||null)} style={si}/></div>
-          <div><div style={lbl}>Vencimento</div><input type="date" value={f.contratoVenc||''} onChange={e=>upd('contratoVenc',e.target.value||null)} style={si}/></div>
+          <div><div style={lbl}>Data do evento</div><input type="date" value={f.eventoDate||''} onChange={e=>upd('eventoDate',e.target.value||null)} readOnly={ro} style={si}/></div>
+          <div><div style={lbl}>Vencimento</div><input type="date" value={f.contratoVenc||''} onChange={e=>upd('contratoVenc',e.target.value||null)} readOnly={ro} style={si}/></div>
         </div>
         <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8}}>
           <div>
             <div style={lbl}>Valor/mês</div>
-            <input value={f.contratoVal||''} onChange={e=>upd('contratoVal',e.target.value)} style={si}/>
+            <input value={f.contratoVal||''} onChange={e=>upd('contratoVal',e.target.value)} readOnly={ro} style={si}/>
           </div>
           <div><div style={lbl}>Dias p/ evento</div><div style={{fontSize:13,color:ev!=null&&ev<=10?'#DC2626':GRAFITE,fontWeight:ev!=null&&ev<=10?700:400,paddingTop:8}}>{ev!=null?`${ev}d`:'—'}</div></div>
         </div>
@@ -434,20 +438,20 @@ function DetailPanel({c,onClose,onSave,onDelete,today}){
 
       <div style={box}>
         <div style={lbl}>Alerta churn</div>
-        <select value={f.alerta||''} onChange={e=>upd('alerta',e.target.value||null)} style={{...si,cursor:'pointer'}}>
+        <select value={f.alerta||''} onChange={e=>upd('alerta',e.target.value||null)} disabled={ro} style={{...si,cursor:ro?'default':'pointer'}}>
           <option value="">OK — sem alerta</option><option value="reclamacao">Reclamação (+20pts)</option><option value="davi">Davi solicitou (+15pts)</option>
         </select>
       </div>
 
       <div style={box}>
         <div style={lbl}>Observações</div>
-        <textarea value={f.obs||''} onChange={e=>upd('obs',e.target.value)} rows={3} placeholder="Anotações..." style={{...si,resize:'vertical'}}/>
-        <div style={{marginTop:8}}><div style={lbl}>Último contato</div><input type="date" value={f.ultimoContato||''} onChange={e=>upd('ultimoContato',e.target.value||null)} style={si}/></div>
+        <textarea value={f.obs||''} onChange={e=>upd('obs',e.target.value)} rows={3} placeholder="Anotações..." readOnly={ro} style={{...si,resize:ro?'none':'vertical'}}/>
+        <div style={{marginTop:8}}><div style={lbl}>Último contato</div><input type="date" value={f.ultimoContato||''} onChange={e=>upd('ultimoContato',e.target.value||null)} readOnly={ro} style={si}/></div>
       </div>
 
       <div style={box}>
         <div style={lbl}>Status do cliente</div>
-        <select value={f.status} onChange={e=>upd('status',e.target.value)} style={{...si,cursor:'pointer'}}>
+        <select value={f.status} onChange={e=>upd('status',e.target.value)} disabled={ro} style={{...si,cursor:ro?'default':'pointer'}}>
           <option value="ativo">Ativo</option><option value="pausado">Pausado</option>
         </select>
       </div>
