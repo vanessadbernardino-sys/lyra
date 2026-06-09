@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8"/>
@@ -14,6 +14,11 @@
     ::-webkit-scrollbar-track{background:#FFF5FA}
     ::-webkit-scrollbar-thumb{background:#F8BBD0;border-radius:3px}
     @keyframes spin{to{transform:rotate(360deg)}}
+    @media(max-width:768px){
+      .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+      .hide-mobile{display:none!important;}
+      .full-mobile{width:100%!important;max-width:100%!important;}
+    }
   </style>
 </head>
 <body>
@@ -106,6 +111,7 @@ function renovSt(c,t){
   const d=daysTo(c.contratoVenc,t);if(d<=0)return'vencido';if(d<=30)return'avencer';return'vigente';
 }
 
+function useIsMobile(){const[m,setM]=React.useState(window.innerWidth<=768);React.useEffect(()=>{const h=()=>setM(window.innerWidth<=768);window.addEventListener('resize',h);return()=>window.removeEventListener('resize',h);},[]);return m;}
 async function fileToB64(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result.split(',')[1]);r.onerror=rej;r.readAsDataURL(file);});}
 async function askClaude(b64,mtype,prompt){
   const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},
@@ -148,6 +154,7 @@ function RenovBdg({status}){
 
 // ─── DETAIL PANEL ──────────────────────────────────────────────────────────────
 function DetailPanel({c,onClose,onSave,today}){
+  const isMobile=useIsMobile();
   const[f,setF]=useState({...c});
   const upd=(k,v)=>setF(p=>({...p,[k]:v}));
   const ev=f.eventoDate?daysTo(f.eventoDate,today):null;
@@ -155,7 +162,7 @@ function DetailPanel({c,onClose,onSave,today}){
   const box={background:'#FFF5FA',border:'1px solid #F8BBD0',borderRadius:10,padding:'12px 14px',marginBottom:10};
   const lbl={fontSize:10,color:'#C06090',marginBottom:3,fontWeight:600,textTransform:'uppercase',letterSpacing:0.5};
 
-  return<div style={{width:420,borderLeft:`1px solid ${PINK_BORDER}`,background:'white',display:'flex',flexDirection:'column',overflow:'hidden',flexShrink:0}}>
+  return<div style={{width:isMobile?'100%':420,position:isMobile?'fixed':'relative',inset:isMobile?0:'auto',zIndex:isMobile?1000:'auto',borderLeft:`1px solid ${PINK_BORDER}`,background:'white',display:'flex',flexDirection:'column',overflow:'hidden',flexShrink:0}}>
     <div style={{padding:'16px 18px',borderBottom:`1px solid ${PINK_BORDER}`,display:'flex',justifyContent:'space-between',alignItems:'flex-start',background:PINK_BG}}>
       <div>
         <div style={{fontSize:16,fontWeight:700,color:'#1a0a10',marginBottom:2}}>{f.name}</div>
@@ -223,7 +230,7 @@ function DetailPanel({c,onClose,onSave,today}){
 }
 
 // ─── TRILHA HOME (Agenda do dia) ───────────────────────────────────────────────
-function TrilhaHome({clients,onSelect,onUpd,hoje,onToggleHoje,today}){
+function TrilhaHome({clients,onSelect,onUpd,hoje,onToggleHoje,today}){const isMobile=useIsMobile();
   const META=5;
   const active=clients.filter(c=>c.status==='ativo');
   const scored=active.map(c=>({...c,sc:calcScore(c,today)})).sort((a,b)=>b.sc-a.sc);
@@ -241,7 +248,7 @@ function TrilhaHome({clients,onSelect,onUpd,hoje,onToggleHoje,today}){
 
   const rCol=(i)=>i<3?'#DC2626':i<6?'#B45309':'#1d4ed8';
 
-  return<div style={{flex:1,overflowY:'auto',padding:'24px 28px',background:PINK_BG}}>
+  return<div style={{flex:1,overflowY:'auto',padding:isMobile?'16px 14px':'24px 28px',background:PINK_BG}}>
     {/* Header */}
     <div style={{marginBottom:24}}>
       <div style={{fontSize:26,fontWeight:800,color:'#1a0a10',marginBottom:4}}>{greeting}, Vanessa! 👋</div>
@@ -249,7 +256,7 @@ function TrilhaHome({clients,onSelect,onUpd,hoje,onToggleHoje,today}){
     </div>
 
     {/* KPIs grandes */}
-    <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:14,marginBottom:24}}>
+    <div style={{display:'grid',gridTemplateColumns:isMobile?'repeat(2,1fr)':'repeat(4,1fr)',gap:isMobile?10:14,marginBottom:24}}>
       {[
         {l:'Críticos',v:nC,bg:'linear-gradient(135deg,#FF6B6B,#E91E8C)',icon:'ti-alert-circle'},
         {l:'Atenção',v:nA,bg:'linear-gradient(135deg,#FFB347,#FF6B6B)',icon:'ti-eye'},
@@ -790,6 +797,15 @@ function App(){
         {view==='novoCliente'&&<NovoClienteView clients={data.clients} onAddClient={addClient} onUpdateClient={updClient}/>}
         {sel&&<DetailPanel c={sel} onClose={()=>setSelId(null)} onSave={saveClient} today={today}/>}
       </div>
+      {/* Bottom nav mobile */}
+      {isMobile&&<div style={{position:''fixed'',bottom:0,left:0,right:0,background:''linear-gradient(180deg,#1a0a10,#2d0a1e)'',borderTop:''1px solid rgba(255,255,255,0.1)'',display:''flex'',zIndex:999,height:60}}>
+        {nav.slice(0,5).map(n=><button key={n.id} onClick={()=>setView(n.id)}
+          style={{flex:1,display:''flex'',flexDirection:''column'',alignItems:''center'',justifyContent:''center'',gap:2,background:''transparent'',border:''none'',color:view===n.id?PINK:''rgba(255,255,255,0.5)'',cursor:''pointer'',padding:''6px 2px'',position:''relative''}}>
+          <i className={`ti ${n.icon}`} style={{fontSize:20}}/>
+          <span style={{fontSize:9,fontWeight:600}}>{n.label.length>8?n.label.substring(0,8)+''…'':n.label}</span>
+          {n.badge>0&&<span style={{position:''absolute'',top:4,right:''15%'',background:PINK,color:''white'',fontSize:8,width:14,height:14,borderRadius:''50%'',display:''flex'',alignItems:''center'',justifyContent:''center'',fontWeight:700}}>{n.badge}</span>}
+        </button>)}
+      </div>}
     </div>
   </>;
 }
