@@ -29,7 +29,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
 
 const KEY = "lyra-cs-v4";
 const KEY_BACKUP = "lyra-cs-backup";
-const DATA_PATCH = 2;
+const DATA_PATCH = 3;
 const AUTH_KEY = "lyra-auth";
 
 // ─── USUÁRIOS E PERMISSÕES ────────────────────────────────────────────────────
@@ -1055,11 +1055,11 @@ function App(){
       let clients=[...d.clients];
       // Patch 1+2: sincroniza eventoDate e nome do CLIENTS_DEFAULT (corrige datas erradas sem apagar dados do usuário)
       const baseMap={};
-      CLIENTS_DEFAULT.forEach(c=>{baseMap[c.id]={eventoDate:c.eventoDate,name:c.name,obs:c.obs};});
+      CLIENTS_DEFAULT.forEach(c=>{baseMap[c.id]={eventoDate:c.eventoDate,name:c.name,obs:c.obs,brunoAlias:c.brunoAlias};});
       clients=clients.map(c=>{
         const b=baseMap[c.id];
         if(!b)return c;
-        return{...c,eventoDate:b.eventoDate};
+        return{...c,eventoDate:b.eventoDate,brunoAlias:b.brunoAlias};
       });
       // Garante que todos os clientes do CLIENTS_DEFAULT existem
       const existingIds=new Set(clients.map(c=>c.id));
