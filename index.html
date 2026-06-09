@@ -201,46 +201,34 @@ function LyraLogo({collapsed=false}){
     </div>
   );
   return(
-    <div style={{width:'100%',padding:'14px 10px 12px',display:'flex',flexDirection:'column',alignItems:'center'}}>
+    <div style={{width:'100%',padding:'16px 8px 14px',display:'flex',flexDirection:'column',alignItems:'center'}}>
+      {/* Constelação Lyra — rosa pastel suave, triângulo aberto com Vega no topo */}
+      <svg width="180" height="58" viewBox="0 0 180 58" fill="none">
+        {/* linhas muito suaves */}
+        <line x1="90" y1="8"  x2="62" y2="28" stroke="#E8A0C0" strokeWidth="1"   strokeLinecap="round"/>
+        <line x1="90" y1="8"  x2="114" y2="24" stroke="#E8A0C0" strokeWidth="1"  strokeLinecap="round"/>
+        <line x1="62" y1="28" x2="30"  y2="50" stroke="#E8A0C0" strokeWidth="1"  strokeLinecap="round"/>
+        <line x1="114" y1="24" x2="148" y2="44" stroke="#E8A0C0" strokeWidth="1" strokeLinecap="round"/>
+        <line x1="62" y1="28" x2="114" y2="24" stroke="#E8A0C0" strokeWidth="0.8" strokeLinecap="round" opacity="0.6"/>
 
-      {/* ── Constelação Lyra real ──
-          Vega (α) no topo com sparkle
-          ε¹ ε² par duplo à esquerda
-          Trapézio β γ ζ δ abaixo        */}
-      <svg width="160" height="56" viewBox="0 0 160 56" fill="none">
-        {/* Linhas da constelação */}
-        {/* Vega → ε esquerdo */}
-        <line x1="80" y1="6"  x2="58" y2="22" stroke={C} strokeWidth="1.1" strokeLinecap="round" opacity="0.6"/>
-        {/* Vega → ε direito */}
-        <line x1="80" y1="6"  x2="102" y2="22" stroke={C} strokeWidth="1.1" strokeLinecap="round" opacity="0.6"/>
-        {/* ε esquerdo → β (baixo esquerdo) */}
-        <line x1="58" y1="22" x2="42" y2="46" stroke={C} strokeWidth="1.1" strokeLinecap="round" opacity="0.6"/>
-        {/* ε direito → ζ (baixo direito) */}
-        <line x1="102" y1="22" x2="118" y2="46" stroke={C} strokeWidth="1.1" strokeLinecap="round" opacity="0.6"/>
-        {/* β → γ (base do trapézio) */}
-        <line x1="42" y1="46" x2="118" y2="46" stroke={C} strokeWidth="1.1" strokeLinecap="round" opacity="0.6"/>
-        {/* diagonal interna ε esq → ζ */}
-        <line x1="58" y1="22" x2="118" y2="46" stroke={C} strokeWidth="0.7" strokeLinecap="round" opacity="0.35"/>
+        {/* nós — rosa suave */}
+        <circle cx="62"  cy="28" r="3.2" fill="#E8A0C0"/>
+        <circle cx="114" cy="24" r="3.2" fill="#E8A0C0"/>
+        <circle cx="30"  cy="50" r="3.2" fill="#E8A0C0"/>
+        <circle cx="148" cy="44" r="3.2" fill="#E8A0C0"/>
 
-        {/* Estrelas — círculos */}
-        <circle cx="58"  cy="22" r="3"   fill={C} opacity="0.9"/>
-        <circle cx="102" cy="22" r="2.5" fill={C} opacity="0.85"/>
-        <circle cx="42"  cy="46" r="3"   fill={C} opacity="0.9"/>
-        <circle cx="118" cy="46" r="2.5" fill={C} opacity="0.85"/>
-
-        {/* Vega — sparkle 4 pontas */}
-        <path d="M80 0 C80 0 78.6 4.8 77 6 C75.4 7.2 71 8 71 8 C71 8 75.4 8.8 77 10 C78.6 11.2 80 16 80 16 C80 16 81.4 11.2 83 10 C84.6 8.8 89 8 89 8 C89 8 84.6 7.2 83 6 C81.4 4.8 80 0 80 0Z" fill={C}/>
-        {/* mini ponto brilho */}
-        <circle cx="91" cy="3" r="1.5" fill={C} opacity="0.5"/>
+        {/* Vega — sparkle 4 pontas, levemente maior */}
+        <path d="M90 1 C90 1 88.5 6 87 7.5 C85.5 9 81 10 81 10 C81 10 85.5 11 87 12.5 C88.5 14 90 19 90 19 C90 19 91.5 14 93 12.5 C94.5 11 99 10 99 10 C99 10 94.5 9 93 7.5 C91.5 6 90 1 90 1Z" fill="#E64B97"/>
+        <circle cx="101" cy="4" r="1.5" fill="#E8A0C0" opacity="0.7"/>
       </svg>
 
-      {/* LYRA */}
-      <div style={{fontFamily:"'Playfair Display',serif",fontSize:40,fontWeight:700,color:'#3D1A2E',letterSpacing:5,lineHeight:1,marginTop:4}}>
+      {/* LYRA — grande, limpo, vinho escuro */}
+      <div style={{fontFamily:"'Playfair Display',serif",fontSize:42,fontWeight:700,color:'#3D1A2E',letterSpacing:6,lineHeight:1,marginTop:2}}>
         LYRA
       </div>
 
-      {/* Subtítulo */}
-      <div style={{fontSize:7.5,color:C,letterSpacing:2.8,textTransform:'uppercase',fontFamily:"'Inter',sans-serif",textAlign:'center',marginTop:7,lineHeight:1.8}}>
+      {/* Subtítulo — cinza escuro, não rosa */}
+      <div style={{fontSize:8,color:'#6B5B62',letterSpacing:2.8,textTransform:'uppercase',fontFamily:"'Inter',sans-serif",textAlign:'center',marginTop:8,lineHeight:1.9,fontWeight:500}}>
         CLIENT JOURNEY<br/>INTELLIGENCE
       </div>
     </div>
