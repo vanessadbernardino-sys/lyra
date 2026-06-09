@@ -889,6 +889,24 @@ function App(){
   useEffect(()=>{if(!data||loading)return;try{localStorage.setItem(KEY,JSON.stringify(data));}catch(e){}},[data,loading]);
   useEffect(()=>{if(!data)return;const td=todayStr();if(data.hojeData!==td)setData(p=>({...p,hojeData:td,hojeIds:[]}));},[data?.hojeData]);
 
+  // Auto-pausa clientes cujo evento já passou
+  useEffect(()=>{
+    if(!data)return;
+    const t=today0();
+    const tooPause=data.clients.filter(c=>
+      c.status==='ativo' &&
+      c.eventoDate &&
+      daysTo(c.eventoDate,t)<0
+    );
+    if(tooPause.length>0){
+      setData(p=>({...p,clients:p.clients.map(c=>
+        tooPause.find(x=>x.id===c.id)
+          ?{...c,status:'pausado',obs:c.obs?`${c.obs} | Auto-pausado: evento ${fmtFull(c.eventoDate)} passou`:`Auto-pausado: evento ${fmtFull(c.eventoDate)} passou`}
+          :c
+      )}));
+    }
+  },[data?.clients?.length]);
+
   const updClient=useCallback((id,u)=>setData(p=>({...p,clients:p.clients.map(c=>c.id===id?{...c,...u}:c)})),[]);
   const saveClient=useCallback((id,f)=>{setData(p=>({...p,clients:p.clients.map(c=>c.id===id?{...f}:c)}));setSelId(null);},[]);
   const addClient=useCallback((nc)=>setData(p=>({...p,clients:[...p.clients,nc]})),[]);
