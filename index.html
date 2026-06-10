@@ -464,10 +464,10 @@ function LyraHome({clients,onSelect,onUpd,hoje,onToggleHoje,today,userName}){
   const[kpiModal,setKpiModal]=useState(null);
   const active=clients.filter(c=>c.status==='ativo');
   const scored=active.map(c=>({...c,sc:calcScore(c,today)})).sort((a,b)=>b.sc-a.sc);
-  const queue=scored.filter(c=>c.sc>-50);
+  const queue=scored.filter(c=>c.sc>-50&&c.reuniaoStatus!=='nao_precisa');
   const agendados=scored.filter(c=>c.reuniaoStatus==='agendado');
   const hojeList=clients.filter(c=>hoje.includes(c.id));
-  const done=hojeList.filter(c=>c.reuniaoStatus==='realizado').length;
+  const done=hojeList.filter(c=>c.reuniaoStatus==='realizado'||c.reuniaoStatus==='nao_precisa').length;
   const nC=active.filter(c=>c.brunoStatus==='critico');
   const nA=active.filter(c=>c.brunoStatus==='atencao');
   const nAg=active.filter(c=>c.reuniaoStatus==='agendar');
