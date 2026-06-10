@@ -1138,13 +1138,17 @@ function App(){
     // Tenta backup se principal falhou
     if(!loaded&&rb){try{loaded=tryLoad(rb);}catch(e){console.warn('Backup também corrompido.');}}
     if(loaded){
-      // Reset mensal: no dia 1 de cada mês, todos os clientes voltam para "Agendar"
+      // Reset mensal: APENAS no dia 1 do mês, e APENAS se já tinha mês anterior salvo
       const mesAtual=todayStr().substring(0,7); // "YYYY-MM"
-      if(loaded.lastResetMonth!==mesAtual){
+      const diaAtual=parseInt(todayStr().substring(8,10));
+      if(loaded.lastResetMonth&&loaded.lastResetMonth!==mesAtual&&diaAtual===1){
         loaded={...loaded,
           clients:loaded.clients.map(c=>({...c,reuniaoStatus:'agendar',reuniaoData:null})),
           lastResetMonth:mesAtual
         };
+      }else if(!loaded.lastResetMonth){
+        // Primeira vez — só registra o mês atual, não reseta nada
+        loaded={...loaded,lastResetMonth:mesAtual};
       }
       const json=JSON.stringify(loaded);
       try{localStorage.setItem(KEY,json);}catch(e){}
