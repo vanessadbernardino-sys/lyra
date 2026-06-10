@@ -336,7 +336,11 @@ function DetailPanel({c,onClose,onSave,onDelete,today}){
     <div style={{padding:'16px 20px',borderBottom:`1px solid ${P_BORDER}`,display:'flex',justifyContent:'space-between',alignItems:'flex-start',background:P_BG}}>
       <div>
         <div style={{fontFamily:"'Playfair Display',serif",fontSize:17,fontWeight:700,color:GRAFITE,marginBottom:2}}>{f.name}</div>
-        <div style={{fontSize:11,color:'#B08090',marginBottom:8}}>{f.tipo}</div>
+        {ro
+          ?<div style={{fontSize:11,color:'#B08090',marginBottom:8}}>{f.tipo}</div>
+          :<input value={f.tipo||''} onChange={e=>upd('tipo',e.target.value)} readOnly={ro} placeholder="Tipo / Negócio"
+              style={{fontSize:11,color:'#B08090',marginBottom:8,border:`1px solid ${P_BORDER}`,borderRadius:8,padding:'3px 8px',background:'white',width:'100%'}}/>
+        }
         <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
           <BrunoBdg status={f.brunoStatus}/><RenovBdg status={renovSt(f,today)}/>{f.davi&&<Bdg type="davi" label="Davi"/>}
           {ro&&<span style={{fontSize:10,background:'#F3F4F6',color:'#6B7280',padding:'2px 8px',borderRadius:20,fontWeight:600}}>🔒 Somente leitura</span>}
@@ -357,7 +361,7 @@ function DetailPanel({c,onClose,onSave,onDelete,today}){
           <div>
             <div style={lbl}>Gestor</div>
             <select value={f.gestor} onChange={e=>upd('gestor',e.target.value)} disabled={ro} style={{...si,cursor:ro?'default':'pointer'}}>
-              {['Samuel','Felício','Gabriel','—'].map(g=><option key={g} value={g}>{g}</option>)}
+              {['Samuel','Felício','Gabriel','Bruno','—'].map(g=><option key={g} value={g}>{g}</option>)}
             </select>
           </div>
           <div>
