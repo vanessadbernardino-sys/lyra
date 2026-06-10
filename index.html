@@ -230,89 +230,14 @@ function LyraConstellation({size=72}){
 }
 
 function LyraLogo({collapsed=false}){
-  const C="#E64B97";
-  const Sp=({cx,cy,s=5,op=1})=><path d={`M${cx},${cy-s} L${cx+s*.18},${cy-s*.18} L${cx+s},${cy} L${cx+s*.18},${cy+s*.18} L${cx},${cy+s} L${cx-s*.18},${cy+s*.18} L${cx-s},${cy} L${cx-s*.18},${cy-s*.18} Z`} fill={C} opacity={op}/>;
   if(collapsed) return(
     <div style={{display:'flex',alignItems:'center',justifyContent:'center',padding:'6px 0'}}>
-      <svg width="28" height="28" viewBox="0 0 48 48" fill="none">
-        <defs>
-          <linearGradient id="yGradC" x1="0.5" y1="0" x2="0.5" y2="1">
-            <stop offset="0%" stopColor="#E64B97"/>
-            <stop offset="100%" stopColor="#4A1035"/>
-          </linearGradient>
-        </defs>
-        <text x="24" y="40" fontFamily="'Playfair Display',serif" fontSize="44" fontWeight="700"
-              textAnchor="middle" fill="url(#yGradC)">Y</text>
-      </svg>
+      <img src="logo.png.png" alt="LYRA" style={{width:36,height:36,objectFit:'contain'}}/>
     </div>
   );
   return(
-    <div style={{width:'100%',padding:'20px 4px 14px',display:'flex',flexDirection:'column',alignItems:'center'}}>
-      <svg viewBox="0 0 300 260" width="210" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          {/* Gradiente do Y: rosa vibrante no topo → vinho escuro na base */}
-          <linearGradient id="yGrad" x1="0.5" y1="0" x2="0.5" y2="1">
-            <stop offset="0%" stopColor="#E64B97"/>
-            <stop offset="52%" stopColor="#C8387E"/>
-            <stop offset="100%" stopColor="#4A1035"/>
-          </linearGradient>
-        </defs>
-
-        {/* ── Arco orbital (quase-círculo tracejado ao redor do texto) ── */}
-        <ellipse cx="150" cy="130" rx="128" ry="108"
-              fill="none" stroke={C} strokeWidth="0.9" strokeDasharray="2.5 4" strokeOpacity="0.38" strokeLinecap="round"/>
-
-        {/* ── Linhas da constelação ── */}
-        <line x1="55"  y1="185" x2="88"  y2="68"  stroke={C} strokeWidth="0.6" strokeOpacity="0.25"/>
-        <line x1="88"  y1="68"  x2="150" y2="42"  stroke={C} strokeWidth="0.6" strokeOpacity="0.28"/>
-        <line x1="150" y1="42"  x2="212" y2="62"  stroke={C} strokeWidth="0.6" strokeOpacity="0.28"/>
-        <line x1="212" y1="62"  x2="255" y2="110" stroke={C} strokeWidth="0.6" strokeOpacity="0.22"/>
-
-        {/* ── Pontos sólidos ── */}
-        <circle cx="55"  cy="185" r="7"   fill={C}/>
-        <circle cx="255" cy="110" r="6.5" fill={C}/>
-        <circle cx="150" cy="26"  r="5"   fill={C}/>
-
-        {/* ── Pontos vazados ── */}
-        <circle cx="88"  cy="68"  r="3.5" fill="none" stroke={C} strokeWidth="1.2" strokeOpacity="0.55"/>
-        <circle cx="212" cy="62"  r="3"   fill="none" stroke={C} strokeWidth="1.1" strokeOpacity="0.55"/>
-        <circle cx="170" cy="240" r="2.8" fill="none" stroke={C} strokeWidth="1"   strokeOpacity="0.45"/>
-
-        {/* ── Sparkles ── */}
-        <Sp cx={86}  cy={32}  s={5.5}/>
-        <Sp cx={270} cy={155} s={3.5} op={0.6}/>
-        <Sp cx={44}  cy={220} s={2.8} op={0.5}/>
-
-        {/* ── LYRA base (vinho escuro) ── */}
-        <text x="150" y="192"
-              fontFamily="'Playfair Display',serif" fontSize="96" fontWeight="700"
-              textAnchor="middle" fill="#4A1035">LYRA</text>
-
-        {/* ── Y com gradiente rosa sobreposto ── */}
-        <text x="83" y="192"
-              fontFamily="'Playfair Display',serif" fontSize="96" fontWeight="700"
-              textAnchor="start" fill="url(#yGrad)">Y</text>
-
-        {/* ── Haste vertical do Y (sobe do ponto de junção) ── */}
-        <line x1="114" y1="150" x2="114" y2="108" stroke={C} strokeWidth="1.3" strokeOpacity="0.75"/>
-        <circle cx="114" cy="105" r="4" fill={C} opacity="0.9"/>
-
-        {/* ── Sparkle na junção do Y ── */}
-        <Sp cx={114} cy={150} s={4.8} op={0.9}/>
-
-        {/* ── Linha decorativa + sparkles ── */}
-        <line x1="72"  y1="208" x2="130" y2="208" stroke={C} strokeWidth="0.7" strokeOpacity="0.4"/>
-        <Sp cx={150} cy={208} s={4.2}/>
-        <line x1="170" y1="208" x2="228" y2="208" stroke={C} strokeWidth="0.7" strokeOpacity="0.4"/>
-        <Sp cx={63}   cy={208} s={2.8} op={0.55}/>
-        <Sp cx={237}  cy={208} s={2.8} op={0.55}/>
-
-        {/* ── Subtítulo ── */}
-        <text x="150" y="230" fontFamily="'Inter',sans-serif" fontSize="9.2" fontWeight="500"
-              textAnchor="middle" letterSpacing="4.5" fill="#9B7B8C">CLIENT JOURNEY</text>
-        <text x="150" y="248" fontFamily="'Inter',sans-serif" fontSize="9.2" fontWeight="500"
-              textAnchor="middle" letterSpacing="3.8" fill="#9B7B8C">INTELLIGENCE</text>
-      </svg>
+    <div style={{width:'100%',padding:'16px 8px 10px',display:'flex',justifyContent:'center'}}>
+      <img src="logo.png.png" alt="LYRA — Client Journey Intelligence" style={{width:200,objectFit:'contain'}}/>
     </div>
   );
 }
