@@ -252,6 +252,7 @@ function Bdg({type,label,size=11}){
     agendar:{bg:'#FEE2E2',c:'#DC2626'},
     agendado:{bg:'#FEF3C7',c:'#B45309'},
     realizado:{bg:'#DCFCE7',c:'#15803D'},
+    nao_precisa:{bg:'#EDE9FE',c:'#6D28D9'},
     vencido:{bg:'#FEE2E2',c:'#DC2626'},
     avencer:{bg:'#FEF3C7',c:'#B45309'},
     vigente:{bg:'#DCFCE7',c:'#15803D'},
@@ -263,7 +264,7 @@ function Bdg({type,label,size=11}){
   return<span style={{background:s.bg,color:s.c,padding:'2px 8px',borderRadius:20,fontSize:size,fontWeight:600,whiteSpace:'nowrap'}}>{label}</span>;
 }
 function BrunoBdg({status}){const m={critico:'Crítico',atencao:'Atenção',saudavel:'Saudável',sem_dados:'Sem dados'};return<Bdg type={status} label={m[status]||'—'}/>;}
-function ReuniaBdg({status}){const m={agendar:'Agendar',agendado:'Agendado',realizado:'Realizado'};return<Bdg type={status} label={m[status]||'—'}/>;}
+function ReuniaBdg({status}){const m={agendar:'Agendar',agendado:'Agendado',realizado:'Realizado',nao_precisa:'Não precisa'};return<Bdg type={status} label={m[status]||'—'}/>;}
 function RenovBdg({status}){
   if(status==='davi')return<Bdg type="davi" label="Davi"/>;
   if(status==='vencido')return<Bdg type="vencido" label="Vencido"/>;
@@ -377,7 +378,7 @@ function DetailPanel({c,onClose,onSave,onDelete,today}){
       <div style={box}>
         <div style={lbl}>Reunião</div>
         <select value={f.reuniaoStatus} onChange={e=>upd('reuniaoStatus',e.target.value)} disabled={ro} style={{...si,marginBottom:8,cursor:ro?'default':'pointer'}}>
-          <option value="agendar">Agendar</option><option value="agendado">Agendado</option><option value="realizado">Realizado</option>
+          <option value="agendar">Agendar</option><option value="agendado">Agendado</option><option value="realizado">Realizado</option><option value="nao_precisa">Não precisa</option>
         </select>
         {f.reuniaoStatus!=='agendar'&&<input type="date" value={f.reuniaoData||''} onChange={e=>upd('reuniaoData',e.target.value||null)} readOnly={ro} style={si}/>}
       </div>
@@ -1019,11 +1020,18 @@ function NovoClienteView({clients,onAddClient}){
 
   return<div style={{flex:1,overflowY:'auto',padding:'28px 32px',background:'transparent'}}>
     <div style={{fontFamily:"'Playfair Display',serif",fontSize:22,fontWeight:800,color:GRAFITE,marginBottom:4}}><i className="ti ti-user-plus" style={{color:P,marginRight:10}}/>Novo cliente</div>
-    <p style={{fontSize:12,color:'#B08090',marginBottom:4}}>Para <strong>clientes novos</strong> — suba o contrato e a IA preenche os dados.</p>
-    <p style={{fontSize:12,color:'#C06090',marginBottom:20,fontWeight:600}}>✦ Para atualizar um cliente existente, abra o cliente na lista e faça o upload por lá.</p>
+    <p style={{fontSize:12,color:'#B08090',marginBottom:20}}>Adicione um cliente com contrato PDF (IA preenche os dados) ou preencha manualmente.</p>
     {msg&&<div style={{background:'#DCFCE7',color:'#15803D',padding:'10px 16px',borderRadius:10,marginBottom:14,fontSize:13,fontWeight:700}}>✓ {msg}</div>}
+
+    {/* Botão manual — abre formulário vazio direto */}
+    {!form&&<button onClick={()=>setForm({nome:'',responsavel:'',tel:'',email:'',tipo:'',valorMensal:'',dataFim:null,eventoDate:null,gestor:'—',obs:''})}
+      style={{width:'100%',background:`linear-gradient(135deg,${P},${PESSEGO})`,color:'white',padding:'13px',borderRadius:16,fontSize:14,fontWeight:700,border:'none',cursor:'pointer',marginBottom:16,letterSpacing:0.3}}>
+      ✦ Preencher manualmente (sem contrato)
+    </button>}
+
     <div style={{background:'white',border:`1px solid ${P_BORDER}`,borderRadius:24,padding:'20px',marginBottom:16}}>
-      <label style={{display:'flex',flexDirection:'column',alignItems:'center',padding:'24px',border:`1px dashed ${P_BORDER}`,borderRadius:12,cursor:'pointer',marginBottom:12,background:file?'#DCFCE7':P_BG}}>
+      <div style={{fontSize:12,fontWeight:700,color:GRAFITE,marginBottom:12}}><i className="ti ti-robot" style={{color:P,marginRight:6}}/>Ou extrair dados de um contrato PDF com IA</div>
+      <label style={{display:'flex',flexDirection:'column',alignItems:'center',padding:'20px',border:`1px dashed ${P_BORDER}`,borderRadius:12,cursor:'pointer',marginBottom:12,background:file?'#DCFCE7':P_BG}}>
         <i className="ti ti-file-upload" style={{fontSize:24,color:file?'#15803D':P,marginBottom:8}}/>
         <span style={{fontSize:12,color:file?'#15803D':P,fontWeight:600}}>{file?file.name:'Clique para selecionar o contrato PDF'}</span>
         <input type="file" accept=".pdf" onChange={e=>setFile(e.target.files[0])} style={{display:'none'}}/>
