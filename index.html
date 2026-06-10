@@ -232,12 +232,12 @@ function LyraConstellation({size=72}){
 function LyraLogo({collapsed=false}){
   if(collapsed) return(
     <div style={{display:'flex',alignItems:'center',justifyContent:'center',padding:'6px 0'}}>
-      <img src="logo.png" alt="LYRA" style={{width:36,height:36,objectFit:'contain'}}/>
+      <img src="logo.svg" alt="LYRA" style={{width:36,height:36,objectFit:'contain'}}/>
     </div>
   );
   return(
     <div style={{width:'100%',padding:'16px 8px 10px',display:'flex',justifyContent:'center'}}>
-      <img src="logo.png" alt="LYRA — Client Journey Intelligence" style={{width:200,objectFit:'contain'}}/>
+      <img src="logo.svg" alt="LYRA — Client Journey Intelligence" style={{width:200,objectFit:'contain'}}/>
     </div>
   );
 }
@@ -473,10 +473,10 @@ function LyraHome({clients,onSelect,onUpd,hoje,onToggleHoje,today,userName}){
   const rCol=(i)=>i<3?'#DC2626':i<6?'#B45309':'#2563EB';
 
   const kpis=[
-    {l:'Críticos',v:nC.length,list:nC,bg:'linear-gradient(135deg,#F25D96,#FF7ABD)',icon:'ti-alert-circle',key:'critico',lineColor:'#F25D96',spark:'0,22 15,18 30,24 45,10 60,16 75,8 90,14 100,6'},
-    {l:'Atenção',v:nA.length,list:nA,bg:'linear-gradient(135deg,#FF8F73,#FFB347)',icon:'ti-eye',key:'atencao',lineColor:'#FF8F73',spark:'0,20 15,14 30,18 45,8 60,14 75,10 90,16 100,8'},
-    {l:'Agendar',v:nAg.length,list:nAg,bg:'linear-gradient(135deg,#F25D96,#D94F82)',icon:'ti-phone',key:'agendar',lineColor:'#D94F82',spark:'0,24 15,20 30,16 45,20 60,12 75,16 90,10 100,14'},
-    {l:'Contratos',v:nV.length,list:nV,bg:'linear-gradient(135deg,#B86EFF,#D7B8FF)',icon:'ti-file-text',key:'contratos',lineColor:'#B86EFF',spark:'0,18 15,22 30,14 45,18 60,10 75,14 90,8 100,12'},
+    {l:'Críticos',v:nC.length,list:nC,bg:'linear-gradient(135deg,#F9C8DD,#E64B97)',icon:'ti-alert-circle',key:'critico',spark:'0,22 20,16 40,20 55,10 70,16 85,8 100,12'},
+    {l:'Atenção',v:nA.length,list:nA,bg:'linear-gradient(135deg,#FFD0B3,#FF8F73)',icon:'ti-eye',key:'atencao',spark:'0,20 20,14 40,18 55,8 70,14 85,10 100,16'},
+    {l:'Agendar',v:nAg.length,list:nAg,bg:'linear-gradient(135deg,#E64B97,#D93E82)',icon:'ti-phone',key:'agendar',spark:'0,24 20,18 40,14 55,20 70,10 85,16 100,8'},
+    {l:'Contratos',v:nV.length,list:nV,bg:'linear-gradient(135deg,#D7B8FF,#B86EFF)',icon:'ti-file-text',key:'contratos',spark:'0,18 20,22 40,12 55,18 70,8 85,14 100,10'},
   ];
 
   return<div style={{flex:1,overflowY:'auto',padding:'28px 32px',background:'transparent'}}>
@@ -488,31 +488,24 @@ function LyraHome({clients,onSelect,onUpd,hoje,onToggleHoje,today,userName}){
     </div>
 
     {/* KPIs */}
-    <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:14,marginBottom:26}}>
+    <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:16,marginBottom:26}}>
       {kpis.map(k=><div key={k.l}
         onClick={()=>setKpiModal({title:k.l,list:k.list})}
-        style={{background:'white',borderRadius:24,padding:'20px 22px',boxShadow:'0 4px 20px rgba(242,93,150,0.10)',border:`1px solid ${P_BORDER}`,cursor:'pointer',transition:'transform 0.15s,box-shadow 0.15s',display:'flex',flexDirection:'column',gap:8}}
-        onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-2px)';e.currentTarget.style.boxShadow='0 10px 30px rgba(242,93,150,0.18)';}}
-        onMouseLeave={e=>{e.currentTarget.style.transform='';e.currentTarget.style.boxShadow='0 4px 20px rgba(242,93,150,0.10)';}}>
-        {/* ícone circular */}
-        <div style={{width:44,height:44,borderRadius:'50%',background:k.bg,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
-          <i className={`ti ${k.icon}`} style={{fontSize:20,color:'white'}}/>
-        </div>
-        {/* número + label */}
+        style={{background:k.bg,borderRadius:24,padding:'20px 22px',minHeight:170,color:'white',boxShadow:'0 8px 24px rgba(230,75,151,0.22)',cursor:'pointer',transition:'transform 0.15s,box-shadow 0.15s',display:'flex',flexDirection:'column',justifyContent:'space-between'}}
+        onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-3px)';e.currentTarget.style.boxShadow='0 14px 32px rgba(230,75,151,0.35)';}}
+        onMouseLeave={e=>{e.currentTarget.style.transform='';e.currentTarget.style.boxShadow='0 8px 24px rgba(230,75,151,0.22)';}}>
+        {/* topo: ícone + número */}
         <div>
-          <div style={{fontSize:40,fontWeight:800,lineHeight:1,color:GRAFITE}}>{k.v}</div>
-          <div style={{fontSize:12,color:'#B08090',marginTop:3,fontWeight:600}}>{k.l}</div>
-          <div style={{fontSize:10,color:P,marginTop:2,fontWeight:500}}>clique para ver</div>
+          <div style={{width:40,height:40,borderRadius:'50%',background:'rgba(255,255,255,0.25)',display:'flex',alignItems:'center',justifyContent:'center',marginBottom:12}}>
+            <i className={`ti ${k.icon}`} style={{fontSize:19,color:'white'}}/>
+          </div>
+          <div style={{fontSize:46,fontWeight:800,lineHeight:1,letterSpacing:-1}}>{k.v}</div>
+          <div style={{fontSize:13,fontWeight:700,marginTop:6,opacity:0.95}}>{k.l}</div>
+          <div style={{fontSize:10,marginTop:3,opacity:0.7,fontWeight:500}}>clique para ver</div>
         </div>
-        {/* mini sparkline */}
-        <svg width="100%" height="28" viewBox="0 0 100 28" preserveAspectRatio="none" style={{marginTop:4}}>
-          <defs>
-            <linearGradient id={`sg${k.key}`} x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor={k.lineColor} stopOpacity="0.4"/>
-              <stop offset="100%" stopColor={k.lineColor}/>
-            </linearGradient>
-          </defs>
-          <polyline points={k.spark} fill="none" stroke={`url(#sg${k.key})`} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        {/* sparkline */}
+        <svg width="100%" height="30" viewBox="0 0 100 30" preserveAspectRatio="none" style={{marginTop:8}}>
+          <polyline points={k.spark} fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       </div>)}
     </div>
