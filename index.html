@@ -1117,8 +1117,8 @@ function App(){
       // Garante que todos os clientes do CLIENTS_DEFAULT existem
       const existingIds=new Set(clients.map(c=>c.id));
       CLIENTS_DEFAULT.filter(c=>!existingIds.has(c.id)).forEach(c=>clients.push(c));
-      // Patch 4: limpa senhas salvas no localStorage (força uso da senha do código)
-      USERS.forEach(u=>{localStorage.removeItem(PASS_PREFIX+u.email);});
+      // Patch 4: limpa senha antiga da Vanessa no localStorage
+      localStorage.removeItem(PASS_PREFIX+'vanessa.dbernardino@gmail.com');
       return{...d,clients,patchVersion:DATA_PATCH};
     }
     function tryLoad(raw){
