@@ -29,7 +29,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
 
 const KEY = "lyra-cs-v4";
 const KEY_BACKUP = "lyra-cs-backup";
-const DATA_PATCH = 3;
+const DATA_PATCH = 4;
 const AUTH_KEY = "lyra-auth";
 const PASS_PREFIX = "lyra-pw-";
 function getPass(email){return localStorage.getItem(PASS_PREFIX+email)||USERS.find(u=>u.email===email)?.pass||'';}
@@ -1117,6 +1117,8 @@ function App(){
       // Garante que todos os clientes do CLIENTS_DEFAULT existem
       const existingIds=new Set(clients.map(c=>c.id));
       CLIENTS_DEFAULT.filter(c=>!existingIds.has(c.id)).forEach(c=>clients.push(c));
+      // Patch 4: limpa senhas salvas no localStorage (força uso da senha do código)
+      USERS.forEach(u=>{localStorage.removeItem(PASS_PREFIX+u.email);});
       return{...d,clients,patchVersion:DATA_PATCH};
     }
     function tryLoad(raw){
