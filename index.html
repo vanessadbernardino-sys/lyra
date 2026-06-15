@@ -29,7 +29,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
 
 const KEY = "lyra-cs-v4";
 const KEY_BACKUP = "lyra-cs-backup";
-const DATA_PATCH = 4;
+const DATA_PATCH = 5;
 const AUTH_KEY = "lyra-auth";
 const PASS_PREFIX = "lyra-pw-";
 function getPass(email){return localStorage.getItem(PASS_PREFIX+email)||USERS.find(u=>u.email===email)?.pass||'';}
@@ -300,153 +300,246 @@ function KpiModal({title,clients,onSelect,onClose}){
 
 // ─── DETAIL PANEL ──────────────────────────────────────────────────────────────
 function DetailPanel({c,onClose,onSave,onDelete,today}){
-  const ro=!onSave; // read-only para viewers
-  const[f,setF]=useState({...c});
+  const ro=!onSave;
+  const[f,setF]=useState({
+    ...c,
+    obsContrato: c.obsContrato!==undefined ? c.obsContrato : (c.obs||''),
+    obsEvento:   c.obsEvento!==undefined   ? c.obsEvento   : '',
+    dataInicio:  c.dataInicio!==undefined  ? c.dataInicio  : null,
+    contratoAnterior: c.contratoAnterior!==undefined ? c.contratoAnterior : null,
+  });
   const upd=(k,v)=>{if(ro)return;setF(p=>({...p,[k]:v}));};
   const ev=f.eventoDate?daysTo(f.eventoDate,today):null;
-  const si={border:`1px solid ${ro?'#F3E4EC':P_BORDER}`,borderRadius:8,padding:'7px 10px',fontSize:13,background:ro?P_BG:'white',color:ro?'#B08090':GRAFITE,width:'100%',cursor:ro?'default':'auto'};
-  const box={background:P_BG,border:`1px solid ${P_BORDER}`,borderRadius:12,padding:'12px 14px',marginBottom:10};
-  const lbl={fontSize:10,color:'#C06090',marginBottom:4,fontWeight:700,textTransform:'uppercase',letterSpacing:0.6};
   const[contrFile,setContrFile]=useState(null);
   const[contrLoading,setContrLoading]=useState(false);
   const[contrMsg,setContrMsg]=useState('');
+
+  // estilos base
+  const si=(zona)=>{
+    const bcs={rosa:P_BORDER,lavanda:'#DDD6FE',pessego:'#FDDCB5'};
+    const bgro={rosa:P_BG,lavanda:'#F3F0FF',pessego:'#FFF7ED'};
+    return{border:`1px solid ${bcs[zona]}`,borderRadius:8,padding:'7px 10px',fontSize:13,
+      background:ro?bgro[zona]:'white',color:ro?'#B08090':GRAFITE,width:'100%',cursor:ro?'default':'auto'};
+  };
+  const zona=(bg,border)=>({background:bg,border:`1px solid ${border}`,borderRadius:12,padding:'12px 14px',marginBottom:10});
+  const box=(bg)=>({background:bg||'rgba(255,255,255,0.75)',borderRadius:8,padding:'10px 12px',marginBottom:6});
+  const lbl=(cor)=>({fontSize:9,color:cor,marginBottom:4,fontWeight:700,textTransform:'uppercase',letterSpacing:0.7});
 
   async function analisarContrato(){
     if(!contrFile)return;
     setContrLoading(true);setContrMsg('');
     try{
       const b64=await fileToB64(contrFile);
-      const text=await askClaude(b64,'application/pdf','Analise este contrato. Extraia dados do CONTRATANTE (cliente, não a Jurassic).\nRetorne APENAS JSON:\n{"responsavel":"nome","tel":"telefone com DDI","email":"email","valorMensal":"R$ X.XXX","dataInicio":"YYYY-MM-DD","dataFim":"YYYY-MM-DD","tipo":"tipo de negócio","obs":"observação"}\nCampos não encontrados: null.');
+      const text=await askClaude(b64,'application/pdf',
+        'Analise este contrato. Extraia dados do CONTRATANTE (cliente, não a Jurassic).\nRetorne APENAS JSON:\n{"responsavel":"nome","tel":"telefone com DDI","email":"email","valorMensal":"R$ X.XXX","dataInicio":"YYYY-MM-DD","dataFim":"YYYY-MM-DD","tipo":"tipo de negócio","obsContrato":"resumo financeiro: valores, parcelas, condições de pagamento"}\nCampos não encontrados: null.'
+      );
       const parsed=parseJSON(text);
-      setF(p=>({
-        ...p,
-        contato:parsed.responsavel||p.contato,
-        tel:parsed.tel||p.tel,
-        tipo:parsed.tipo||p.tipo,
-        contratoVenc:parsed.dataFim||p.contratoVenc,
-        contratoVal:parsed.valorMensal||p.contratoVal,
-        obs:parsed.obs?`${p.obs?p.obs+' | ':''}${parsed.obs}`:p.obs,
-      }));
-      setContrMsg('✓ Dados preenchidos! Revise e salve.');
+      setF(p=>{
+        // contrato anterior = o vigente atual antes de atualizar
+        const anterior = (p.dataInicio||p.contratoVenc||p.contratoVal)
+          ? {dataInicio:p.dataInicio,dataFim:p.contratoVenc,valorMensal:p.contratoVal}
+          : p.contratoAnterior;
+        return{
+          ...p,
+          contato:     parsed.responsavel||p.contato,
+          tel:         parsed.tel||p.tel,
+          tipo:        parsed.tipo||p.tipo,
+          dataInicio:  parsed.dataInicio||p.dataInicio,
+          contratoVenc:parsed.dataFim||p.contratoVenc,
+          contratoVal: parsed.valorMensal||p.contratoVal,
+          obsContrato: parsed.obsContrato||p.obsContrato,
+          contratoAnterior: anterior,
+        };
+      });
+      setContrMsg('✓ Contrato atualizado! Revise e salve.');
     }catch(e){setContrMsg('Erro: '+e.message);}
     setContrLoading(false);
   }
 
-  return<div style={{width:430,borderLeft:`1px solid ${P_BORDER}`,background:'white',display:'flex',flexDirection:'column',overflow:'hidden',flexShrink:0}}>
-    <div style={{padding:'16px 20px',borderBottom:`1px solid ${P_BORDER}`,display:'flex',justifyContent:'space-between',alignItems:'flex-start',background:P_BG}}>
-      <div>
+  const temPerf=f.brunoRoas!=null||f.brunoCtr!=null||f.brunoFreq!=null||f.brunoCompras!=null||f.brunoCpa!=null||f.brunoSaldo!=null;
+
+  return<div style={{width:440,borderLeft:`1px solid ${P_BORDER}`,background:'white',display:'flex',flexDirection:'column',overflow:'hidden',flexShrink:0}}>
+    {/* HEADER */}
+    <div style={{padding:'14px 18px',borderBottom:`1px solid ${P_BORDER}`,display:'flex',justifyContent:'space-between',alignItems:'flex-start',background:P_BG}}>
+      <div style={{flex:1,minWidth:0}}>
         <div style={{fontFamily:"'Playfair Display',serif",fontSize:17,fontWeight:700,color:GRAFITE,marginBottom:2}}>{f.name}</div>
         {ro
-          ?<div style={{fontSize:11,color:'#B08090',marginBottom:8}}>{f.tipo}</div>
-          :<input value={f.tipo||''} onChange={e=>upd('tipo',e.target.value)} readOnly={ro} placeholder="Tipo / Negócio"
-              style={{fontSize:11,color:'#B08090',marginBottom:8,border:`1px solid ${P_BORDER}`,borderRadius:8,padding:'3px 8px',background:'white',width:'100%'}}/>
+          ?<div style={{fontSize:11,color:'#B08090',marginBottom:6}}>{f.tipo}</div>
+          :<input value={f.tipo||''} onChange={e=>upd('tipo',e.target.value)} placeholder="Tipo / Negócio"
+              style={{fontSize:11,color:'#B08090',marginBottom:6,border:`1px solid ${P_BORDER}`,borderRadius:8,padding:'3px 8px',background:'white',width:'100%'}}/>
         }
         <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
           <BrunoBdg status={f.brunoStatus}/><RenovBdg status={renovSt(f,today)}/>{f.davi&&<Bdg type="davi" label="Davi"/>}
           {ro&&<span style={{fontSize:10,background:'#F3F4F6',color:'#6B7280',padding:'2px 8px',borderRadius:20,fontWeight:600}}>🔒 Somente leitura</span>}
         </div>
       </div>
-      <button onClick={onClose} style={{background:'none',color:'#C06090',fontSize:22,padding:'2px 8px',lineHeight:1,border:'none',cursor:'pointer'}}>&times;</button>
+      <button onClick={onClose} style={{background:'none',color:'#C06090',fontSize:22,padding:'2px 8px',lineHeight:1,border:'none',cursor:'pointer',flexShrink:0}}>&times;</button>
     </div>
-    <div style={{flex:1,overflowY:'auto',padding:'14px 18px'}}>
-      <div style={box}>
-        <div style={lbl}>Motivo na fila</div>
-        <div style={{fontSize:12,color:GRAFITE}}>{getMotivo(f,today)||'Monitoramento padrão'}</div>
-        <div style={{fontSize:10,color:'#C06090',marginTop:3}}>Score: {calcScore(f,today).toFixed(1)}</div>
-      </div>
 
-      <div style={box}>
-        <div style={lbl}>Contato</div>
-        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8,marginBottom:8}}>
-          <div>
-            <div style={lbl}>Gestor</div>
-            <select value={f.gestor} onChange={e=>upd('gestor',e.target.value)} disabled={ro} style={{...si,cursor:ro?'default':'pointer'}}>
-              {['Samuel','Felício','Gabriel','Bruno','—'].map(g=><option key={g} value={g}>{g}</option>)}
+    <div style={{flex:1,overflowY:'auto',padding:'12px 16px'}}>
+
+      {/* ── ZONA ROSA — CLIENTE ── */}
+      <div style={zona('#FFF6F8','#FDEBEF')}>
+        <div style={{fontSize:9,fontWeight:700,color:'#D94F82',textTransform:'uppercase',letterSpacing:0.8,marginBottom:8,display:'flex',alignItems:'center',gap:5}}>
+          <span style={{width:6,height:6,borderRadius:'50%',background:'#F25D96',display:'inline-block'}}/>Cliente
+        </div>
+
+        <div style={box()}>
+          <div style={lbl('#D94F82')}>Motivo na fila</div>
+          <div style={{fontSize:12,color:GRAFITE}}>{getMotivo(f,today)||'Monitoramento padrão'}</div>
+          <div style={{fontSize:10,color:'#C06090',marginTop:2}}>Score: {calcScore(f,today).toFixed(1)}</div>
+        </div>
+
+        <div style={box()}>
+          <div style={lbl('#D94F82')}>Contato</div>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8,marginBottom:8}}>
+            <div>
+              <div style={lbl('#D94F82')}>Gestor</div>
+              <select value={f.gestor} onChange={e=>upd('gestor',e.target.value)} disabled={ro} style={{...si('rosa'),cursor:ro?'default':'pointer'}}>
+                {['Samuel','Felício','Gabriel','Bruno','—'].map(g=><option key={g} value={g}>{g}</option>)}
+              </select>
+            </div>
+            <div>
+              <div style={lbl('#D94F82')}>Responsável</div>
+              <input value={f.contato} onChange={e=>upd('contato',e.target.value)} readOnly={ro} style={si('rosa')}/>
+            </div>
+          </div>
+          <div style={lbl('#D94F82')}>Telefone / WhatsApp</div>
+          <div style={{display:'flex',gap:8,alignItems:'center'}}>
+            <input value={f.tel} onChange={e=>upd('tel',e.target.value)} readOnly={ro} style={{...si('rosa'),flex:1}}/>
+            {f.tel&&f.tel!=='—'&&<a href={`https://wa.me/${f.tel.replace(/\D/g,'')}`} target="_blank" rel="noreferrer"
+              style={{color:'#25D366',fontSize:20,textDecoration:'none',flexShrink:0}}>
+              <i className="ti ti-brand-whatsapp"/>
+            </a>}
+          </div>
+        </div>
+
+        <div style={box()}>
+          <div style={lbl('#D94F82')}>Reunião</div>
+          <select value={f.reuniaoStatus} onChange={e=>upd('reuniaoStatus',e.target.value)} disabled={ro} style={{...si('rosa'),marginBottom:8,cursor:ro?'default':'pointer'}}>
+            <option value="agendar">Agendar</option><option value="agendado">Agendado</option>
+            <option value="realizado">Realizado</option><option value="nao_precisa">Não precisa</option>
+          </select>
+          {f.reuniaoStatus!=='agendar'&&<input type="date" value={f.reuniaoData||''} onChange={e=>upd('reuniaoData',e.target.value||null)} readOnly={ro} style={si('rosa')}/>}
+        </div>
+
+        <div style={box()}>
+          <div style={lbl('#D94F82')}>Status do cliente</div>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8}}>
+            <select value={f.status} onChange={e=>upd('status',e.target.value)} disabled={ro} style={{...si('rosa'),cursor:ro?'default':'pointer'}}>
+              <option value="ativo">Ativo</option><option value="pausado">Pausado</option>
             </select>
+            <div>
+              <div style={lbl('#D94F82')}>Último contato</div>
+              <input type="date" value={f.ultimoContato||''} onChange={e=>upd('ultimoContato',e.target.value||null)} readOnly={ro} style={si('rosa')}/>
+            </div>
           </div>
-          <div>
-            <div style={lbl}>Pessoa</div>
-            <input value={f.contato} onChange={e=>upd('contato',e.target.value)} readOnly={ro} style={si}/>
+        </div>
+      </div>
+
+      {/* ── ZONA LAVANDA — EVENTO ── */}
+      <div style={zona('#F3F0FF','#DDD6FE')}>
+        <div style={{fontSize:9,fontWeight:700,color:'#7C3AED',textTransform:'uppercase',letterSpacing:0.8,marginBottom:8,display:'flex',alignItems:'center',gap:5}}>
+          <span style={{width:6,height:6,borderRadius:'50%',background:'#7C3AED',display:'inline-block'}}/>Evento
+        </div>
+
+        <div style={box()}>
+          <div style={{display:'grid',gridTemplateColumns:'1fr auto',gap:8,alignItems:'end',marginBottom:8}}>
+            <div>
+              <div style={lbl('#7C3AED')}>Data do evento</div>
+              <input type="date" value={f.eventoDate||''} onChange={e=>upd('eventoDate',e.target.value||null)} readOnly={ro} style={si('lavanda')}/>
+            </div>
+            {ev!=null&&<div style={{background:'#EDE9FE',color:'#5B21B6',fontSize:11,fontWeight:700,padding:'5px 10px',borderRadius:6,whiteSpace:'nowrap',alignSelf:'flex-end'}}>
+              {ev<=0?'Evento passou':`${ev}d`}
+            </div>}
           </div>
+          <div style={lbl('#7C3AED')}>Observações do evento</div>
+          <textarea value={f.obsEvento||''} onChange={e=>upd('obsEvento',e.target.value)} rows={3}
+            placeholder="Datas, locais, detalhes do evento..." readOnly={ro}
+            style={{...si('lavanda'),resize:ro?'none':'vertical'}}/>
         </div>
-        <div style={lbl}>Telefone / WhatsApp</div>
-        <div style={{display:'flex',gap:8,alignItems:'center'}}>
-          <input value={f.tel} onChange={e=>upd('tel',e.target.value)} readOnly={ro} style={{...si,flex:1}}/>
-          {f.tel&&f.tel!=='—'&&<a href={`https://wa.me/${f.tel.replace(/\D/g,'')}`} target="_blank" rel="noreferrer"
-            style={{color:'#25D366',fontSize:20,textDecoration:'none',flexShrink:0}}>
-            <i className="ti ti-brand-whatsapp"/>
-          </a>}
-        </div>
-      </div>
 
-      <div style={box}>
-        <div style={lbl}>Reunião</div>
-        <select value={f.reuniaoStatus} onChange={e=>upd('reuniaoStatus',e.target.value)} disabled={ro} style={{...si,marginBottom:8,cursor:ro?'default':'pointer'}}>
-          <option value="agendar">Agendar</option><option value="agendado">Agendado</option><option value="realizado">Realizado</option><option value="nao_precisa">Não precisa</option>
-        </select>
-        {f.reuniaoStatus!=='agendar'&&<input type="date" value={f.reuniaoData||''} onChange={e=>upd('reuniaoData',e.target.value||null)} readOnly={ro} style={si}/>}
-      </div>
-
-      <div style={box}>
-        <div style={lbl}>Evento & Contrato</div>
-        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8,marginBottom:8}}>
-          <div><div style={lbl}>Data do evento</div><input type="date" value={f.eventoDate||''} onChange={e=>upd('eventoDate',e.target.value||null)} readOnly={ro} style={si}/></div>
-          <div><div style={lbl}>Vencimento</div><input type="date" value={f.contratoVenc||''} onChange={e=>upd('contratoVenc',e.target.value||null)} readOnly={ro} style={si}/></div>
-        </div>
-        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8}}>
-          <div>
-            <div style={lbl}>Valor/mês</div>
-            <input value={f.contratoVal||''} onChange={e=>upd('contratoVal',e.target.value)} readOnly={ro} style={si}/>
+        {temPerf&&<div style={box()}>
+          <div style={lbl('#7C3AED')}>Performance — último relatório</div>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:6}}>
+            {f.brunoRoas!=null&&<div><div style={{fontSize:9,color:'#7C3AED',fontWeight:700,textTransform:'uppercase',letterSpacing:0.5}}>ROAS</div><div style={{fontSize:14,fontWeight:700,color:f.brunoRoas<1?'#DC2626':f.brunoRoas<2?'#D97706':'#16A34A'}}>{f.brunoRoas}x</div></div>}
+            {f.brunoGasto>0&&<div><div style={{fontSize:9,color:'#7C3AED',fontWeight:700,textTransform:'uppercase',letterSpacing:0.5}}>Gasto</div><div style={{fontSize:13,color:GRAFITE,fontWeight:600}}>{f.brunoGasto.toLocaleString('pt-BR',{minimumFractionDigits:2})}</div></div>}
+            {f.brunoCtr!=null&&<div><div style={{fontSize:9,color:'#7C3AED',fontWeight:700,textTransform:'uppercase',letterSpacing:0.5}}>CTR</div><div style={{fontSize:13,color:f.brunoCtr<1?'#DC2626':GRAFITE,fontWeight:600}}>{f.brunoCtr}%</div></div>}
+            {f.brunoFreq!=null&&<div><div style={{fontSize:9,color:'#7C3AED',fontWeight:700,textTransform:'uppercase',letterSpacing:0.5}}>Frequência</div><div style={{fontSize:13,color:f.brunoFreq>=6?'#DC2626':f.brunoFreq>=4?'#D97706':GRAFITE,fontWeight:f.brunoFreq>=6?700:600}}>{f.brunoFreq}{f.brunoFreq>=6?' ⚠':''}</div></div>}
+            {f.brunoCompras!=null&&<div><div style={{fontSize:9,color:'#7C3AED',fontWeight:700,textTransform:'uppercase',letterSpacing:0.5}}>Compras</div><div style={{fontSize:13,color:f.brunoCompras===0?'#DC2626':GRAFITE,fontWeight:600}}>{f.brunoCompras}{f.brunoCompras===0?' ⚠':''}</div></div>}
+            {f.brunoCpa!=null&&<div><div style={{fontSize:9,color:'#7C3AED',fontWeight:700,textTransform:'uppercase',letterSpacing:0.5}}>CPA</div><div style={{fontSize:13,color:GRAFITE,fontWeight:600}}>{f.brunoCpa}</div></div>}
+            {f.brunoSaldo!=null&&<div style={{gridColumn:'1/-1'}}><div style={{fontSize:9,color:'#7C3AED',fontWeight:700,textTransform:'uppercase',letterSpacing:0.5}}>Saldo</div><div style={{fontSize:13,color:GRAFITE,fontWeight:600}}>{f.brunoSaldo}</div></div>}
           </div>
-          <div><div style={lbl}>Dias p/ evento</div><div style={{fontSize:13,color:ev!=null&&ev<=10?'#DC2626':GRAFITE,fontWeight:ev!=null&&ev<=10?700:400,paddingTop:8}}>{ev!=null?`${ev}d`:'—'}</div></div>
+        </div>}
+
+        <div style={box()}>
+          <div style={lbl('#7C3AED')}>Alerta de churn</div>
+          <select value={f.alerta||''} onChange={e=>upd('alerta',e.target.value||null)} disabled={ro} style={{...si('lavanda'),cursor:ro?'default':'pointer'}}>
+            <option value="">OK — sem alerta</option>
+            <option value="reclamacao">Reclamação (+20pts)</option>
+            <option value="davi">Davi solicitou (+15pts)</option>
+          </select>
         </div>
       </div>
 
-      {(f.brunoRoas!=null||f.brunoCtr!=null||f.brunoFreq!=null||f.brunoCompras!=null||f.brunoCpa!=null||f.brunoSaldo!=null)&&<div style={box}>
-        <div style={lbl}>Performance (último relatório)</div>
-        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:6}}>
-          {f.brunoRoas!=null&&<div><div style={{fontSize:9,color:'#C06090',fontWeight:700,textTransform:'uppercase',letterSpacing:0.5}}>ROAS</div><div style={{fontSize:14,fontWeight:700,color:f.brunoRoas<1?'#DC2626':f.brunoRoas<2?'#D97706':'#16A34A'}}>{f.brunoRoas}x</div></div>}
-          {f.brunoGasto>0&&<div><div style={{fontSize:9,color:'#C06090',fontWeight:700,textTransform:'uppercase',letterSpacing:0.5}}>Gasto</div><div style={{fontSize:13,color:GRAFITE,fontWeight:600}}>{f.brunoGasto.toLocaleString('pt-BR',{minimumFractionDigits:2})}</div></div>}
-          {f.brunoCtr!=null&&<div><div style={{fontSize:9,color:'#C06090',fontWeight:700,textTransform:'uppercase',letterSpacing:0.5}}>CTR</div><div style={{fontSize:13,color:f.brunoCtr<1?'#DC2626':GRAFITE,fontWeight:600}}>{f.brunoCtr}%</div></div>}
-          {f.brunoFreq!=null&&<div><div style={{fontSize:9,color:'#C06090',fontWeight:700,textTransform:'uppercase',letterSpacing:0.5}}>Frequência</div><div style={{fontSize:13,color:f.brunoFreq>=6?'#DC2626':f.brunoFreq>=4?'#D97706':GRAFITE,fontWeight:f.brunoFreq>=6?700:600}}>{f.brunoFreq}{f.brunoFreq>=6?' ⚠':''}</div></div>}
-          {f.brunoCompras!=null&&<div><div style={{fontSize:9,color:'#C06090',fontWeight:700,textTransform:'uppercase',letterSpacing:0.5}}>Compras</div><div style={{fontSize:13,color:f.brunoCompras===0?'#DC2626':GRAFITE,fontWeight:600}}>{f.brunoCompras}{f.brunoCompras===0?' ⚠':''}</div></div>}
-          {f.brunoCpa!=null&&<div><div style={{fontSize:9,color:'#C06090',fontWeight:700,textTransform:'uppercase',letterSpacing:0.5}}>CPA</div><div style={{fontSize:13,color:GRAFITE,fontWeight:600}}>{f.brunoCpa}</div></div>}
-          {f.brunoSaldo!=null&&<div><div style={{fontSize:9,color:'#C06090',fontWeight:700,textTransform:'uppercase',letterSpacing:0.5}}>Saldo</div><div style={{fontSize:13,color:GRAFITE,fontWeight:600}}>{f.brunoSaldo}</div></div>}
+      {/* ── ZONA PÊSSEGO — CONTRATO ── */}
+      <div style={zona('#FFF7ED','#FDDCB5')}>
+        <div style={{fontSize:9,fontWeight:700,color:'#C2410C',textTransform:'uppercase',letterSpacing:0.8,marginBottom:8,display:'flex',alignItems:'center',gap:5}}>
+          <span style={{width:6,height:6,borderRadius:'50%',background:'#C2410C',display:'inline-block'}}/>Contrato
         </div>
-      </div>}
 
-      <div style={box}>
-        <div style={lbl}>Alerta churn</div>
-        <select value={f.alerta||''} onChange={e=>upd('alerta',e.target.value||null)} disabled={ro} style={{...si,cursor:ro?'default':'pointer'}}>
-          <option value="">OK — sem alerta</option><option value="reclamacao">Reclamação (+20pts)</option><option value="davi">Davi solicitou (+15pts)</option>
-        </select>
+        <div style={box()}>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:6}}>
+            <div style={lbl('#C2410C')}>Contrato vigente</div>
+            <span style={{fontSize:9,background:'#D1FAE5',color:'#065F46',padding:'2px 7px',borderRadius:4,fontWeight:700}}>Vigente</span>
+          </div>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8,marginBottom:8}}>
+            <div>
+              <div style={lbl('#C2410C')}>Data de início</div>
+              <input type="date" value={f.dataInicio||''} onChange={e=>upd('dataInicio',e.target.value||null)} readOnly={ro} style={si('pessego')}/>
+            </div>
+            <div>
+              <div style={lbl('#C2410C')}>Data de fim</div>
+              <input type="date" value={f.contratoVenc||''} onChange={e=>upd('contratoVenc',e.target.value||null)} readOnly={ro} style={si('pessego')}/>
+            </div>
+          </div>
+          <div style={{marginBottom:8}}>
+            <div style={lbl('#C2410C')}>Valor / mês</div>
+            <input value={f.contratoVal||''} onChange={e=>upd('contratoVal',e.target.value)} readOnly={ro} style={si('pessego')}/>
+          </div>
+          <div style={lbl('#C2410C')}>Observações do contrato</div>
+          <textarea value={f.obsContrato||''} onChange={e=>upd('obsContrato',e.target.value)} rows={3}
+            placeholder="Condições financeiras, parcelas, forma de pagamento..." readOnly={ro}
+            style={{...si('pessego'),resize:ro?'none':'vertical'}}/>
+        </div>
+
+        {f.contratoAnterior&&(f.contratoAnterior.dataFim||f.contratoAnterior.valorMensal)&&
+          <div style={{background:'rgba(255,255,255,0.45)',border:'0.5px dashed #FBBF24',borderRadius:8,padding:'8px 10px',opacity:0.8,marginBottom:6}}>
+            <div style={{fontSize:9,color:'#92400E',fontWeight:700,textTransform:'uppercase',letterSpacing:0.6,marginBottom:5,display:'flex',alignItems:'center',gap:4}}>
+              <i className="ti ti-archive" style={{fontSize:11}}/> Contrato anterior — encerrado
+            </div>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:6}}>
+              <div><div style={{fontSize:8,color:'#9CA3AF',textTransform:'uppercase',letterSpacing:0.5,marginBottom:2}}>Início</div><div style={{fontSize:11,color:'#6B7280'}}>{fmtFull(f.contratoAnterior.dataInicio)||'—'}</div></div>
+              <div><div style={{fontSize:8,color:'#9CA3AF',textTransform:'uppercase',letterSpacing:0.5,marginBottom:2}}>Fim</div><div style={{fontSize:11,color:'#6B7280'}}>{fmtFull(f.contratoAnterior.dataFim)||'—'}</div></div>
+              <div><div style={{fontSize:8,color:'#9CA3AF',textTransform:'uppercase',letterSpacing:0.5,marginBottom:2}}>Valor/mês</div><div style={{fontSize:11,color:'#6B7280'}}>{f.contratoAnterior.valorMensal||'—'}</div></div>
+            </div>
+          </div>
+        }
+
+        {onSave&&<div style={{marginBottom:6}}>
+          <div style={lbl('#C2410C')}>Atualizar com contrato (PDF)</div>
+          <label style={{display:'flex',alignItems:'center',gap:8,padding:'8px 10px',border:`1px dashed ${P_BORDER}`,borderRadius:10,cursor:'pointer',background:contrFile?'#F0FDF4':'#FFF7ED',marginBottom:6}}>
+            <i className="ti ti-file-upload" style={{color:contrFile?'#16A34A':'#C2410C',fontSize:16}}/>
+            <span style={{fontSize:12,color:contrFile?'#16A34A':'#C2410C',fontWeight:600,flex:1,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{contrFile?contrFile.name:'Selecionar PDF do contrato'}</span>
+            <input type="file" accept=".pdf" onChange={e=>setContrFile(e.target.files[0])} style={{display:'none'}}/>
+          </label>
+          {contrMsg&&<div style={{fontSize:11,color:contrMsg.startsWith('✓')?'#16A34A':'#DC2626',marginBottom:6,fontWeight:600}}>{contrMsg}</div>}
+          <button onClick={analisarContrato} disabled={!contrFile||contrLoading}
+            style={{width:'100%',background:!contrFile||contrLoading?'#F3F4F6':P,color:!contrFile||contrLoading?'#9CA3AF':'white',padding:'8px',borderRadius:10,fontSize:12,fontWeight:700,border:'none',cursor:!contrFile||contrLoading?'not-allowed':'pointer'}}>
+            {contrLoading?'Lendo contrato...':'✦ Extrair dados com IA'}
+          </button>
+        </div>}
       </div>
-
-      <div style={box}>
-        <div style={lbl}>Observações</div>
-        <textarea value={f.obs||''} onChange={e=>upd('obs',e.target.value)} rows={3} placeholder="Anotações..." readOnly={ro} style={{...si,resize:ro?'none':'vertical'}}/>
-        <div style={{marginTop:8}}><div style={lbl}>Último contato</div><input type="date" value={f.ultimoContato||''} onChange={e=>upd('ultimoContato',e.target.value||null)} readOnly={ro} style={si}/></div>
-      </div>
-
-      <div style={box}>
-        <div style={lbl}>Status do cliente</div>
-        <select value={f.status} onChange={e=>upd('status',e.target.value)} disabled={ro} style={{...si,cursor:ro?'default':'pointer'}}>
-          <option value="ativo">Ativo</option><option value="pausado">Pausado</option>
-        </select>
-      </div>
-
-      {onSave&&<div style={box}>
-        <div style={lbl}>📄 Atualizar com contrato (PDF)</div>
-        <label style={{display:'flex',alignItems:'center',gap:8,padding:'8px 10px',border:`1px dashed ${P_BORDER}`,borderRadius:10,cursor:'pointer',background:contrFile?'#F0FDF4':P_BG,marginBottom:8}}>
-          <i className="ti ti-file-upload" style={{color:contrFile?'#16A34A':P,fontSize:16}}/>
-          <span style={{fontSize:12,color:contrFile?'#16A34A':P,fontWeight:600,flex:1,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{contrFile?contrFile.name:'Selecionar PDF do contrato'}</span>
-          <input type="file" accept=".pdf" onChange={e=>setContrFile(e.target.files[0])} style={{display:'none'}}/>
-        </label>
-        {contrMsg&&<div style={{fontSize:11,color:contrMsg.startsWith('✓')?'#16A34A':'#DC2626',marginBottom:6,fontWeight:600}}>{contrMsg}</div>}
-        <button onClick={analisarContrato} disabled={!contrFile||contrLoading} style={{width:'100%',background:!contrFile||contrLoading?'#F3F4F6':P,color:!contrFile||contrLoading?'#9CA3AF':'white',padding:'8px',borderRadius:10,fontSize:12,fontWeight:700,border:'none',cursor:!contrFile||contrLoading?'not-allowed':'pointer'}}>
-          {contrLoading?'Lendo contrato...':'✦ Extrair dados com IA'}
-        </button>
-      </div>}
 
       {onSave&&<button onClick={()=>onSave(c.id,f)} style={{width:'100%',background:`linear-gradient(135deg,${P},${P_DARK})`,color:'white',padding:'12px',borderRadius:16,fontSize:14,fontWeight:700,border:'none',cursor:'pointer',marginBottom:8,letterSpacing:0.3}}>
         Salvar alterações
@@ -1016,7 +1109,7 @@ function NovoClienteView({clients,onAddClient}){
   function confirmar(){
     if(!form?.nome){setError('Nome do cliente é obrigatório');return;}
     const newId=Math.max(0,...clients.map(c=>c.id))+1;
-    onAddClient({id:newId,name:form.nome,gestor:form.gestor||'—',contato:form.responsavel||'—',tel:form.tel||'—',tipo:form.tipo||'—',eventoDate:form.eventoDate||null,davi:false,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:form.dataFim||null,contratoVal:form.valorMensal||'—',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:form.obs||'',ultimoContato:null});
+    onAddClient({id:newId,name:form.nome,gestor:form.gestor||'—',contato:form.responsavel||'—',tel:form.tel||'—',tipo:form.tipo||'—',eventoDate:form.eventoDate||null,davi:false,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,dataInicio:form.dataInicio||null,contratoVenc:form.dataFim||null,contratoVal:form.valorMensal||'—',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',obsContrato:form.obsContrato||'',obsEvento:form.obsEvento||'',contratoAnterior:null,ultimoContato:null});
     setMsg(`${form.nome} adicionado com sucesso!`);setForm(null);setFile(null);setTimeout(()=>setMsg(''),5000);
   }
 
@@ -1028,7 +1121,7 @@ function NovoClienteView({clients,onAddClient}){
     {msg&&<div style={{background:'#DCFCE7',color:'#15803D',padding:'10px 16px',borderRadius:10,marginBottom:14,fontSize:13,fontWeight:700}}>✓ {msg}</div>}
 
     {/* Botão manual — abre formulário vazio direto */}
-    {!form&&<button onClick={()=>setForm({nome:'',responsavel:'',tel:'',email:'',tipo:'',valorMensal:'',dataFim:null,eventoDate:null,gestor:'—',obs:''})}
+    {!form&&<button onClick={()=>setForm({nome:'',responsavel:'',tel:'',email:'',tipo:'',valorMensal:'',dataInicio:null,dataFim:null,eventoDate:null,gestor:'—',obs:'',obsContrato:'',obsEvento:''})}
       style={{width:'100%',background:`linear-gradient(135deg,${P},${PESSEGO})`,color:'white',padding:'13px',borderRadius:16,fontSize:14,fontWeight:700,border:'none',cursor:'pointer',marginBottom:16,letterSpacing:0.3}}>
       ✦ Preencher manualmente (sem contrato)
     </button>}
@@ -1123,6 +1216,16 @@ function App(){
       CLIENTS_DEFAULT.filter(c=>!existingIds.has(c.id)).forEach(c=>clients.push(c));
       // Patch 4: limpa senha antiga da Vanessa no localStorage
       localStorage.removeItem(PASS_PREFIX+'vanessa.dbernardino@gmail.com');
+      // Patch 5: adiciona campos obsEvento, obsContrato, dataInicio, contratoAnterior
+      if(pv<5){
+        clients=clients.map(c=>({
+          ...c,
+          obsContrato: c.obsContrato!==undefined ? c.obsContrato : (c.obs||''),
+          obsEvento:   c.obsEvento!==undefined   ? c.obsEvento   : '',
+          dataInicio:  c.dataInicio!==undefined  ? c.dataInicio  : null,
+          contratoAnterior: c.contratoAnterior!==undefined ? c.contratoAnterior : null,
+        }));
+      }
       return{...d,clients,patchVersion:DATA_PATCH};
     }
     function tryLoad(raw){
