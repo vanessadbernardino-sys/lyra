@@ -32,17 +32,24 @@ const KEY_BACKUP = "lyra-cs-backup";
 const DATA_PATCH = 5;
 const AUTH_KEY = "lyra-auth";
 const PASS_PREFIX = "lyra-pw-";
-function getPass(email){return localStorage.getItem(PASS_PREFIX+email)||USERS.find(u=>u.email===email)?.pass||'';}
-function savePass(email,pass){localStorage.setItem(PASS_PREFIX+email,pass);}
+function getHash(email){return localStorage.getItem(PASS_PREFIX+email)||USERS.find(u=>u.email===email)?.hash||'';}
+async function savePass(email,pass){const h=await sha256(pass);localStorage.setItem(PASS_PREFIX+email,h);}
+async function checkPass(email,pass){const h=await sha256(pass);return h===getHash(email);}
+// Limpa senhas em texto puro do localStorage (migração para hash)
+USERS.forEach(u=>{const s=localStorage.getItem(PASS_PREFIX+u.email);if(s&&s.length!==64)localStorage.removeItem(PASS_PREFIX+u.email);});
 
 // ─── USUÁRIOS E PERMISSÕES ────────────────────────────────────────────────────
 const USERS=[
-  {email:'vanessa.dbernardino@gmail.com',  pass:'Adm@2801',    role:'admin',  name:'Vanessa'},
-  {email:'diretoria@jurassicmarketing.com.br', pass:'Davi@2026', role:'editor', name:'Davi'},
-  {email:'timejurassic01@gmail.com',       pass:'Time@2026',    role:'viewer', name:'Time Jurassic'},
-  {email:'comercial@jurassicmarketing.com.br', pass:'Comercial@2026', role:'viewer', name:'Comercial'},
+  {email:'vanessa.dbernardino@gmail.com',     hash:'1b2c2620ca94cfdf7982e4b4b085aa145497ac059589ee25b292e65a14aa21f7', role:'admin',  name:'Vanessa'},
+  {email:'diretoria@jurassicmarketing.com.br',hash:'5223167cc185c2cb4cdd448ac483021ef57a6e42a7226cfd0df8626d3297964c', role:'editor', name:'Davi'},
+  {email:'timejurassic01@gmail.com',          hash:'b0511786c891b9ce63de1aad63b2f0cdb61815c14636abbd8a4ff5660361a559', role:'viewer', name:'Time Jurassic'},
+  {email:'comercial@jurassicmarketing.com.br',hash:'d56bbbcd110dadb3592e0596b9e5164dc3ce58559e710cfe1756b618cd4c7535', role:'viewer', name:'Comercial'},
 ];
 // role: admin = tudo | editor = editar sem excluir | viewer = só visualizar
+async function sha256(str){
+  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
 
 // ─── LYRA PALETTE ─────────────────────────────────────────────────────────────
 const P = "#F25D96";
@@ -1164,9 +1171,9 @@ function LoginView({onLogin}){
   const[email,setEmail]=useState('');
   const[pass,setPass]=useState('');
   const[error,setError]=useState('');
-  function login(){
+  async function login(){
     const u=USERS.find(u=>u.email.toLowerCase()===email.toLowerCase().trim());
-    if(u&&getPass(u.email)===pass){setError('');onLogin(u);}
+    if(u&&await checkPass(u.email,pass)){setError('');onLogin(u);}
     else setError('E-mail ou senha incorretos.');
   }
   return<div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100vh',background:'linear-gradient(180deg,#FFF8FB 0%,#FFF0F6 100%)'}}>
@@ -1357,11 +1364,11 @@ function App(){
   const[passConfirm,setPassConfirm]=useState('');
   const[passMsg,setPassMsg]=useState('');
   const[passErr,setPassErr]=useState('');
-  function trocarSenha(){
-    if(getPass(auth.email)!==passAtual){setPassErr('Senha atual incorreta.');return;}
+  async function trocarSenha(){
+    if(!await checkPass(auth.email,passAtual)){setPassErr('Senha atual incorreta.');return;}
     if(passNova.length<6){setPassErr('Nova senha deve ter pelo menos 6 caracteres.');return;}
     if(passNova!==passConfirm){setPassErr('As senhas não coincidem.');return;}
-    savePass(auth.email,passNova);
+    await savePass(auth.email,passNova);
     setPassErr('');setPassMsg('Senha alterada com sucesso!');
     setPassAtual('');setPassNova('');setPassConfirm('');
     setTimeout(()=>{setPassMsg('');setShowPassModal(false);},2000);
