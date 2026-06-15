@@ -32,12 +32,6 @@ const KEY_BACKUP = "lyra-cs-backup";
 const DATA_PATCH = 5;
 const AUTH_KEY = "lyra-auth";
 const PASS_PREFIX = "lyra-pw-";
-function getHash(email){return localStorage.getItem(PASS_PREFIX+email)||USERS.find(u=>u.email===email)?.hash||'';}
-async function savePass(email,pass){const h=await sha256(pass);localStorage.setItem(PASS_PREFIX+email,h);}
-async function checkPass(email,pass){const h=await sha256(pass);return h===getHash(email);}
-// Limpa senhas em texto puro do localStorage (migração para hash)
-USERS.forEach(u=>{const s=localStorage.getItem(PASS_PREFIX+u.email);if(s&&s.length!==64)localStorage.removeItem(PASS_PREFIX+u.email);});
-
 // ─── USUÁRIOS E PERMISSÕES ────────────────────────────────────────────────────
 const USERS=[
   {email:'vanessa.dbernardino@gmail.com',     hash:'1b2c2620ca94cfdf7982e4b4b085aa145497ac059589ee25b292e65a14aa21f7', role:'admin',  name:'Vanessa'},
@@ -50,6 +44,11 @@ async function sha256(str){
   const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));
   return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
+function getHash(email){return localStorage.getItem(PASS_PREFIX+email)||USERS.find(u=>u.email===email)?.hash||'';}
+async function savePass(email,pass){const h=await sha256(pass);localStorage.setItem(PASS_PREFIX+email,h);}
+async function checkPass(email,pass){const h=await sha256(pass);return h===getHash(email);}
+// Limpa senhas em texto puro do localStorage (migração para hash)
+USERS.forEach(u=>{const s=localStorage.getItem(PASS_PREFIX+u.email);if(s&&s.length!==64)localStorage.removeItem(PASS_PREFIX+u.email);});
 
 // ─── LYRA PALETTE ─────────────────────────────────────────────────────────────
 const P = "#F25D96";
