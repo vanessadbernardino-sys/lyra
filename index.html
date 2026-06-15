@@ -335,17 +335,21 @@ function DetailPanel({c,onClose,onSave,onDelete,today}){
       );
       const parsed=parseJSON(text);
       setF(p=>{
-        // contrato anterior = o vigente atual antes de atualizar
-        const anterior = (p.dataInicio||p.contratoVenc||p.contratoVal)
-          ? {dataInicio:p.dataInicio,dataFim:p.contratoVenc,valorMensal:p.contratoVal}
+        // Só arquiva como "contrato anterior" se o PDF traz datas DIFERENTES do contrato atual
+        // (mesmo contrato subido de novo só preenche campos vazios)
+        const novaDataFim   = parsed.dataFim   || p.contratoVenc;
+        const novaDataInicio= parsed.dataInicio || p.dataInicio;
+        const eNovoContrato = parsed.dataFim && p.contratoVenc && parsed.dataFim !== p.contratoVenc;
+        const anterior = eNovoContrato
+          ? {dataInicio:p.dataInicio, dataFim:p.contratoVenc, valorMensal:p.contratoVal}
           : p.contratoAnterior;
         return{
           ...p,
           contato:     parsed.responsavel||p.contato,
           tel:         parsed.tel||p.tel,
           tipo:        parsed.tipo||p.tipo,
-          dataInicio:  parsed.dataInicio||p.dataInicio,
-          contratoVenc:parsed.dataFim||p.contratoVenc,
+          dataInicio:  novaDataInicio,
+          contratoVenc:novaDataFim,
           contratoVal: parsed.valorMensal||p.contratoVal,
           obsContrato: parsed.obsContrato||p.obsContrato,
           contratoAnterior: anterior,
