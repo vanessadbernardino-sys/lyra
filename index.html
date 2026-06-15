@@ -894,7 +894,7 @@ function ClientesView({clients,onSelect,today}){
             <div>
               <div style={{fontSize:13,fontWeight:600,color:GRAFITE}}>{c.name}</div>
               {c.contato!=='—'&&<div style={{fontSize:10,color:'#B08090',marginTop:1}}>{c.contato}</div>}
-              {c.obs&&<div style={{fontSize:10,color:'#C06090',marginTop:1,fontStyle:'italic'}}>{c.obs.substring(0,45)}{c.obs.length>45?'…':''}</div>}
+              {(c.obsEvento||c.obsContrato)&&<div style={{fontSize:10,color:'#C06090',marginTop:1,fontStyle:'italic'}}>{(c.obsEvento||c.obsContrato).substring(0,45)}{(c.obsEvento||c.obsContrato).length>45?'…':''}</div>}
             </div>
             <div style={{alignSelf:'center',fontSize:12,color:'#6B7280'}}>{c.gestor}</div>
             <div style={{alignSelf:'center',fontSize:11,color:'#6B7280'}}>{c.tipo.substring(0,18)}{c.tipo.length>18?'…':''}</div>
