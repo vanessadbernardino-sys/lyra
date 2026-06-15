@@ -337,7 +337,7 @@ function DetailPanel({c,onClose,onSave,onDelete,today}){
     try{
       const b64=await fileToB64(contrFile);
       const text=await askClaude(b64,'application/pdf',
-        'Analise este contrato. Extraia dados do CONTRATANTE (cliente, não a Jurassic).\nRetorne APENAS JSON:\n{"responsavel":"nome","tel":"telefone com DDI","email":"email","valorMensal":"R$ X.XXX","dataInicio":"YYYY-MM-DD","dataFim":"YYYY-MM-DD","tipo":"tipo de negócio","obsContrato":"resumo financeiro: valores, parcelas, condições de pagamento"}\nCampos não encontrados: null.'
+        'Analise este contrato. Extraia dados do CONTRATANTE (cliente, não a Jurassic).\nRetorne APENAS JSON:\n{"responsavel":"nome","tel":"telefone com DDI","email":"email","valorMensal":"R$ X.XXX","dataInicio":"YYYY-MM-DD","dataFim":"YYYY-MM-DD","tipo":"tipo de negócio","obsContrato":"string"}\n\nPara obsContrato: liste APENAS o cronograma de parcelas no formato "Parcela 1 – R$ X.XXX – [data ou condição]; Parcela 2 – R$ X.XXX – ...". Se houver serviços extras negociados além do padrão (ex: plataformas adicionais, bônus), adicione no final "PS: [negociação especial]". NÃO inclua forma de pagamento (Pix/boleto), texto jurídico, cláusulas ou informações administrativas.\n\nCampos não encontrados: null.'
       );
       const parsed=parseJSON(text);
       setF(p=>{
@@ -351,14 +351,15 @@ function DetailPanel({c,onClose,onSave,onDelete,today}){
           : p.contratoAnterior;
         return{
           ...p,
-          contato:     parsed.responsavel||p.contato,
-          tel:         parsed.tel||p.tel,
-          tipo:        parsed.tipo||p.tipo,
-          dataInicio:  novaDataInicio,
-          contratoVenc:novaDataFim,
-          contratoVal: parsed.valorMensal||p.contratoVal,
-          obsContrato: parsed.obsContrato||p.obsContrato,
+          contato:      parsed.responsavel||p.contato,
+          tel:          parsed.tel||p.tel,
+          tipo:         parsed.tipo||p.tipo,
+          dataInicio:   novaDataInicio,
+          contratoVenc: novaDataFim,
+          contratoVal:  parsed.valorMensal||p.contratoVal,
+          obsContrato:  parsed.obsContrato||p.obsContrato,
           contratoAnterior: anterior,
+          ultimoContato: todayStr(),
         };
       });
       setContrMsg('✓ Contrato atualizado! Revise e salve.');
