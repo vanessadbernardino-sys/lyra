@@ -1106,9 +1106,9 @@ function NovoClienteView({clients,onAddClient}){
     setLoading(true);setError('');setForm(null);
     try{
       const b64=await fileToB64(file);
-      const text=await askClaude(b64,'application/pdf','Analise este contrato. Extraia dados do CONTRATANTE (cliente, não a Jurassic).\nRetorne APENAS JSON:\n{"nome":"empresa","responsavel":"nome","tel":"telefone com DDI","email":"email","valorMensal":"R$ X.XXX","dataInicio":"YYYY-MM-DD","dataFim":"YYYY-MM-DD","tipo":"tipo de negócio","eventoDate":"YYYY-MM-DD","obs":"observação"}\nCampos não encontrados: null.');
+      const text=await askClaude(b64,'application/pdf','Analise este contrato. Extraia dados do CONTRATANTE (cliente, não a Jurassic).\nRetorne APENAS JSON:\n{"nome":"empresa","responsavel":"nome","tel":"telefone com DDI","email":"email","valorMensal":"R$ X.XXX","dataInicio":"YYYY-MM-DD","dataFim":"YYYY-MM-DD","tipo":"tipo de negócio","eventoDate":"YYYY-MM-DD","obsContrato":"string"}\n\nPara obsContrato: liste APENAS o cronograma de parcelas no formato "Parcela 1 – R$ X.XXX – [data ou condição]; Parcela 2 – R$ X.XXX – ...". Se houver serviços extras negociados além do padrão, adicione no final "PS: [negociação especial]". NÃO inclua forma de pagamento, texto jurídico ou cláusulas.\n\nCampos não encontrados: null.');
       const parsed=parseJSON(text);
-      setForm({...parsed,gestor:'—',davi:false});
+      setForm({...parsed,gestor:'—',davi:false,obsEvento:''});
     }catch(e){
       if(e.message==='API_KEY_MISSING')setError('Chave API não configurada. Recarregue a página para inserir.');
       else setError('Erro ao ler o contrato: '+e.message);
