@@ -1179,7 +1179,8 @@ function NovoClienteView({clients,onAddClient}){
         <div><div style={lbl}>Data do evento</div><input type="date" value={form.eventoDate||''} onChange={e=>upd('eventoDate',e.target.value||null)} style={si}/></div>
         <div><div style={lbl}>Gestor</div><select value={form.gestor||'—'} onChange={e=>upd('gestor',e.target.value)} style={{...si,cursor:'pointer'}}>{GESTORES.map(g=><option key={g} value={g}>{g}</option>)}</select></div>
       </div>
-      <div style={{marginTop:12}}><div style={lbl}>Observações</div><textarea value={form.obs||''} onChange={e=>upd('obs',e.target.value)} rows={2} style={{...si,resize:'vertical'}}/></div>
+      <div style={{marginTop:12}}><div style={lbl}>Obs. do contrato (parcelas)</div><textarea value={form.obsContrato||''} onChange={e=>upd('obsContrato',e.target.value)} rows={2} style={{...si,resize:'vertical'}} placeholder="Parcela 1 – R$ X – dia Y; Parcela 2 – ..."/></div>
+      <div style={{marginTop:8}}><div style={lbl}>Obs. do evento</div><textarea value={form.obsEvento||''} onChange={e=>upd('obsEvento',e.target.value)} rows={2} style={{...si,resize:'vertical'}} placeholder="Datas, locais, detalhes do evento..."/></div>
       <div style={{display:'flex',gap:10,marginTop:14}}>
         <button onClick={confirmar} style={{flex:1,background:P,color:'white',padding:'10px',borderRadius:12,fontSize:13,fontWeight:700,border:'none',cursor:'pointer'}}>✓ Adicionar novo cliente</button>
         <button onClick={()=>setForm(null)} style={{padding:'10px 16px',borderRadius:12,fontSize:12,border:`1px solid ${P_BORDER}`,background:'transparent',color:'#B08090',cursor:'pointer'}}>Cancelar</button>
