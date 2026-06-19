@@ -29,7 +29,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
 
 const KEY = "lyra-cs-v4";
 const KEY_BACKUP = "lyra-cs-backup";
-const DATA_PATCH = 5;
+const DATA_PATCH = 6;
 const AUTH_KEY = "lyra-auth";
 const PASS_PREFIX = "lyra-pw-";
 // ─── USUÁRIOS E PERMISSÕES ────────────────────────────────────────────────────
@@ -1259,6 +1259,10 @@ function App(){
           dataInicio:  c.dataInicio!==undefined  ? c.dataInicio  : null,
           contratoAnterior: c.contratoAnterior!==undefined ? c.contratoAnterior : null,
         }));
+      }
+      // Patch 6: renomear Retrogyn → RCountry e atualizar brunoAlias
+      if(pv<6){
+        clients=clients.map(c=>c.name==='Retrogyn'?{...c,name:'RCountry',brunoAlias:'retrogyn,rcountry'}:c);
       }
       return{...d,clients,patchVersion:DATA_PATCH};
     }
