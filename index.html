@@ -29,6 +29,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
 
 const KEY = "lyra-cs-v4";
 const KEY_BACKUP = "lyra-cs-backup";
+const GITHUB_TOKEN_KEY = "lyra-github-token";
 const DATA_PATCH = 6;
 const AUTH_KEY = "lyra-auth";
 const PASS_PREFIX = "lyra-pw-";
@@ -1381,6 +1382,8 @@ function App(){
   const[showApiModal,setShowApiModal]=useState(false);
   const[apiInput,setApiInput]=useState('');
   const[showSyncModal,setShowSyncModal]=useState(false);
+  const[syncStatus,setSyncStatus]=useState('');
+  const[githubToken,setGithubToken]=useState(()=>localStorage.getItem(GITHUB_TOKEN_KEY)||'');
 
   function exportarDados(){
     if(!data)return;
@@ -1414,6 +1417,36 @@ function App(){
     };
     reader.readAsText(file);
   }
+
+  async function sincronizarGitHub(){
+    const token=localStorage.getItem('lyra-github-token');
+    if(!token){setSyncStatus('❌ Token não configurado.');return;}
+    if(!data){return;}
+    setSyncStatus('⏳ Sincronizando...');
+    const owner='vanessadbernardino-sys';
+    const repo='lyra';
+    const path='clients-data.json';
+    const content=btoa(unescape(encodeURIComponent(JSON.stringify(data,null,2))));
+    try{
+      // Busca SHA atual do arquivo (se existir)
+      let sha=undefined;
+      const getResp=await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`,{
+        headers:{'Authorization':`token ${token}`,'Accept':'application/vnd.github.v3+json'}
+      });
+      if(getResp.ok){const f=await getResp.json();sha=f.sha;}
+      // Envia dados atualizados
+      const body={message:`Sync LYRA ${todayStr()}`,content};
+      if(sha)body.sha=sha;
+      const putResp=await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`,{
+        method:'PUT',
+        headers:{'Authorization':`token ${token}`,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
+        body:JSON.stringify(body)
+      });
+      if(putResp.ok){setSyncStatus('✅ Davi atualizado com sucesso!');}
+      else{const e=await putResp.json();setSyncStatus(`❌ Erro: ${e.message}`);}
+    }catch(e){setSyncStatus('❌ Erro de conexão.');}
+    setTimeout(()=>setSyncStatus(''),4000);
+  }
   const[showPassModal,setShowPassModal]=useState(false);
   const[passAtual,setPassAtual]=useState('');
   const[passNova,setPassNova]=useState('');
@@ -1445,19 +1478,28 @@ function App(){
   if(showSyncModal)return<div style={{position:'fixed',inset:0,background:'rgba(44,35,40,0.45)',zIndex:9999,display:'flex',alignItems:'center',justifyContent:'center'}} onClick={()=>setShowSyncModal(false)}>
     <div style={{background:'white',borderRadius:24,padding:'36px',width:440,boxShadow:'0 20px 60px rgba(184,110,255,0.2)',border:`1px solid #E9D5FF`}} onClick={e=>e.stopPropagation()}>
       <div style={{fontFamily:"'Playfair Display',serif",fontSize:22,fontWeight:700,color:'#3D1A2E',marginBottom:6}}>🔄 Sincronizar dados</div>
-      <div style={{fontSize:13,color:TEXT_SEC,marginBottom:24,lineHeight:1.6}}>Exporte sua base atualizada e envie o arquivo para o Davi. Ele importa no LYRA dele e fica com tudo sincronizado.</div>
+      <div style={{fontSize:13,color:TEXT_SEC,marginBottom:20,lineHeight:1.6}}>Envie seus dados atuais direto para o Davi via GitHub.</div>
       <div style={{background:'#FAF5FF',borderRadius:16,padding:'20px',marginBottom:16,border:'1px solid #E9D5FF'}}>
-        <div style={{fontWeight:700,color:LAVANDA,fontSize:13,marginBottom:8}}>📤 Exportar (Vanessa → Davi)</div>
-        <div style={{fontSize:12,color:TEXT_SEC,marginBottom:12}}>Baixa um arquivo <strong>.json</strong> com toda a base atual. Envie pelo WhatsApp ou e-mail para o Davi.</div>
-        <button onClick={exportarDados} style={{background:LAVANDA,color:'white',border:'none',borderRadius:12,padding:'10px 20px',fontSize:13,fontWeight:700,cursor:'pointer',width:'100%'}}>⬇ Baixar backup da base</button>
+        <div style={{fontWeight:700,color:LAVANDA,fontSize:13,marginBottom:8}}>🚀 Enviar para o Davi agora</div>
+        <div style={{fontSize:12,color:TEXT_SEC,marginBottom:10}}>Atualiza o arquivo <strong>clients-data.json</strong> no GitHub. O Brain do Davi lê automaticamente.</div>
+        {!githubToken&&<div style={{marginBottom:10}}>
+          <div style={{fontSize:11,color:TEXT_SEC,marginBottom:6}}>Cole seu token do GitHub para ativar:</div>
+          <input placeholder="ghp_..." style={{width:'100%',border:`1px solid #E9D5FF`,borderRadius:10,padding:'8px 10px',fontSize:12,marginBottom:6,boxSizing:'border-box'}}
+            onChange={e=>{const v=e.target.value.trim();if(v.startsWith('ghp_')){localStorage.setItem(GITHUB_TOKEN_KEY,v);setGithubToken(v);}}}/>
+        </div>}
+        {githubToken&&<div style={{fontSize:11,color:'#15803D',marginBottom:8}}>✓ Token configurado</div>}
+        {syncStatus&&<div style={{fontSize:12,fontWeight:600,marginBottom:10,color:syncStatus.startsWith('✅')?'#15803D':syncStatus.startsWith('⏳')?LAVANDA:'#DC2626'}}>{syncStatus}</div>}
+        <button onClick={sincronizarGitHub} disabled={!githubToken} style={{background:githubToken?LAVANDA:'#D1C4E9',color:'white',border:'none',borderRadius:12,padding:'10px 20px',fontSize:13,fontWeight:700,cursor:githubToken?'pointer':'default',width:'100%'}}>🔄 Sincronizar com Davi</button>
       </div>
-      <div style={{background:'#FFF6F8',borderRadius:16,padding:'20px',marginBottom:20,border:`1px solid ${P_BORDER}`}}>
-        <div style={{fontWeight:700,color:P,fontSize:13,marginBottom:8}}>📥 Importar (recebeu do Davi)</div>
-        <div style={{fontSize:12,color:TEXT_SEC,marginBottom:12}}>Selecione o arquivo <strong>.json</strong> recebido para substituir a base local.</div>
-        <label style={{display:'block',background:P,color:'white',border:'none',borderRadius:12,padding:'10px 20px',fontSize:13,fontWeight:700,cursor:'pointer',textAlign:'center'}}>
-          ⬆ Escolher arquivo para importar
-          <input type="file" accept=".json" style={{display:'none'}} onChange={e=>importarDados(e.target.files[0])}/>
-        </label>
+      <div style={{background:'#FFF6F8',borderRadius:16,padding:'16px',marginBottom:16,border:`1px solid ${P_BORDER}`}}>
+        <div style={{fontWeight:700,color:P,fontSize:13,marginBottom:8}}>📤 Exportar / 📥 Importar manual</div>
+        <div style={{display:'flex',gap:8}}>
+          <button onClick={exportarDados} style={{flex:1,background:'transparent',color:P,border:`1px solid ${P_BORDER}`,borderRadius:12,padding:'8px',fontSize:12,fontWeight:600,cursor:'pointer'}}>⬇ Exportar .json</button>
+          <label style={{flex:1,background:'transparent',color:TEXT_SEC,border:`1px solid ${P_BORDER}`,borderRadius:12,padding:'8px',fontSize:12,fontWeight:600,cursor:'pointer',textAlign:'center'}}>
+            ⬆ Importar .json
+            <input type="file" accept=".json" style={{display:'none'}} onChange={e=>importarDados(e.target.files[0])}/>
+          </label>
+        </div>
       </div>
       <button onClick={()=>setShowSyncModal(false)} style={{width:'100%',background:'transparent',color:TEXT_SEC,border:`1px solid ${P_BORDER}`,borderRadius:12,padding:'8px',fontSize:12,cursor:'pointer'}}>Fechar</button>
     </div>
