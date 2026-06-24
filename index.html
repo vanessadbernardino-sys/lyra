@@ -1274,13 +1274,10 @@ function App(){
     const r=localStorage.getItem(KEY);
     const rb=localStorage.getItem(KEY_BACKUP);
     let loaded=null;
-    // Tenta principal
     if(r){try{loaded=tryLoad(r);}catch(e){console.warn('Principal corrompido, tentando backup...');}}
-    // Tenta backup se principal falhou
     if(!loaded&&rb){try{loaded=tryLoad(rb);}catch(e){console.warn('Backup também corrompido.');}}
     if(loaded){
-      // Reset mensal: APENAS no dia 1 do mês, e APENAS se já tinha mês anterior salvo
-      const mesAtual=todayStr().substring(0,7); // "YYYY-MM"
+      const mesAtual=todayStr().substring(0,7);
       const diaAtual=parseInt(todayStr().substring(8,10));
       if(loaded.lastResetMonth&&loaded.lastResetMonth!==mesAtual&&diaAtual===1){
         loaded={...loaded,
@@ -1288,7 +1285,6 @@ function App(){
           lastResetMonth:mesAtual
         };
       }else if(!loaded.lastResetMonth){
-        // Primeira vez — só registra o mês atual, não reseta nada
         loaded={...loaded,lastResetMonth:mesAtual};
       }
       const json=JSON.stringify(loaded);
@@ -1296,7 +1292,6 @@ function App(){
       try{localStorage.setItem(KEY_BACKUP,json);}catch(e){}
       setData(loaded);
     }else{
-      // Primeira vez ou tudo corrompido — carrega padrão
       const d={clients:CLIENTS_DEFAULT,brunoDate:null,hojeData:todayStr(),hojeIds:[],patchVersion:DATA_PATCH};
       const json=JSON.stringify(d);
       setData(d);
@@ -1385,6 +1380,40 @@ function App(){
 
   const[showApiModal,setShowApiModal]=useState(false);
   const[apiInput,setApiInput]=useState('');
+  const[showSyncModal,setShowSyncModal]=useState(false);
+
+  function exportarDados(){
+    if(!data)return;
+    const json=JSON.stringify(data,null,2);
+    const blob=new Blob([json],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download=`lyra-backup-${todayStr()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function importarDados(file){
+    if(!file)return;
+    const reader=new FileReader();
+    reader.onload=(e)=>{
+      try{
+        const parsed=JSON.parse(e.target.result);
+        if(!parsed.clients||!Array.isArray(parsed.clients))throw new Error('Arquivo inválido');
+        const json=JSON.stringify(parsed);
+        localStorage.setItem(KEY,json);
+        localStorage.setItem(KEY_BACKUP,json);
+        setData(parsed);
+        setShowSyncModal(false);
+        setSaveMsg('✓ Dados importados!');
+        setTimeout(()=>setSaveMsg(''),3000);
+      }catch(err){
+        alert('Erro ao importar: arquivo inválido.');
+      }
+    };
+    reader.readAsText(file);
+  }
   const[showPassModal,setShowPassModal]=useState(false);
   const[passAtual,setPassAtual]=useState('');
   const[passNova,setPassNova]=useState('');
@@ -1411,6 +1440,27 @@ function App(){
   if(loading)return<div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100vh',flexDirection:'column',gap:12,background:P_BG}}>
     <div style={{fontFamily:"'Playfair Display',serif",fontSize:36,fontWeight:800,color:'#5C1A3A'}}>Lyra<span style={{color:P}}>✦</span></div>
     <div style={{color:P,fontSize:13,fontWeight:600}}>Carregando...</div>
+  </div>;
+
+  if(showSyncModal)return<div style={{position:'fixed',inset:0,background:'rgba(44,35,40,0.45)',zIndex:9999,display:'flex',alignItems:'center',justifyContent:'center'}} onClick={()=>setShowSyncModal(false)}>
+    <div style={{background:'white',borderRadius:24,padding:'36px',width:440,boxShadow:'0 20px 60px rgba(184,110,255,0.2)',border:`1px solid #E9D5FF`}} onClick={e=>e.stopPropagation()}>
+      <div style={{fontFamily:"'Playfair Display',serif",fontSize:22,fontWeight:700,color:'#3D1A2E',marginBottom:6}}>🔄 Sincronizar dados</div>
+      <div style={{fontSize:13,color:TEXT_SEC,marginBottom:24,lineHeight:1.6}}>Exporte sua base atualizada e envie o arquivo para o Davi. Ele importa no LYRA dele e fica com tudo sincronizado.</div>
+      <div style={{background:'#FAF5FF',borderRadius:16,padding:'20px',marginBottom:16,border:'1px solid #E9D5FF'}}>
+        <div style={{fontWeight:700,color:LAVANDA,fontSize:13,marginBottom:8}}>📤 Exportar (Vanessa → Davi)</div>
+        <div style={{fontSize:12,color:TEXT_SEC,marginBottom:12}}>Baixa um arquivo <strong>.json</strong> com toda a base atual. Envie pelo WhatsApp ou e-mail para o Davi.</div>
+        <button onClick={exportarDados} style={{background:LAVANDA,color:'white',border:'none',borderRadius:12,padding:'10px 20px',fontSize:13,fontWeight:700,cursor:'pointer',width:'100%'}}>⬇ Baixar backup da base</button>
+      </div>
+      <div style={{background:'#FFF6F8',borderRadius:16,padding:'20px',marginBottom:20,border:`1px solid ${P_BORDER}`}}>
+        <div style={{fontWeight:700,color:P,fontSize:13,marginBottom:8}}>📥 Importar (recebeu do Davi)</div>
+        <div style={{fontSize:12,color:TEXT_SEC,marginBottom:12}}>Selecione o arquivo <strong>.json</strong> recebido para substituir a base local.</div>
+        <label style={{display:'block',background:P,color:'white',border:'none',borderRadius:12,padding:'10px 20px',fontSize:13,fontWeight:700,cursor:'pointer',textAlign:'center'}}>
+          ⬆ Escolher arquivo para importar
+          <input type="file" accept=".json" style={{display:'none'}} onChange={e=>importarDados(e.target.files[0])}/>
+        </label>
+      </div>
+      <button onClick={()=>setShowSyncModal(false)} style={{width:'100%',background:'transparent',color:TEXT_SEC,border:`1px solid ${P_BORDER}`,borderRadius:12,padding:'8px',fontSize:12,cursor:'pointer'}}>Fechar</button>
+    </div>
   </div>;
 
   if(showApiModal)return<div style={{position:'fixed',inset:0,background:'rgba(44,35,40,0.45)',zIndex:9999,display:'flex',alignItems:'center',justifyContent:'center'}} onClick={()=>setShowApiModal(false)}>
@@ -1513,6 +1563,7 @@ function App(){
           <div style={{fontSize:10,color:TEXT_SEC,marginBottom:6}}>{auth.role==='admin'?'Administradora':auth.role==='editor'?'CEO':'Visualizador'}</div>
           {saveMsg&&<div style={{fontSize:11,color:'#15803D',fontWeight:700,background:'#DCFCE7',borderRadius:10,padding:'3px 8px',marginBottom:6}}>{saveMsg}</div>}
           <button onClick={()=>{setShowPassModal(true);setPassErr('');setPassMsg('');setPassAtual('');setPassNova('');setPassConfirm('');}} style={{width:'100%',background:'transparent',color:P,border:`1px solid ${P_BORDER}`,borderRadius:12,padding:'6px',fontSize:11,cursor:'pointer',marginBottom:4,fontWeight:600}}>👤 Perfil</button>
+          {(auth.role==='admin'||auth.role==='editor')&&<button onClick={()=>setShowSyncModal(true)} style={{width:'100%',background:'transparent',color:LAVANDA,border:`1px solid #E9D5FF`,borderRadius:12,padding:'6px',fontSize:11,cursor:'pointer',marginBottom:4,fontWeight:600}}>🔄 Sincronizar dados</button>}
           <button onClick={doLogout} style={{width:'100%',background:'transparent',color:TEXT_SEC,border:`1px solid ${P_BORDER}`,borderRadius:12,padding:'6px',fontSize:11,cursor:'pointer',fontWeight:500}}>Sair</button>
         </div>
       </div>
