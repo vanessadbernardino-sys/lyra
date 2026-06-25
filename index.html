@@ -1523,7 +1523,10 @@ function App(){
           <input placeholder="ghp_..." style={{width:'100%',border:`1px solid #E9D5FF`,borderRadius:10,padding:'8px 10px',fontSize:12,marginBottom:6,boxSizing:'border-box'}}
             onChange={e=>{const v=e.target.value.trim();if(v.startsWith('ghp_')){localStorage.setItem(GITHUB_TOKEN_KEY,v);setGithubToken(v);}}}/>
         </div>}
-        {githubToken&&<div style={{fontSize:11,color:'#15803D',marginBottom:8}}>✓ Token configurado</div>}
+        {githubToken&&<div style={{fontSize:11,color:'#15803D',marginBottom:8,display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+          <span>✓ Token configurado</span>
+          <button onClick={()=>{localStorage.removeItem(GITHUB_TOKEN_KEY);setGithubToken('');}} style={{fontSize:10,color:'#DC2626',background:'none',border:'none',cursor:'pointer',textDecoration:'underline'}}>Trocar token</button>
+        </div>}
         {syncStatus&&<div style={{fontSize:12,fontWeight:600,marginBottom:10,color:syncStatus.startsWith('✅')?'#15803D':syncStatus.startsWith('⏳')?LAVANDA:'#DC2626'}}>{syncStatus}</div>}
         <button onClick={sincronizarGitHub} disabled={!githubToken} style={{background:githubToken?LAVANDA:'#D1C4E9',color:'white',border:'none',borderRadius:12,padding:'10px 20px',fontSize:13,fontWeight:700,cursor:githubToken?'pointer':'default',width:'100%'}}>🔄 Sincronizar com Davi</button>
       </div>
