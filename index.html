@@ -1602,6 +1602,21 @@ function App(){
         <button onClick={()=>setShowPassModal(false)} style={{width:'100%',background:'transparent',color:'#B08090',padding:'8px',borderRadius:12,fontSize:12,border:`1px solid ${P_BORDER}`,cursor:'pointer'}}>
           Cancelar
         </button>
+        {/* Seção API key */}
+        <div style={{marginTop:20,paddingTop:16,borderTop:`1px solid ${P_BORDER}`}}>
+          <div style={{fontSize:13,fontWeight:700,color:GRAFITE,marginBottom:12,display:'flex',alignItems:'center',gap:6}}>
+            <i className="ti ti-robot" style={{color:P,fontSize:15}}/>API Key (Anthropic IA)
+          </div>
+          {getApiKey()
+            ?<div style={{display:'flex',alignItems:'center',justifyContent:'space-between',background:'#F0FDF4',border:'1px solid #86EFAC',borderRadius:10,padding:'10px 14px',marginBottom:8}}>
+              <span style={{fontSize:12,color:'#15803D',fontWeight:600}}>✓ Chave configurada</span>
+              <button onClick={()=>{localStorage.removeItem('lyra-apikey');setShowPassModal(false);setShowApiModal(true);}} style={{fontSize:11,color:'#DC2626',background:'none',border:'none',cursor:'pointer',textDecoration:'underline'}}>Trocar</button>
+            </div>
+            :<button onClick={()=>{setShowPassModal(false);setShowApiModal(true);}} style={{width:'100%',background:'transparent',color:P,padding:'9px',borderRadius:12,fontSize:12,fontWeight:700,border:`1px solid ${P_BORDER}`,cursor:'pointer'}}>
+              + Adicionar API Key
+            </button>
+          }
+        </div>
       </div>
     </div>
   </div>;
