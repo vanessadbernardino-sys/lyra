@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com cdn.jsdelivr.net; font-src 'self' fonts.gstatic.com cdn.jsdelivr.net; img-src 'self' data: https:; connect-src 'self' api.anthropic.com api.github.com; frame-ancestors 'none';"/>
+  <meta http-equiv="X-Content-Type-Options" content="nosniff"/>
   <title>LYRA — Client Journey Intelligence</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
@@ -48,6 +50,16 @@ async function sha256(str){
 }
 async function savePass(email,pass){const h=await sha256(pass);localStorage.setItem(PASS_PREFIX+email,h);}
 async function checkPass(email,pass){const h=await sha256(pass);return h===getHash(email);}
+// Rate limiting: máx 5 tentativas em 5 minutos
+const LOGIN_ATTEMPTS_KEY='lyra-login-attempts';
+function getAttempts(){try{return JSON.parse(localStorage.getItem(LOGIN_ATTEMPTS_KEY)||'[]');}catch{return[];}}
+function recordAttempt(){const now=Date.now();const attempts=getAttempts().filter(t=>now-t<5*60*1000);attempts.push(now);localStorage.setItem(LOGIN_ATTEMPTS_KEY,JSON.stringify(attempts));}
+function isBlocked(){const now=Date.now();const attempts=getAttempts().filter(t=>now-t<5*60*1000);return attempts.length>=5;}
+function clearAttempts(){localStorage.removeItem(LOGIN_ATTEMPTS_KEY);}
+// Expiração de sessão: 8 horas
+const SESSION_EXPIRY=8*60*60*1000;
+function saveSession(user){localStorage.setItem(AUTH_KEY,JSON.stringify({...user,ts:Date.now()}));}
+function loadSession(){try{const a=localStorage.getItem(AUTH_KEY);if(!a)return null;const p=JSON.parse(a);if(Date.now()-p.ts>SESSION_EXPIRY){localStorage.removeItem(AUTH_KEY);return null;}const valid=USERS.find(u=>u.email===p.email&&u.role===p.role);if(!valid){localStorage.removeItem(AUTH_KEY);return null;}return p;}catch{return null;}}
 // Limpa senhas em texto puro do localStorage (migração para hash)
 USERS.forEach(u=>{const s=localStorage.getItem(PASS_PREFIX+u.email);if(s&&s.length!==64)localStorage.removeItem(PASS_PREFIX+u.email);});
 // Remove senhas de usuários que não existem mais
@@ -1209,16 +1221,17 @@ function LoginView({onLogin}){
     else{setFirstAccess(false);setError('');}
   }
   async function login(){
+    if(isBlocked()){setError('Muitas tentativas. Aguarde 5 minutos.');return;}
     const u=USERS.find(u=>u.email.toLowerCase()===email.toLowerCase().trim());
-    if(!u){setError('E-mail não reconhecido.');return;}
+    if(!u){recordAttempt();setError('E-mail ou senha incorretos.');return;}
     if(firstAccess){
       if(pass.length<6){setError('Senha deve ter pelo menos 6 caracteres.');return;}
       if(pass!==pass2){setError('As senhas não coincidem.');return;}
       await savePass(u.email,pass);
-      setError('');onLogin(u);
+      clearAttempts();setError('');onLogin(u);
     } else {
-      if(u&&await checkPass(u.email,pass)){setError('');onLogin(u);}
-      else setError('E-mail ou senha incorretos.');
+      if(await checkPass(u.email,pass)){clearAttempts();setError('');onLogin(u);}
+      else{recordAttempt();setError('E-mail ou senha incorretos.');}
     }
   }
   return<div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100vh',background:'linear-gradient(180deg,#FFF8FB 0%,#FFF0F6 100%)'}}>
@@ -1249,24 +1262,14 @@ function LoginView({onLogin}){
 
 // ─── APP ──────────────────────────────────────────────────────────────────────
 function App(){
-  const[auth,setAuth]=useState(()=>{
-    try{
-      const a=localStorage.getItem(AUTH_KEY);
-      if(!a)return null;
-      const parsed=JSON.parse(a);
-      // Valida se o usuário ainda existe na lista autorizada
-      const valid=USERS.find(u=>u.email===parsed.email&&u.role===parsed.role);
-      if(!valid){localStorage.removeItem(AUTH_KEY);return null;}
-      return parsed;
-    }catch{return null;}
-  });
+  const[auth,setAuth]=useState(()=>loadSession());
   const[data,setData]=useState(null);
   const[loading,setLoading]=useState(true);
   const[view,setView]=useState('home');
   const[selId,setSelId]=useState(null);
   const today=useMemo(()=>today0(),[]);
 
-  function doLogin(user){setAuth(user);try{localStorage.setItem(AUTH_KEY,JSON.stringify(user));}catch(e){}}
+  function doLogin(user){setAuth(user);try{saveSession(user);}catch(e){}}
   function doLogout(){setAuth(null);try{localStorage.removeItem(AUTH_KEY);}catch(e){}}
 
   useEffect(()=>{
