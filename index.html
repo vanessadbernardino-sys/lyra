@@ -48,6 +48,12 @@ async function savePass(email,pass){const h=await sha256(pass);localStorage.setI
 async function checkPass(email,pass){const h=await sha256(pass);return h===getHash(email);}
 // Limpa senhas em texto puro do localStorage (migração para hash)
 USERS.forEach(u=>{const s=localStorage.getItem(PASS_PREFIX+u.email);if(s&&s.length!==64)localStorage.removeItem(PASS_PREFIX+u.email);});
+// Remove senhas de usuários que não existem mais
+const ALLOWED_EMAILS=new Set(USERS.map(u=>u.email));
+Object.keys(localStorage).filter(k=>k.startsWith(PASS_PREFIX)).forEach(k=>{
+  const email=k.slice(PASS_PREFIX.length);
+  if(!ALLOWED_EMAILS.has(email))localStorage.removeItem(k);
+});
 
 // ─── LYRA PALETTE ─────────────────────────────────────────────────────────────
 const P = "#F25D96";
@@ -1221,7 +1227,17 @@ function LoginView({onLogin}){
 
 // ─── APP ──────────────────────────────────────────────────────────────────────
 function App(){
-  const[auth,setAuth]=useState(()=>{try{const a=localStorage.getItem(AUTH_KEY);return a?JSON.parse(a):null;}catch{return null;}});
+  const[auth,setAuth]=useState(()=>{
+    try{
+      const a=localStorage.getItem(AUTH_KEY);
+      if(!a)return null;
+      const parsed=JSON.parse(a);
+      // Valida se o usuário ainda existe na lista autorizada
+      const valid=USERS.find(u=>u.email===parsed.email&&u.role===parsed.role);
+      if(!valid){localStorage.removeItem(AUTH_KEY);return null;}
+      return parsed;
+    }catch{return null;}
+  });
   const[data,setData]=useState(null);
   const[loading,setLoading]=useState(true);
   const[view,setView]=useState('home');
