@@ -35,15 +35,17 @@ const AUTH_KEY = "lyra-auth";
 const PASS_PREFIX = "lyra-pw-";
 // ─── USUÁRIOS E PERMISSÕES ────────────────────────────────────────────────────
 const USERS=[
-  {email:'vanessa.dbernardino@gmail.com',     hash:'1b2c2620ca94cfdf7982e4b4b085aa145497ac059589ee25b292e65a14aa21f7', role:'admin',  name:'Vanessa'},
-  {email:'diretoria@jurassicmarketing.com.br',hash:'5223167cc185c2cb4cdd448ac483021ef57a6e42a7226cfd0df8626d3297964c', role:'editor', name:'Davi'},
+  {email:'vanessa.dbernardino@gmail.com',     role:'admin',  name:'Vanessa'},
+  {email:'diretoria@jurassicmarketing.com.br',role:'editor', name:'Davi'},
 ];
+// Hashes armazenados apenas no localStorage de cada dispositivo (nunca no código)
+function getHash(email){return localStorage.getItem(PASS_PREFIX+email)||'';}
+function userExists(email){return USERS.some(u=>u.email===email);}
 // role: admin = tudo | editor = editar sem excluir | viewer = só visualizar
 async function sha256(str){
   const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));
   return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
-function getHash(email){return localStorage.getItem(PASS_PREFIX+email)||USERS.find(u=>u.email===email)?.hash||'';}
 async function savePass(email,pass){const h=await sha256(pass);localStorage.setItem(PASS_PREFIX+email,h);}
 async function checkPass(email,pass){const h=await sha256(pass);return h===getHash(email);}
 // Limpa senhas em texto puro do localStorage (migração para hash)
@@ -168,8 +170,7 @@ function parseJSON(text){
   throw new Error('JSON inválido mesmo após tentativas de correção');
 }
 function getApiKey(){
-  const p=['sk-ant-','api03-W21w8rMgaor7wlxzc1PO7jZSccgnbps1YP0k','CX3Vt3LodsYeS9MOyskCJx5Phdfu8c2vgKyzgQJBzotka8Fpzw-ZlFRrwAA'];
-  return localStorage.getItem('lyra-apikey')||(p[0]+p[1]+p[2]);
+  return localStorage.getItem('lyra-apikey')||'';
 }
 
 async function askClaude(b64,mtype,prompt){
@@ -1198,11 +1199,27 @@ function NovoClienteView({clients,onAddClient}){
 function LoginView({onLogin}){
   const[email,setEmail]=useState('');
   const[pass,setPass]=useState('');
+  const[pass2,setPass2]=useState('');
   const[error,setError]=useState('');
+  const[firstAccess,setFirstAccess]=useState(false);
+  async function checkEmail(){
+    const u=USERS.find(u=>u.email.toLowerCase()===email.toLowerCase().trim());
+    if(!u){setError('E-mail não reconhecido.');return;}
+    if(!getHash(u.email)){setFirstAccess(true);setError('');}
+    else{setFirstAccess(false);setError('');}
+  }
   async function login(){
     const u=USERS.find(u=>u.email.toLowerCase()===email.toLowerCase().trim());
-    if(u&&await checkPass(u.email,pass)){setError('');onLogin(u);}
-    else setError('E-mail ou senha incorretos.');
+    if(!u){setError('E-mail não reconhecido.');return;}
+    if(firstAccess){
+      if(pass.length<6){setError('Senha deve ter pelo menos 6 caracteres.');return;}
+      if(pass!==pass2){setError('As senhas não coincidem.');return;}
+      await savePass(u.email,pass);
+      setError('');onLogin(u);
+    } else {
+      if(u&&await checkPass(u.email,pass)){setError('');onLogin(u);}
+      else setError('E-mail ou senha incorretos.');
+    }
   }
   return<div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100vh',background:'linear-gradient(180deg,#FFF8FB 0%,#FFF0F6 100%)'}}>
     <div style={{background:'#FFFFFF',borderRadius:32,padding:'48px 44px',width:420,boxShadow:'0 10px 30px rgba(230,75,151,0.08)',border:`1px solid ${P_BORDER}`}}>
@@ -1210,16 +1227,21 @@ function LoginView({onLogin}){
         <LyraLogo/>
       </div>
       <div style={{fontSize:10,fontWeight:700,color:'#C06090',marginBottom:6,textTransform:'uppercase',letterSpacing:1}}>E-mail</div>
-      <input value={email} onChange={e=>setEmail(e.target.value)} placeholder="seu@email.com" type="email"
+      <input value={email} onChange={e=>{setEmail(e.target.value);setFirstAccess(false);setError('');}} onBlur={checkEmail} placeholder="seu@email.com" type="email"
         style={{width:'100%',border:`1px solid ${P_BORDER}`,borderRadius:16,padding:'11px 16px',fontSize:13,marginBottom:14,color:GRAFITE,background:'white',boxSizing:'border-box',outline:'none'}}
         onKeyDown={e=>e.key==='Enter'&&login()}/>
-      <div style={{fontSize:10,fontWeight:700,color:'#C06090',marginBottom:6,textTransform:'uppercase',letterSpacing:1}}>Senha</div>
+      {firstAccess&&<div style={{background:'#FFF0F6',border:'1px solid #F9A8D4',borderRadius:12,padding:'10px 14px',fontSize:12,color:'#9D174D',marginBottom:14}}>Primeiro acesso — defina sua senha.</div>}
+      <div style={{fontSize:10,fontWeight:700,color:'#C06090',marginBottom:6,textTransform:'uppercase',letterSpacing:1}}>{firstAccess?'Criar senha':'Senha'}</div>
       <input value={pass} onChange={e=>setPass(e.target.value)} placeholder="••••••••" type="password"
-        style={{width:'100%',border:`1px solid ${P_BORDER}`,borderRadius:16,padding:'11px 16px',fontSize:13,marginBottom:20,color:GRAFITE,background:'white',boxSizing:'border-box',outline:'none'}}
+        style={{width:'100%',border:`1px solid ${P_BORDER}`,borderRadius:16,padding:'11px 16px',fontSize:13,marginBottom:firstAccess?10:20,color:GRAFITE,background:'white',boxSizing:'border-box',outline:'none'}}
         onKeyDown={e=>e.key==='Enter'&&login()}/>
+      {firstAccess&&<><div style={{fontSize:10,fontWeight:700,color:'#C06090',marginBottom:6,textTransform:'uppercase',letterSpacing:1}}>Confirmar senha</div>
+      <input value={pass2} onChange={e=>setPass2(e.target.value)} placeholder="••••••••" type="password"
+        style={{width:'100%',border:`1px solid ${P_BORDER}`,borderRadius:16,padding:'11px 16px',fontSize:13,marginBottom:20,color:GRAFITE,background:'white',boxSizing:'border-box',outline:'none'}}
+        onKeyDown={e=>e.key==='Enter'&&login()}/></>}
       {error&&<div style={{color:'#DC2626',fontSize:12,marginBottom:12,textAlign:'center',fontWeight:600}}>{error}</div>}
       <button onClick={login} style={{width:'100%',background:'linear-gradient(135deg,#E64B97,#FF8F73)',color:'white',padding:'13px',borderRadius:16,fontSize:14,fontWeight:700,border:'none',cursor:'pointer',letterSpacing:0.3}}>
-        Entrar no LYRA
+        {firstAccess?'Criar senha e entrar':'Entrar no LYRA'}
       </button>
     </div>
   </div>;
