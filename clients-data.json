@@ -1207,7 +1207,7 @@
       "brunoGasto": 1303.48,
       "contratoVenc": "2026-12-08",
       "contratoVal": "R$ 2.800",
-      "reuniaoStatus": "agendado",
+      "reuniaoStatus": "realizado",
       "reuniaoData": "2026-07-02",
       "alerta": null,
       "obs": "Sem Infos de contrato!\n\nhttps://www.instagram.com/festivalbymaiaracoelho/\nhttps://www.instagram.com/maiaracoelhooficial/\nhttps://www.pensanoevento.com.br/sitev2/eventos/104149/18-anos-carreira-maiara-coelho\n\n",
@@ -1298,8 +1298,8 @@
       "dataInicio": "2026-06-15",
       "contratoVenc": "2026-07-15",
       "contratoVal": "€ 500,00",
-      "reuniaoStatus": "agendar",
-      "reuniaoData": null,
+      "reuniaoStatus": "agendado",
+      "reuniaoData": "2026-07-08",
       "alerta": null,
       "obs": "",
       "obsContrato": "Parcela 1 – € 500,00 – 15/06/2026",
@@ -1399,8 +1399,14 @@
     }
   ],
   "brunoDate": "2026-07-01",
-  "hojeData": "2026-07-01",
-  "hojeIds": [],
+  "hojeData": "2026-07-02",
+  "hojeIds": [
+    26,
+    8,
+    21,
+    9,
+    45
+  ],
   "patchVersion": 6,
   "lastResetMonth": "2026-07"
 }
