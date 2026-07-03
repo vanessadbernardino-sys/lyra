@@ -395,7 +395,18 @@ function DetailPanel({c,onClose,onSave,onDelete,today}){
     {/* HEADER */}
     <div style={{padding:'14px 18px',borderBottom:`1px solid ${P_BORDER}`,display:'flex',justifyContent:'space-between',alignItems:'flex-start',background:P_BG}}>
       <div style={{flex:1,minWidth:0}}>
-        <div style={{fontFamily:"'Playfair Display',serif",fontSize:17,fontWeight:700,color:GRAFITE,marginBottom:2}}>{f.name}</div>
+        {f._editingName
+          ?<div style={{display:'flex',gap:6,alignItems:'center',marginBottom:2}}>
+              <input autoFocus value={f.name} onChange={e=>setF(p=>({...p,name:e.target.value}))}
+                onKeyDown={e=>{if(e.key==='Enter')setF(p=>({...p,_editingName:false}));if(e.key==='Escape')setF(p=>({...p,name:c.name,_editingName:false}));}}
+                style={{fontFamily:"'Playfair Display',serif",fontSize:17,fontWeight:700,color:GRAFITE,border:`1px solid ${P_BORDER}`,borderRadius:8,padding:'2px 8px',flex:1}}/>
+              <button onClick={()=>setF(p=>({...p,_editingName:false}))} style={{background:P,color:'white',border:'none',borderRadius:6,padding:'3px 8px',fontSize:11,fontWeight:700,cursor:'pointer'}}>Ok</button>
+            </div>
+          :<div style={{display:'flex',gap:6,alignItems:'center',marginBottom:2}}>
+              <span style={{fontFamily:"'Playfair Display',serif",fontSize:17,fontWeight:700,color:GRAFITE}}>{f.name}</span>
+              {!ro&&<button onClick={()=>setF(p=>({...p,_editingName:true}))} style={{background:'none',border:'none',cursor:'pointer',color:'#C06090',padding:0,lineHeight:1}} title="Editar nome"><i className="ti ti-pencil" style={{fontSize:13}}/></button>}
+            </div>
+        }
         {ro
           ?<div style={{fontSize:11,color:'#B08090',marginBottom:6}}>{f.tipo}</div>
           :<input value={f.tipo||''} onChange={e=>upd('tipo',e.target.value)} placeholder="Tipo / Negócio"
