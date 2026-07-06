@@ -1374,32 +1374,32 @@ function App(){
       setLoading(false);
     }
     async function load(){
-      // 1. Tenta carregar do GitHub (fonte de verdade compartilhada)
-      let githubData=null;
-      try{
-        const resp=await fetch(GITHUB_RAW+'?_='+Date.now(),{cache:'no-store'});
-        if(resp.ok){githubData=tryLoad(await resp.text());}
-      }catch(e){}
-      // 2. Carrega localStorage (fallback / dados locais do dia)
+      // 1. localStorage é a fonte principal (dados da Vanessa nunca sobrescritos)
       let localData=null;
       const r=localStorage.getItem(KEY);
       const rb=localStorage.getItem(KEY_BACKUP);
-      if(r){try{localData=tryLoad(r);}catch(e){}}
-      if(!localData&&rb){try{localData=tryLoad(rb);}catch(e){}}
-      // 3. GitHub é a fonte principal; preserva hojeIds/hojeData do local (lista pessoal do dia)
-      if(githubData){
-        const hojeIds=localData?.hojeIds||[];
-        const hojeData=localData?.hojeData||todayStr();
-        finalizar({...githubData,hojeIds,hojeData});
-      }else if(localData){
+      if(r){try{localData=tryLoad(r);}catch(e){console.warn('Principal corrompido, tentando backup...');}}
+      if(!localData&&rb){try{localData=tryLoad(rb);}catch(e){console.warn('Backup também corrompido.');}}
+      if(localData){
+        // 2. Se não há dados locais, tenta GitHub para preencher novos clientes
         finalizar(localData);
       }else{
-        const d={clients:CLIENTS_DEFAULT,brunoDate:null,hojeData:todayStr(),hojeIds:[],patchVersion:DATA_PATCH};
-        const json=JSON.stringify(d);
-        try{localStorage.setItem(KEY,json);}catch(e){}
-        try{localStorage.setItem(KEY_BACKUP,json);}catch(e){}
-        setData(d);
-        setLoading(false);
+        // 3. Primeiro acesso: busca GitHub ou usa CLIENTS_DEFAULT
+        let githubData=null;
+        try{
+          const resp=await fetch(GITHUB_RAW+'?_='+Date.now(),{cache:'no-store'});
+          if(resp.ok){githubData=tryLoad(await resp.text());}
+        }catch(e){}
+        if(githubData){
+          finalizar(githubData);
+        }else{
+          const d={clients:CLIENTS_DEFAULT,brunoDate:null,hojeData:todayStr(),hojeIds:[],patchVersion:DATA_PATCH};
+          const json=JSON.stringify(d);
+          try{localStorage.setItem(KEY,json);}catch(e){}
+          try{localStorage.setItem(KEY_BACKUP,json);}catch(e){}
+          setData(d);
+          setLoading(false);
+        }
       }
     }
     load();
