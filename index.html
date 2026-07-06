@@ -91,7 +91,7 @@ const CLIENTS_DEFAULT = [
   {id:4,name:'Camarote Pride',brunoAlias:'camarote pride,pride',gestor:'Samuel',contato:'Guto Melo',tel:'+55 11 99405 1010',tipo:'Evento Premium LGBTQIA+',eventoDate:'2026-06-07',davi:true,status:'ativo',brunoStatus:'critico',brunoRoas:null,brunoGasto:5930.24,contratoVenc:'2024-12-25',contratoVal:'Comissão 2,5%',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'Evento já aconteceu em 07/06',ultimoContato:null},
   {id:5,name:'Casa Yala',brunoAlias:'unik,casa yala',gestor:'Felício',contato:'Filipe',tel:'+351 919 291 908',tipo:'—',eventoDate:null,davi:false,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:null,contratoVal:'—',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'Novo cliente sem dados',ultimoContato:null},
   {id:6,name:'Complexo Fora do Eixo',brunoAlias:'cpx fora do eixo,fora do eixo,cpx',gestor:'Gabriel',contato:'Thiago',tel:'+55 11 93002 1600',tipo:'Casa Noturna / Hub',eventoDate:null,davi:false,status:'ativo',brunoStatus:'atencao',brunoRoas:2.16,brunoGasto:1894.39,contratoVenc:'2026-09-23',contratoVal:'R$ 2.800',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
-  {id:7,name:'Dust Pub',gestor:'Gabriel',contato:'João',tel:'+55 18 99693 5607',tipo:'Casa Noturna / Pub',eventoDate:null,davi:false,status:'ativo',brunoStatus:'saudavel',brunoRoas:28.57,brunoGasto:1089.85,contratoVenc:'2026-05-30',contratoVal:'R$ 2.200',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
+  {id:7,name:'Dust Pub',brunoAlias:'dust pub,dust',gestor:'Gabriel',contato:'João',tel:'+55 18 99693 5607',tipo:'Casa Noturna / Pub',eventoDate:null,davi:false,status:'ativo',brunoStatus:'saudavel',brunoRoas:28.57,brunoGasto:1089.85,contratoVenc:'2026-05-30',contratoVal:'R$ 2.200',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
   {id:8,name:'SOMOS ENTRE',brunoAlias:'space tune,somos entre',gestor:'Felício',contato:'Camila Nasser',tel:'+55 11 99253-5646',tipo:'Treinamento / Parceria',eventoDate:'2026-07-06',davi:false,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:'2026-08-01',contratoVal:'Permuta',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'Permuta · Eventos: 06/07, 16/07 e 29/07/2026',ultimoContato:null},
   {id:9,name:'Feijoada do Serginho',brunoAlias:'feijoada do serginho,feijoada serginho',gestor:'Felício',contato:'Sérgio',tel:'+55 18 98100 5575',tipo:'Evento Cultural',eventoDate:'2026-07-12',davi:false,status:'ativo',brunoStatus:'saudavel',brunoRoas:3.38,brunoGasto:1935.67,contratoVenc:'2026-10-24',contratoVal:'R$ 3.000',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
   {id:10,name:'Floresta Infectada',brunoAlias:'floresta infectada',gestor:'Felício',contato:'Hebert Murilo de Souza',tel:'+55 11 91784-0020',tipo:'Festival Psicodélico',eventoDate:'2026-07-18',davi:false,status:'ativo',brunoStatus:'critico',brunoRoas:0.74,brunoGasto:736.01,contratoVenc:'2026-11-12',contratoVal:'R$ 4.000',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
@@ -103,7 +103,7 @@ const CLIENTS_DEFAULT = [
   {id:16,name:'Magic Boom Tour',brunoAlias:'magic boom floripa,magic boom tour,magic boom',gestor:'Gabriel',contato:'Daniel',tel:'+55 91 99146 9146',tipo:'Evento',eventoDate:'2026-06-13',davi:false,status:'ativo',brunoStatus:'saudavel',brunoRoas:3.71,brunoGasto:1355.32,contratoVenc:'2026-06-15',contratoVal:'R$ 1.000',reuniaoStatus:'realizado',reuniaoData:'2026-06-03',alerta:null,obs:'Pausa após evento 13/06.',ultimoContato:'2026-06-03'},
   {id:17,name:'Moving Festival',brunoAlias:'ca moving festival,moving festival,ca moving',gestor:'Felício',contato:'Henry',tel:'+55 51 99297 6832',tipo:'Festival',eventoDate:'2026-10-17',davi:false,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:null,contratoVal:'—',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'Em negociação',ultimoContato:null},
   {id:18,name:'Na Pegada',brunoAlias:'na pegada',gestor:'Felício',contato:'JP Daia',tel:'+55 62 98117 8955',tipo:'Festa Sertaneja',eventoDate:'2026-10-17',davi:false,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:'2026-10-17',contratoVal:'R$ 13.500',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'Pagamento único realizado',ultimoContato:null},
-  {id:19,name:'Neutratech & New Sheet',gestor:'Gabriel',contato:'Ju Machado',tel:'+351 913 611 636',tipo:'Projeto conjunto',eventoDate:null,davi:true,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:null,contratoVal:'—',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'Projeto conjunto Neutratech + New Sheet',ultimoContato:null},
+  {id:19,name:'Neutratech & New Sheet',brunoAlias:'neutratech,neutratech new sheet',gestor:'Gabriel',contato:'Ju Machado',tel:'+351 913 611 636',tipo:'Projeto conjunto',eventoDate:null,davi:true,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:null,contratoVal:'—',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'Projeto conjunto Neutratech + New Sheet',ultimoContato:null},
   {id:20,name:'New Sheet',brunoAlias:'newsheet brand activation,newsheet brand,new sheet',gestor:'Gabriel',contato:'Ju Machado',tel:'+351 913 611 636',tipo:'Ativação de Marca / Vegano',eventoDate:'2026-07-19',davi:false,status:'ativo',brunoStatus:'saudavel',brunoRoas:null,brunoGasto:2326.31,contratoVenc:'2026-07-30',contratoVal:'€ 700',reuniaoStatus:'realizado',reuniaoData:'2026-06-03',alerta:null,obs:'Evento GRATUITO — ROAS não se aplica.',ultimoContato:'2026-06-03'},
   {id:21,name:'Puma Punku Festival',brunoAlias:'puma punku festival,puma punku',gestor:'Gabriel',contato:'Ruan',tel:'+55 12 98282 4615',tipo:'Festival Psicodélico',eventoDate:'2026-07-04',davi:false,status:'ativo',brunoStatus:'saudavel',brunoRoas:8.51,brunoGasto:1733.33,contratoVenc:'2026-07-05',contratoVal:'R$ 1.750',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
   {id:22,name:'RCountry',brunoAlias:'retrogyn,rcountry',gestor:'Felício',contato:'JP Daia',tel:'+55 62 98117 8955',tipo:'Festa Sertaneja',eventoDate:'2026-09-05',davi:false,status:'ativo',brunoStatus:'critico',brunoRoas:0.82,brunoGasto:795.21,contratoVenc:'2026-09-03',contratoVal:'R$ 9.750',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'Pagamento único realizado',ultimoContato:null},
@@ -113,9 +113,9 @@ const CLIENTS_DEFAULT = [
   {id:26,name:'Tardezinha',brunoAlias:'tardezinha',gestor:'Samuel',contato:'Brito',tel:'+55 61 99530 7575',tipo:'Pagode / Show',eventoDate:'2026-07-12',davi:false,status:'ativo',brunoStatus:'critico',brunoRoas:0.31,brunoGasto:1110.59,contratoVenc:'2026-07-12',contratoVal:'R$ 5.000',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'Pagamento único realizado',ultimoContato:null},
   {id:27,name:'Terra Mágica',brunoAlias:'terra magica,terra magica parque',gestor:'Gabriel',contato:'Samurai',tel:'+55 92 99311 8076',tipo:'Parque Temático',eventoDate:'2026-08-15',davi:true,status:'ativo',brunoStatus:'saudavel',brunoRoas:3.45,brunoGasto:3281.02,contratoVenc:'2024-08-14',contratoVal:'R$ 600 + 10%',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
   {id:28,name:'Terratronic',brunoAlias:'terratronic',gestor:'Samuel',contato:'Marco Polo',tel:'+55 21 98323 1727',tipo:'Festa Eletrônica',eventoDate:'2026-07-11',davi:false,status:'ativo',brunoStatus:'saudavel',brunoRoas:16.66,brunoGasto:1680.38,contratoVenc:'2026-07-12',contratoVal:'R$ 4.000',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
-  {id:29,name:'Um Sonho (RMK)',gestor:'Felício',contato:'Marcelo',tel:'+44 7495 865256',tipo:'Remarketing / Cantor',eventoDate:null,davi:false,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:null,contratoVal:'R$ 150',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'Iniciando julho/2026',ultimoContato:null},
+  {id:29,name:'Um Sonho (RMK)',brunoAlias:'um sonho,um sonho rmk',gestor:'Felício',contato:'Marcelo',tel:'+44 7495 865256',tipo:'Remarketing / Cantor',eventoDate:null,davi:false,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:null,contratoVal:'R$ 150',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'Iniciando julho/2026',ultimoContato:null},
   {id:30,name:'Use Isy',brunoAlias:'ísy,isy,use isy,isy store',gestor:'Gabriel',contato:'Deisy',tel:'+55 85 98929 6215',tipo:'Loja de Roupas / E-commerce',eventoDate:null,davi:false,status:'ativo',brunoStatus:'saudavel',brunoRoas:3.12,brunoGasto:2607.14,contratoVenc:'2026-01-07',contratoVal:'R$ 1.500',reuniaoStatus:'realizado',reuniaoData:'2026-06-01',alerta:null,obs:'Renovar na primavera/verão',ultimoContato:'2026-06-01'},
-  {id:31,name:'Villa Sambô',gestor:'—',contato:'—',tel:'—',tipo:'Samba / Assessoria',eventoDate:null,davi:false,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:'2026-10-28',contratoVal:'€ 500',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'Reunião por demanda do cliente',ultimoContato:null},
+  {id:31,name:'Villa Sambô',brunoAlias:'villa sambô,villa sambo,villa sambô',gestor:'—',contato:'—',tel:'—',tipo:'Samba / Assessoria',eventoDate:null,davi:false,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:'2026-10-28',contratoVal:'€ 500',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'Reunião por demanda do cliente',ultimoContato:null},
   {id:32,name:'You Can Productions',brunoAlias:'you can,you can productions',gestor:'Samuel',contato:'Otamyr',tel:'+1 778 861 3392',tipo:'Evento Social',eventoDate:'2026-06-20',davi:false,status:'ativo',brunoStatus:'atencao',brunoRoas:1.94,brunoGasto:1373.60,contratoVenc:'2025-08-30',contratoVal:'CA$ 500',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'Em negociação de renovação',ultimoContato:null},
   {id:33,name:'404 (Fuschini)',gestor:'—',contato:'—',tel:'—',tipo:'Festa Funk',eventoDate:null,davi:false,status:'pausado',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:'2026-05-23',contratoVal:'R$ 2.000',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
   {id:34,name:'4U',gestor:'—',contato:'—',tel:'—',tipo:'Festa Universitária',eventoDate:null,davi:false,status:'pausado',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:'2026-07-08',contratoVal:'R$ 3.200',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
@@ -199,7 +199,7 @@ async function askClaude(b64,mtype,prompt){
       'anthropic-dangerous-direct-browser-access':'true'
     },
     body:JSON.stringify({
-      model:'claude-opus-4-5',
+      model:'claude-haiku-4-5-20251001',
       max_tokens:3000,
       messages:[{role:'user',content:[
         {type:'document',source:{type:'base64',media_type:mtype,data:b64}},
@@ -1151,7 +1151,7 @@ function NovoClienteView({clients,onAddClient}){
   const[form,setForm]=useState(null);
   const[error,setError]=useState('');
   const[msg,setMsg]=useState('');
-  const GESTORES=['Samuel','Felício','Gabriel','—'];
+  const GESTORES=['Samuel','Felício','Gabriel','Bruno','—'];
   const si={border:`1px solid ${P_BORDER}`,borderRadius:8,padding:'6px 10px',fontSize:13,background:'white',color:GRAFITE,width:'100%'};
   const lbl={fontSize:10,fontWeight:700,color:'#C06090',marginBottom:3,textTransform:'uppercase',letterSpacing:0.5};
 
@@ -1162,7 +1162,7 @@ function NovoClienteView({clients,onAddClient}){
       const b64=await fileToB64(file);
       const text=await askClaude(b64,'application/pdf','Analise este contrato. Extraia dados do CONTRATANTE (cliente, não a Jurassic).\nRetorne APENAS JSON:\n{"nome":"empresa","responsavel":"nome","tel":"telefone com DDI","email":"email","valorMensal":"R$ X.XXX","dataInicio":"YYYY-MM-DD","dataFim":"YYYY-MM-DD","tipo":"tipo de negócio","eventoDate":"YYYY-MM-DD","obsContrato":"string"}\n\nPara obsContrato: liste APENAS o cronograma de parcelas no formato "Parcela 1 – R$ X.XXX – [data ou condição]; Parcela 2 – R$ X.XXX – ...". Se houver serviços extras negociados além do padrão, adicione no final "PS: [negociação especial]". NÃO inclua forma de pagamento, texto jurídico ou cláusulas.\n\nCampos não encontrados: null.');
       const parsed=parseJSON(text);
-      setForm({...parsed,gestor:'—',davi:false,obsEvento:''});
+      setForm({...parsed,gestor:'—',davi:false,obsEvento:'',brunoAlias:''});
     }catch(e){
       if(e.message==='API_KEY_MISSING')setError('Chave API não configurada. Recarregue a página para inserir.');
       else setError('Erro ao ler o contrato: '+e.message);
@@ -1173,7 +1173,7 @@ function NovoClienteView({clients,onAddClient}){
   function confirmar(){
     if(!form?.nome){setError('Nome do cliente é obrigatório');return;}
     const newId=Math.max(0,...clients.map(c=>c.id))+1;
-    onAddClient({id:newId,name:form.nome,gestor:form.gestor||'—',contato:form.responsavel||'—',tel:form.tel||'—',tipo:form.tipo||'—',eventoDate:form.eventoDate||null,davi:false,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,dataInicio:form.dataInicio||null,contratoVenc:form.dataFim||null,contratoVal:form.valorMensal||'—',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',obsContrato:form.obsContrato||'',obsEvento:form.obsEvento||'',contratoAnterior:null,ultimoContato:null});
+    onAddClient({id:newId,name:form.nome,gestor:form.gestor||'—',contato:form.responsavel||'—',tel:form.tel||'—',tipo:form.tipo||'—',eventoDate:form.eventoDate||null,davi:false,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,dataInicio:form.dataInicio||null,contratoVenc:form.dataFim||null,contratoVal:form.valorMensal||'—',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',obsContrato:form.obsContrato||'',obsEvento:form.obsEvento||'',contratoAnterior:null,ultimoContato:null,brunoAlias:form.brunoAlias||''});
     setMsg(`${form.nome} adicionado com sucesso!`);setForm(null);setFile(null);setTimeout(()=>setMsg(''),5000);
   }
 
@@ -1185,7 +1185,7 @@ function NovoClienteView({clients,onAddClient}){
     {msg&&<div style={{background:'#DCFCE7',color:'#15803D',padding:'10px 16px',borderRadius:10,marginBottom:14,fontSize:13,fontWeight:700}}>✓ {msg}</div>}
 
     {/* Botão manual — abre formulário vazio direto */}
-    {!form&&<button onClick={()=>setForm({nome:'',responsavel:'',tel:'',email:'',tipo:'',valorMensal:'',dataInicio:null,dataFim:null,eventoDate:null,gestor:'—',obs:'',obsContrato:'',obsEvento:''})}
+    {!form&&<button onClick={()=>setForm({nome:'',responsavel:'',tel:'',email:'',tipo:'',valorMensal:'',dataInicio:null,dataFim:null,eventoDate:null,gestor:'—',obs:'',obsContrato:'',obsEvento:'',brunoAlias:''})}
       style={{width:'100%',background:`linear-gradient(135deg,${P},${PESSEGO})`,color:'white',padding:'13px',borderRadius:16,fontSize:14,fontWeight:700,border:'none',cursor:'pointer',marginBottom:16,letterSpacing:0.3}}>
       ✦ Preencher manualmente (sem contrato)
     </button>}
@@ -1210,7 +1210,8 @@ function NovoClienteView({clients,onAddClient}){
         <div><div style={lbl}>Data do evento</div><input type="date" value={form.eventoDate||''} onChange={e=>upd('eventoDate',e.target.value||null)} style={si}/></div>
         <div><div style={lbl}>Gestor</div><select value={form.gestor||'—'} onChange={e=>upd('gestor',e.target.value)} style={{...si,cursor:'pointer'}}>{GESTORES.map(g=><option key={g} value={g}>{g}</option>)}</select></div>
       </div>
-      <div style={{marginTop:12}}><div style={lbl}>Obs. do contrato (parcelas)</div><textarea value={form.obsContrato||''} onChange={e=>upd('obsContrato',e.target.value)} rows={2} style={{...si,resize:'vertical'}} placeholder="Parcela 1 – R$ X – dia Y; Parcela 2 – ..."/></div>
+      <div style={{marginTop:12}}><div style={lbl}>Alias Bruno (nomes do relatório, separados por vírgula)</div><input value={form.brunoAlias||''} onChange={e=>upd('brunoAlias',e.target.value)} style={si} placeholder="ex: nome no meta, outro nome..."/></div>
+      <div style={{marginTop:8}}><div style={lbl}>Obs. do contrato (parcelas)</div><textarea value={form.obsContrato||''} onChange={e=>upd('obsContrato',e.target.value)} rows={2} style={{...si,resize:'vertical'}} placeholder="Parcela 1 – R$ X – dia Y; Parcela 2 – ..."/></div>
       <div style={{marginTop:8}}><div style={lbl}>Obs. do evento</div><textarea value={form.obsEvento||''} onChange={e=>upd('obsEvento',e.target.value)} rows={2} style={{...si,resize:'vertical'}} placeholder="Datas, locais, detalhes do evento..."/></div>
       <div style={{display:'flex',gap:10,marginTop:14}}>
         <button onClick={confirmar} style={{flex:1,background:P,color:'white',padding:'10px',borderRadius:12,fontSize:13,fontWeight:700,border:'none',cursor:'pointer'}}>✓ Adicionar novo cliente</button>
@@ -1335,20 +1336,20 @@ function App(){
           return c;
         });
       }
-      // Patch 9: brunoAlias para Kibixiga
-      if(pv<9){
-        clients=clients.map(c=>{
-          const key=(c.name||'').toLowerCase().trim();
-          if(key==='kibixiga'||key==='kibexiga')return{...c,brunoAlias:'kibexiga,kibixiga'};
-          return c;
-        });
-      }
       // Patch 8: reativar clientes pausados pela auto-pausa automática
       if(pv<8){
         clients=clients.map(c=>{
           if(c.status==='pausado'&&(c.obs||'').includes('| Pausado: evento')){
             return{...c,status:'ativo',obs:(c.obs||'').replace(/\s*\| Pausado: evento[^|]*/g,'').trim()};
           }
+          return c;
+        });
+      }
+      // Patch 9: brunoAlias para Kibixiga
+      if(pv<9){
+        clients=clients.map(c=>{
+          const key=(c.name||'').toLowerCase().trim();
+          if(key==='kibixiga'||key==='kibexiga')return{...c,brunoAlias:'kibexiga,kibixiga'};
           return c;
         });
       }
@@ -1512,10 +1513,11 @@ function App(){
       try{
         const parsed=JSON.parse(e.target.result);
         if(!parsed.clients||!Array.isArray(parsed.clients))throw new Error('Arquivo inválido');
+        parsed.patchVersion=0;
         const json=JSON.stringify(parsed);
         localStorage.setItem(KEY,json);
         localStorage.setItem(KEY_BACKUP,json);
-        setData(parsed);
+        window.location.reload();
         setShowSyncModal(false);
         setSaveMsg('✓ Dados importados!');
         setTimeout(()=>setSaveMsg(''),3000);
