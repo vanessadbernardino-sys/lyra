@@ -1352,18 +1352,29 @@ function App(){
           return c;
         });
       }
-      // Patch 11: remover duplicatas por nome, mantendo o do CLIENTS_DEFAULT (id<=48)
+      // Patch 11: mesclar duplicatas — pega dados reais do localStorage e junta com entrada do código
       if(pv<11){
-        const seen=new Map();
         const defaultIds=new Set(CLIENTS_DEFAULT.map(c=>c.id));
-        // Primeiro passa: registra os do CLIENTS_DEFAULT
-        clients.forEach(c=>{if(defaultIds.has(c.id))seen.set((c.name||'').toLowerCase().trim(),c.id);});
-        // Segundo passo: remove duplicatas que não são do CLIENTS_DEFAULT
-        clients=clients.filter(c=>{
-          const key=(c.name||'').toLowerCase().trim();
-          if(defaultIds.has(c.id))return true;
-          return!seen.has(key);
+        const norm=s=>(s||'').toLowerCase().trim();
+        // Mapeia nome → cliente do localStorage (não-default) com dados preenchidos
+        const localByName=new Map();
+        clients.forEach(c=>{if(!defaultIds.has(c.id))localByName.set(norm(c.name),c);});
+        // Mescla: entry do código recebe campos não-vazios do localStorage
+        clients=clients.map(c=>{
+          if(!defaultIds.has(c.id))return c;
+          const local=localByName.get(norm(c.name));
+          if(!local)return c;
+          const merge={};
+          Object.keys(local).forEach(k=>{
+            const v=local[k];
+            const blank=v===null||v===undefined||v==='—'||v===''||v===0||v===false;
+            if(!blank&&(c[k]===null||c[k]===undefined||c[k]==='—'||c[k]===''||c[k]===0))merge[k]=v;
+          });
+          return{...c,...merge};
         });
+        // Remove os duplicados do localStorage
+        const defaultNames=new Set(clients.filter(c=>defaultIds.has(c.id)).map(c=>norm(c.name)));
+        clients=clients.filter(c=>defaultIds.has(c.id)||!defaultNames.has(norm(c.name)));
       }
       // Patch 10: forçar status correto baseado no Monday (fonte de verdade)
       if(pv<10){
