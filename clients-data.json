@@ -204,7 +204,8 @@
       "obsContrato": "",
       "obsEvento": "",
       "dataInicio": null,
-      "contratoAnterior": null
+      "contratoAnterior": null,
+      "brunoAlias": "dust pub,dust"
     },
     {
       "id": 8,
@@ -570,7 +571,8 @@
       "obsContrato": "Parcela 1 – € 900,00 – vencimento em até 30 dias corridos do início do 1º mês; Parcela 2 – € 900,00 – vencimento em até 30 dias corridos do início do 2º mês; Parcela 3 – € 900,00 – vencimento em até 30 dias corridos do início do 3º mês. PS: Inclui gestão de campanhas Meta Ads, Google Ads e LinkedIn Ads; Landing Page; CRM RoiScale com IA de qualificação (licença e operação incluídas, consumo variável repassado à contratante)",
       "obsEvento": "",
       "dataInicio": "2026-06-29",
-      "contratoAnterior": null
+      "contratoAnterior": null,
+      "brunoAlias": "neutratech,neutratech new sheet"
     },
     {
       "id": 20,
@@ -875,7 +877,8 @@
       "obsContrato": "Iniciando julho/2026",
       "obsEvento": "",
       "dataInicio": null,
-      "contratoAnterior": null
+      "contratoAnterior": null,
+      "brunoAlias": "um sonho,um sonho rmk"
     },
     {
       "id": 30,
@@ -936,7 +939,8 @@
       "brunoFreq": null,
       "brunoCompras": null,
       "brunoCpa": null,
-      "brunoSaldo": null
+      "brunoSaldo": null,
+      "brunoAlias": "villa sambô,villa sambo,villa sambô"
     },
     {
       "id": 32,
@@ -1437,6 +1441,6 @@
     26,
     20
   ],
-  "patchVersion": 8,
+  "patchVersion": 9,
   "lastResetMonth": "2026-07"
 }
