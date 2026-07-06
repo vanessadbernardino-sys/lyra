@@ -34,7 +34,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
 const KEY = "lyra-cs-v4";
 const KEY_BACKUP = "lyra-cs-backup";
 const GITHUB_TOKEN_KEY = "lyra-github-token";
-const DATA_PATCH = 7;
+const DATA_PATCH = 8;
 const AUTH_KEY = "lyra-auth";
 const PASS_PREFIX = "lyra-pw-";
 // ─── USUÁRIOS E PERMISSÕES ────────────────────────────────────────────────────
@@ -1335,6 +1335,15 @@ function App(){
           return c;
         });
       }
+      // Patch 8: reativar clientes pausados pela auto-pausa automática
+      if(pv<8){
+        clients=clients.map(c=>{
+          if(c.status==='pausado'&&(c.obs||'').includes('| Pausado: evento')){
+            return{...c,status:'ativo',obs:(c.obs||'').replace(/\s*\| Pausado: evento[^|]*/g,'').trim()};
+          }
+          return c;
+        });
+      }
       return{...d,clients,patchVersion:DATA_PATCH};
     }
     function tryLoad(raw){
@@ -1424,22 +1433,6 @@ function App(){
     if(data.hojeData!==td)setData(p=>({...p,hojeData:td,hojeIds:[]}));
   },[data?.hojeData]);
 
-  // Auto-pausa: roda UMA VEZ após load, só pausa clientes ainda marcados como ativo
-  const autoPausadoRef=React.useRef(false);
-  useEffect(()=>{
-    if(loading||!data||autoPausadoRef.current)return;
-    autoPausadoRef.current=true;
-    const t=today0();
-    const ids=data.clients
-      .filter(c=>c.status==='ativo'&&c.eventoDate&&daysTo(c.eventoDate,t)<0)
-      .map(c=>c.id);
-    if(ids.length===0)return;
-    setData(p=>({...p,clients:p.clients.map(c=>
-      ids.includes(c.id)
-        ?{...c,status:'pausado',obs:(c.obs||'')+` | Pausado: evento ${fmtFull(c.eventoDate)} passou`}
-        :c
-    )}));
-  },[loading,data]);
 
   // Salva direto no localStorage + backup automático
   const persist=useCallback((next)=>{
