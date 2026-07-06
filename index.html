@@ -1365,10 +1365,11 @@ function App(){
           const local=localByName.get(norm(c.name));
           if(!local)return c;
           const merge={};
+          const isBlank=v=>v===null||v===undefined||v==='—'||v===''||v===0||v==='sem_dados';
           Object.keys(local).forEach(k=>{
+            if(k==='id'||k==='name')return;
             const v=local[k];
-            const blank=v===null||v===undefined||v==='—'||v===''||v===0||v===false;
-            if(!blank&&(c[k]===null||c[k]===undefined||c[k]==='—'||c[k]===''||c[k]===0))merge[k]=v;
+            if(!isBlank(v)&&isBlank(c[k]))merge[k]=v;
           });
           return{...c,...merge};
         });
