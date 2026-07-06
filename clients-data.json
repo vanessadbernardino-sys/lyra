@@ -1238,7 +1238,7 @@
       "tipo": "Entretenimento/Eventos",
       "eventoDate": "2026-07-02",
       "davi": false,
-      "status": "ativo",
+      "status": "pausado",
       "brunoStatus": null,
       "brunoRoas": null,
       "brunoGasto": 0,
