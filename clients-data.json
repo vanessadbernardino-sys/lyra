@@ -1205,7 +1205,7 @@
       "contato": "José Henrique Alves",
       "tel": "+5548996126329",
       "tipo": "GA Stage",
-      "eventoDate": "2026-08-15",
+      "eventoDate": null,
       "davi": false,
       "status": "ativo",
       "brunoStatus": "atencao",
@@ -1227,7 +1227,7 @@
       "obsEvento": "",
       "dataInicio": "2026-06-08",
       "contratoAnterior": null,
-      "brunoAlias": "maiara coelho,festival maiara coelho"
+      "brunoAlias": "all collections,dkbr"
     },
     {
       "id": 43,
@@ -1236,7 +1236,7 @@
       "contato": "Alberto David Lopes Pinto Vaz",
       "tel": "+1 415 770 2779",
       "tipo": "Entretenimento/Eventos",
-      "eventoDate": "2026-07-02",
+      "eventoDate": null,
       "davi": false,
       "status": "pausado",
       "brunoStatus": null,
@@ -1257,7 +1257,8 @@
       "brunoFreq": null,
       "brunoCompras": null,
       "brunoCpa": null,
-      "brunoSaldo": null
+      "brunoSaldo": null,
+      "brunoAlias": "segundos encantados"
     },
     {
       "id": 44,
@@ -1266,7 +1267,7 @@
       "contato": "Danilo Freitas",
       "tel": "+554199928911",
       "tipo": "Drift/Automobilismo",
-      "eventoDate": "2026-07-17",
+      "eventoDate": null,
       "davi": false,
       "status": "ativo",
       "brunoStatus": null,
@@ -1288,7 +1289,7 @@
       "brunoCompras": null,
       "brunoCpa": null,
       "brunoSaldo": null,
-      "brunoAlias": "all collections,dkbr"
+      "brunoAlias": "maiara coelho,festival maiara coelho"
     },
     {
       "id": 45,
@@ -1297,7 +1298,7 @@
       "contato": "Nuno Coelho",
       "tel": "+351 910 618 335",
       "tipo": "Empresa de tecnologia/ticketing",
-      "eventoDate": "2026-07-15",
+      "eventoDate": null,
       "davi": false,
       "status": "ativo",
       "brunoStatus": "saudavel",
@@ -1318,7 +1319,8 @@
       "brunoFreq": 3.37,
       "brunoCompras": 1959,
       "brunoCpa": 0.96,
-      "brunoSaldo": "Cartão"
+      "brunoSaldo": "Cartão",
+      "brunoAlias": "3cket"
     },
     {
       "id": 46,
@@ -1327,7 +1329,7 @@
       "contato": "Adriano Saito",
       "tel": "+5548996210841",
       "tipo": "Produção cultural / Festival",
-      "eventoDate": "2026-12-12",
+      "eventoDate": null,
       "davi": false,
       "status": "ativo",
       "brunoStatus": "saudavel",
@@ -1348,7 +1350,8 @@
       "brunoFreq": 2.95,
       "brunoCompras": 36,
       "brunoCpa": 53,
-      "brunoSaldo": "R$ 0,00"
+      "brunoSaldo": "R$ 0,00",
+      "brunoAlias": "festival saravá 2026,festival sarava 2026,festival sarava,saravá"
     },
     {
       "id": 47,
@@ -1357,7 +1360,7 @@
       "contato": "Leonardo Lemos Silva",
       "tel": "+55 11 9 8684-8678",
       "tipo": "Casa de shows/Entretenimento",
-      "eventoDate": "2026-12-23",
+      "eventoDate": null,
       "davi": false,
       "status": "ativo",
       "brunoStatus": "critico",
@@ -1379,7 +1382,8 @@
       "brunoCompras": 157,
       "brunoCpa": 90.25,
       "brunoSaldo": "R$ 0,00",
-      "_editingName": false
+      "_editingName": false,
+      "brunoAlias": "kibexiga,kibixiga,kibixiga show"
     },
     {
       "id": 48,
@@ -1388,7 +1392,7 @@
       "contato": "João Salgueiro",
       "tel": "+351925197865",
       "tipo": "Casa Noturna",
-      "eventoDate": "2026-08-26",
+      "eventoDate": null,
       "davi": false,
       "status": "ativo",
       "brunoStatus": "sem_dados",
@@ -1404,7 +1408,8 @@
       "obsContrato": "Parcela 1 – € 700,00 – 26/06/2026",
       "obsEvento": "Vários eventos - 5 Páginas de Instagram",
       "contratoAnterior": null,
-      "ultimoContato": "2026-06-26"
+      "ultimoContato": "2026-06-26",
+      "brunoAlias": "pagode do quadradinho,quadradinho"
     },
     {
       "id": 49,
@@ -1441,6 +1446,6 @@
     26,
     20
   ],
-  "patchVersion": 10,
+  "patchVersion": 11,
   "lastResetMonth": "2026-07"
 }
