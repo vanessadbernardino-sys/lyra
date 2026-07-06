@@ -728,7 +728,7 @@
     },
     {
       "id": 25,
-      "name": "Starlight",
+      "name": "Starlight, Templo, BDG e CAOS",
       "gestor": "Samuel",
       "contato": "Matheus Cavalca.",
       "tel": "+55 61 98168 0095",
@@ -755,7 +755,8 @@
       "obsContrato": "",
       "obsEvento": "",
       "dataInicio": null,
-      "contratoAnterior": null
+      "contratoAnterior": null,
+      "_editingName": false
     },
     {
       "id": 26,
@@ -1328,7 +1329,7 @@
       "dataInicio": "2026-06-18",
       "contratoVenc": "2026-12-12",
       "contratoVal": "—",
-      "reuniaoStatus": "agendado",
+      "reuniaoStatus": "realizado",
       "reuniaoData": "2026-07-06",
       "alerta": null,
       "obs": "",
