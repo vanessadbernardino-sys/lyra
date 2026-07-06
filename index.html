@@ -34,7 +34,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
 const KEY = "lyra-cs-v4";
 const KEY_BACKUP = "lyra-cs-backup";
 const GITHUB_TOKEN_KEY = "lyra-github-token";
-const DATA_PATCH = 10;
+const DATA_PATCH = 11;
 const AUTH_KEY = "lyra-auth";
 const PASS_PREFIX = "lyra-pw-";
 // ─── USUÁRIOS E PERMISSÕES ────────────────────────────────────────────────────
@@ -126,6 +126,13 @@ const CLIENTS_DEFAULT = [
   {id:39,name:'Drop Open Air',gestor:'—',contato:'—',tel:'—',tipo:'Festa Eletrônica',eventoDate:null,davi:false,status:'pausado',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:null,contratoVal:'—',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
   {id:40,name:'GL Produções',gestor:'—',contato:'—',tel:'—',tipo:'Produtora',eventoDate:null,davi:false,status:'pausado',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:null,contratoVal:'—',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
   {id:41,name:'Magic Boom',gestor:'—',contato:'—',tel:'—',tipo:'Festa Eletrônica',eventoDate:null,davi:false,status:'pausado',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:'2026-11-27',contratoVal:'R$ 2.000',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
+  {id:42,name:'DKBR',brunoAlias:'all collections,dkbr',gestor:'Samuel',contato:'Ricardo',tel:'—',tipo:'—',eventoDate:null,davi:false,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:null,contratoVal:'—',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
+  {id:43,name:'Segundos Encantados',brunoAlias:'segundos encantados',gestor:'Samuel',contato:'João Salgueiro',tel:'—',tipo:'—',eventoDate:null,davi:false,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:null,contratoVal:'—',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
+  {id:44,name:'Festival Maiara Coelho',brunoAlias:'maiara coelho,festival maiara coelho',gestor:'Gabriel',contato:'Zé Alvez',tel:'—',tipo:'—',eventoDate:null,davi:false,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:null,contratoVal:'—',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
+  {id:45,name:'3CKET',brunoAlias:'3cket',gestor:'Gabriel',contato:'Nuno Coelho',tel:'—',tipo:'—',eventoDate:null,davi:false,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:null,contratoVal:'—',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
+  {id:46,name:'Festival Saravá',brunoAlias:'festival saravá 2026,festival sarava 2026,festival sarava,saravá',gestor:'Gabriel',contato:'Adriano',tel:'—',tipo:'—',eventoDate:null,davi:false,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:null,contratoVal:'—',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
+  {id:47,name:'Kibixiga Show',brunoAlias:'kibexiga,kibixiga,kibixiga show',gestor:'Gabriel',contato:'Leonardo Lemos',tel:'—',tipo:'—',eventoDate:null,davi:false,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:null,contratoVal:'—',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
+  {id:48,name:'Pagode do Quadradinho',brunoAlias:'pagode do quadradinho,quadradinho',gestor:'Gabriel',contato:'Antonio Carlos',tel:'—',tipo:'—',eventoDate:null,davi:false,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:null,contratoVal:'—',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
 ];
 
 // ─── UTILS ────────────────────────────────────────────────────────────────────
@@ -1343,6 +1350,19 @@ function App(){
             return{...c,status:'ativo',obs:(c.obs||'').replace(/\s*\| Pausado: evento[^|]*/g,'').trim()};
           }
           return c;
+        });
+      }
+      // Patch 11: remover duplicatas por nome, mantendo o do CLIENTS_DEFAULT (id<=48)
+      if(pv<11){
+        const seen=new Map();
+        const defaultIds=new Set(CLIENTS_DEFAULT.map(c=>c.id));
+        // Primeiro passa: registra os do CLIENTS_DEFAULT
+        clients.forEach(c=>{if(defaultIds.has(c.id))seen.set((c.name||'').toLowerCase().trim(),c.id);});
+        // Segundo passo: remove duplicatas que não são do CLIENTS_DEFAULT
+        clients=clients.filter(c=>{
+          const key=(c.name||'').toLowerCase().trim();
+          if(defaultIds.has(c.id))return true;
+          return!seen.has(key);
         });
       }
       // Patch 10: forçar status correto baseado no Monday (fonte de verdade)
