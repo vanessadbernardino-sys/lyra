@@ -34,7 +34,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
 const KEY = "lyra-cs-v4";
 const KEY_BACKUP = "lyra-cs-backup";
 const GITHUB_TOKEN_KEY = "lyra-github-token";
-const DATA_PATCH = 8;
+const DATA_PATCH = 9;
 const AUTH_KEY = "lyra-auth";
 const PASS_PREFIX = "lyra-pw-";
 // ─── USUÁRIOS E PERMISSÕES ────────────────────────────────────────────────────
@@ -1332,6 +1332,14 @@ function App(){
         clients=clients.map(c=>{
           const key=(c.name||'').toLowerCase().trim();
           if(aliasMap[key])return{...c,brunoAlias:aliasMap[key]};
+          return c;
+        });
+      }
+      // Patch 9: brunoAlias para Kibixiga
+      if(pv<9){
+        clients=clients.map(c=>{
+          const key=(c.name||'').toLowerCase().trim();
+          if(key==='kibixiga'||key==='kibexiga')return{...c,brunoAlias:'kibexiga,kibixiga'};
           return c;
         });
       }
