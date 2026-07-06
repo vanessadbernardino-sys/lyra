@@ -177,7 +177,7 @@
       "brunoCpa": 12.8,
       "brunoSaldo": "R$ 44,88",
       "obsContrato": "",
-      "obsEvento": "Churn - Chamar dia 06/07 - Vamos voltar?",
+      "obsEvento": "Saiu",
       "dataInicio": null,
       "contratoAnterior": null
     },
@@ -283,8 +283,8 @@
       "brunoGasto": 1974.28,
       "contratoVenc": "2026-11-12",
       "contratoVal": "R$ 4.000",
-      "reuniaoStatus": "agendar",
-      "reuniaoData": null,
+      "reuniaoStatus": "agendado",
+      "reuniaoData": "2026-07-07",
       "alerta": null,
       "obs": "",
       "ultimoContato": null,
@@ -314,7 +314,7 @@
       "brunoGasto": 1339.56,
       "contratoVenc": "2026-11-18",
       "contratoVal": "R$ 1.933,33",
-      "reuniaoStatus": "agendar",
+      "reuniaoStatus": "nao_precisa",
       "reuniaoData": null,
       "alerta": null,
       "obs": "Evento 23/07/2026 | FriendsFuel Produções LTDA - Contrato de 6 parcelas variáveis (2x R$1.800 + 4x R$2.000 = R$11.600 total). Pagamento condicionado à entrega de relatórios mensais. ROAS mínimo de 1,0. | Pausado: evento 11/06/2026 passou | Pausado: evento 11/06/2026 passou",
@@ -834,7 +834,7 @@
       "brunoGasto": 2747.47,
       "contratoVenc": "2026-07-12",
       "contratoVal": "R$ 4.000",
-      "reuniaoStatus": "agendar",
+      "reuniaoStatus": "nao_precisa",
       "reuniaoData": null,
       "alerta": null,
       "obs": "",
@@ -1289,9 +1289,9 @@
       "contato": "Nuno Coelho",
       "tel": "+351 910 618 335",
       "tipo": "Empresa de tecnologia/ticketing",
-      "eventoDate": "2026-07-05",
+      "eventoDate": "2026-07-15",
       "davi": false,
-      "status": "pausado",
+      "status": "ativo",
       "brunoStatus": "saudavel",
       "brunoRoas": 29.34,
       "brunoGasto": 1877.52,
@@ -1344,7 +1344,7 @@
     },
     {
       "id": 47,
-      "name": "Kibexiga Show",
+      "name": "Kibixiga Show",
       "gestor": "Gabriel",
       "contato": "Leonardo Lemos Silva",
       "tel": "+55 11 9 8684-8678",
@@ -1370,7 +1370,8 @@
       "brunoFreq": 2.89,
       "brunoCompras": 157,
       "brunoCpa": 90.25,
-      "brunoSaldo": "R$ 0,00"
+      "brunoSaldo": "R$ 0,00",
+      "_editingName": false
     },
     {
       "id": 48,
@@ -1429,8 +1430,8 @@
     1,
     25,
     13,
-    28,
-    26
+    26,
+    20
   ],
   "patchVersion": 6,
   "lastResetMonth": "2026-07"
