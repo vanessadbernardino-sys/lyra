@@ -1305,8 +1305,8 @@ function App(){
       // Garante que todos os clientes do CLIENTS_DEFAULT existem
       const existingIds=new Set(clients.map(c=>c.id));
       CLIENTS_DEFAULT.filter(c=>!existingIds.has(c.id)).forEach(c=>clients.push(c));
-      // Patch 4: limpa senha antiga
-      localStorage.removeItem(PASS_PREFIX+'vanessa.dbernardino@gmail.com');
+      // Patch 4: limpa senha antiga (roda só uma vez)
+      if(pv<4){localStorage.removeItem(PASS_PREFIX+'vanessa.dbernardino@gmail.com');}
       // Patch 5: novos campos
       if(pv<5){
         clients=clients.map(c=>({
