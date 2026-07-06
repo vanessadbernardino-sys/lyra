@@ -34,7 +34,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
 const KEY = "lyra-cs-v4";
 const KEY_BACKUP = "lyra-cs-backup";
 const GITHUB_TOKEN_KEY = "lyra-github-token";
-const DATA_PATCH = 6;
+const DATA_PATCH = 7;
 const AUTH_KEY = "lyra-auth";
 const PASS_PREFIX = "lyra-pw-";
 // ─── USUÁRIOS E PERMISSÕES ────────────────────────────────────────────────────
@@ -1316,6 +1316,21 @@ function App(){
       // Patch 6: renomear Retrogyn → RCountry e atualizar brunoAlias
       if(pv<6){
         clients=clients.map(c=>c.name==='Retrogyn'?{...c,name:'RCountry',brunoAlias:'retrogyn,rcountry'}:c);
+      }
+      // Patch 7: brunoAlias para clientes criados pela interface (DKBR, Festival Saravá, Festival Maiara Coelho)
+      if(pv<7){
+        const aliasMap={
+          'dkbr':'all collections,dkbr',
+          'festival saravá':'festival saravá 2026,festival sarava 2026,festival sarava,saravá',
+          'festival sarava':'festival saravá 2026,festival sarava 2026,festival sarava,saravá',
+          'festival maiara coelho':'maiara coelho,festival maiara coelho',
+          'maiara coelho':'maiara coelho,festival maiara coelho',
+        };
+        clients=clients.map(c=>{
+          const key=(c.name||'').toLowerCase().trim();
+          if(aliasMap[key])return{...c,brunoAlias:aliasMap[key]};
+          return c;
+        });
       }
       return{...d,clients,patchVersion:DATA_PATCH};
     }
