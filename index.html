@@ -911,7 +911,7 @@ function ClientesView({clients,onSelect,today}){
   const[search,setSearch]=useState('');
   const[gestor,setGestor]=useState('');
   const[reuniao,setReuniaoF]=useState('');
-  const gestores=['Samuel','Felício','Gabriel','Bruno'];
+  const gestores=['Samuel','Felício','Gabriel','Bruno','—'];
   const list=clients
     .filter(c=>c.status===tab
       &&(!search||c.name.toLowerCase().includes(search.toLowerCase()))
