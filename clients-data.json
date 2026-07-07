@@ -1468,7 +1468,7 @@
       "gestor": "Samuel",
       "contato": "Fagner Redigolo Gomes",
       "tel": "+55 18 99151-8371",
-      "tipo": "Festival de música eletrônica",
+      "tipo": "Festa Eletrônica",
       "eventoDate": "2026-10-12",
       "davi": false,
       "status": "ativo",
@@ -1485,7 +1485,7 @@
       "obsContrato": "Parcela 1 – R$ 2.750,00 – 08/07/2026; Parcela 2 – R$ 2.750,00 – 08/08/2026",
       "obsEvento": "",
       "contratoAnterior": null,
-      "ultimoContato": null,
+      "ultimoContato": "2026-07-07",
       "brunoAlias": "Natureza Mística"
     }
   ],
