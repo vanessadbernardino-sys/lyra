@@ -1300,7 +1300,7 @@
       "tipo": "Ticketeira",
       "eventoDate": null,
       "davi": false,
-      "status": "ativo",
+      "status": "pausado",
       "brunoStatus": "saudavel",
       "brunoRoas": 62.43,
       "brunoGasto": 370.47,
