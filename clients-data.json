@@ -247,7 +247,7 @@
       "tipo": "Evento Cultural",
       "eventoDate": "2026-07-12",
       "davi": false,
-      "status": "ativo",
+      "status": "pausado",
       "brunoStatus": "saudavel",
       "brunoRoas": 3.65,
       "brunoGasto": 517.39,
