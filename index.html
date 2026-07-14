@@ -34,7 +34,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
 const KEY = "lyra-cs-v4";
 const KEY_BACKUP = "lyra-cs-backup";
 const GITHUB_TOKEN_KEY = "lyra-github-token";
-const DATA_PATCH = 11;
+const DATA_PATCH = 12;
 const AUTH_KEY = "lyra-auth";
 const PASS_PREFIX = "lyra-pw-";
 // ─── USUÁRIOS E PERMISSÕES ────────────────────────────────────────────────────
@@ -134,6 +134,11 @@ const CLIENTS_DEFAULT = [
   {id:47,name:'Kibixiga Show',brunoAlias:'kibexiga,kibixiga,kibixiga show',gestor:'Gabriel',contato:'Leonardo Lemos',tel:'—',tipo:'—',eventoDate:null,davi:false,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:null,contratoVal:'—',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
   {id:48,name:'Pagode do Quadradinho',brunoAlias:'pagode do quadradinho,quadradinho',gestor:'Gabriel',contato:'Antonio Carlos',tel:'—',tipo:'—',eventoDate:null,davi:false,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,contratoVenc:null,contratoVal:'—',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',ultimoContato:null},
 ];
+
+// ─── LISTAS FIXAS ─────────────────────────────────────────────────────────────
+const GESTORES=['Samuel','Felício','Bruno','—'];
+const SEGMENTOS=['Música Eletrônica','Samba e Pagode','Sertanejo','Funk','Rap / Trap / Hip Hop','Música Brasileira','Entretenimento Multigênero','Festa Universitária','Evento Automotivo','Corporativo / Negócios / Congressos e Feiras','Gastronomia','Ticketeira','E-commerce','Eventos Temáticos'];
+const TIPOS_CLIENTE=['Evento / Festival','Casa / Espaço','Produtora / Organizadora','Plataforma de Ingressos','Marketplace'];
 
 // ─── UTILS ────────────────────────────────────────────────────────────────────
 const todayStr=()=>new Date().toISOString().split('T')[0];
@@ -414,11 +419,7 @@ function DetailPanel({c,onClose,onSave,onDelete,today}){
               {!ro&&<button onClick={()=>setF(p=>({...p,_editingName:true}))} style={{background:'#FFF0F6',border:`1px solid ${P_BORDER}`,borderRadius:6,cursor:'pointer',color:'#C06090',padding:'2px 6px',lineHeight:1,fontSize:11,fontWeight:600}} title="Editar nome">Editar</button>}
             </div>
         }
-        {ro
-          ?<div style={{fontSize:11,color:'#B08090',marginBottom:6}}>{f.tipo}</div>
-          :<input value={f.tipo||''} onChange={e=>upd('tipo',e.target.value)} placeholder="Tipo / Negócio"
-              style={{fontSize:11,color:'#B08090',marginBottom:6,border:`1px solid ${P_BORDER}`,borderRadius:8,padding:'3px 8px',background:'white',width:'100%'}}/>
-        }
+        <div style={{fontSize:11,color:'#B08090',marginBottom:6}}>{[f.segmento,f.tipo].filter(Boolean).join(' · ')||'—'}</div>
         <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
           <BrunoBdg status={f.brunoStatus}/><RenovBdg status={renovSt(f,today)}/>{f.davi&&<Bdg type="davi" label="Davi"/>}
           {ro&&<span style={{fontSize:10,background:'#F3F4F6',color:'#6B7280',padding:'2px 8px',borderRadius:20,fontWeight:600}}>🔒 Somente leitura</span>}
@@ -447,7 +448,7 @@ function DetailPanel({c,onClose,onSave,onDelete,today}){
             <div>
               <div style={lbl('#D94F82')}>Gestor</div>
               <select value={f.gestor} onChange={e=>upd('gestor',e.target.value)} disabled={ro} style={{...si('rosa'),cursor:ro?'default':'pointer'}}>
-                {['Samuel','Felício','Gabriel','Bruno','—'].map(g=><option key={g} value={g}>{g}</option>)}
+                {GESTORES.map(g=><option key={g} value={g}>{g}</option>)}
               </select>
             </div>
             <div>
@@ -456,12 +457,39 @@ function DetailPanel({c,onClose,onSave,onDelete,today}){
             </div>
           </div>
           <div style={lbl('#D94F82')}>Telefone / WhatsApp</div>
-          <div style={{display:'flex',gap:8,alignItems:'center'}}>
+          <div style={{display:'flex',gap:8,alignItems:'center',marginBottom:8}}>
             <input value={f.tel} onChange={e=>upd('tel',e.target.value)} readOnly={ro} style={{...si('rosa'),flex:1}}/>
             {f.tel&&f.tel!=='—'&&<a href={`https://wa.me/${f.tel.replace(/\D/g,'')}`} target="_blank" rel="noreferrer"
               style={{color:'#25D366',fontSize:20,textDecoration:'none',flexShrink:0}}>
               <i className="ti ti-brand-whatsapp"/>
             </a>}
+          </div>
+          <div style={lbl('#D94F82')}>Instagram</div>
+          <div style={{display:'flex',gap:8,alignItems:'center'}}>
+            <input value={f.instagram||''} onChange={e=>upd('instagram',e.target.value||null)} readOnly={ro} placeholder="@perfil ou link" style={{...si('rosa'),flex:1}}/>
+            {f.instagram&&<a href={f.instagram.startsWith('http')?f.instagram.split(' ')[0]:`https://www.instagram.com/${f.instagram.replace('@','')}`} target="_blank" rel="noreferrer"
+              style={{color:'#E1306C',fontSize:20,textDecoration:'none',flexShrink:0}}>
+              <i className="ti ti-brand-instagram"/>
+            </a>}
+          </div>
+        </div>
+        <div style={box()}>
+          <div style={lbl('#D94F82')}>Classificação</div>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8}}>
+            <div>
+              <div style={lbl('#D94F82')}>Segmento</div>
+              <select value={f.segmento||''} onChange={e=>upd('segmento',e.target.value)} disabled={ro} style={{...si('rosa'),cursor:ro?'default':'pointer'}}>
+                <option value="">— Selecionar —</option>
+                {SEGMENTOS.map(s=><option key={s} value={s}>{s}</option>)}
+              </select>
+            </div>
+            <div>
+              <div style={lbl('#D94F82')}>Tipo</div>
+              <select value={f.tipo||''} onChange={e=>upd('tipo',e.target.value)} disabled={ro} style={{...si('rosa'),cursor:ro?'default':'pointer'}}>
+                <option value="">— Selecionar —</option>
+                {TIPOS_CLIENTE.map(t=><option key={t} value={t}>{t}</option>)}
+              </select>
+            </div>
           </div>
         </div>
 
@@ -911,12 +939,13 @@ function ClientesView({clients,onSelect,today}){
   const[search,setSearch]=useState('');
   const[gestor,setGestor]=useState('');
   const[reuniao,setReuniaoF]=useState('');
-  const gestores=['Samuel','Felício','Gabriel','Bruno','—'];
+  const[segmento,setSegmento]=useState('');
   const list=clients
     .filter(c=>c.status===tab
       &&(!search||c.name.toLowerCase().includes(search.toLowerCase()))
       &&(!gestor||c.gestor===gestor)
-      &&(!reuniao||c.reuniaoStatus===reuniao))
+      &&(!reuniao||c.reuniaoStatus===reuniao)
+      &&(!segmento||c.segmento===segmento))
     .sort((a,b)=>a.name.localeCompare(b.name,'pt-BR'));
 
   return<div style={{flex:1,display:'flex',flexDirection:'column',overflow:'hidden',background:P_BG}}>
@@ -928,8 +957,11 @@ function ClientesView({clients,onSelect,today}){
         </button>)}
         <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Buscar cliente..." style={{flex:1,minWidth:150,padding:'7px 14px',borderRadius:20,fontSize:12,border:`1px solid ${P_BORDER}`,background:'white',color:GRAFITE}}/>
         {tab==='ativo'&&<select value={gestor} onChange={e=>setGestor(e.target.value)} style={{padding:'7px 14px',borderRadius:20,fontSize:12,border:`1px solid ${P_BORDER}`,background:'white',color:GRAFITE,cursor:'pointer'}}>
-          <option value="">Todos os gestores</option>{gestores.map(g=><option key={g} value={g}>{g}</option>)}
+          <option value="">Todos os gestores</option>{GESTORES.map(g=><option key={g} value={g}>{g}</option>)}
         </select>}
+        <select value={segmento} onChange={e=>setSegmento(e.target.value)} style={{padding:'7px 14px',borderRadius:20,fontSize:12,border:`1px solid ${P_BORDER}`,background:'white',color:GRAFITE,cursor:'pointer'}}>
+          <option value="">Todos os segmentos</option>{SEGMENTOS.map(s=><option key={s} value={s}>{s}</option>)}
+        </select>
         <select value={reuniao} onChange={e=>setReuniaoF(e.target.value)} style={{padding:'7px 14px',borderRadius:20,fontSize:12,border:`1px solid ${P_BORDER}`,background:'white',color:GRAFITE,cursor:'pointer'}}>
           <option value="">Todas as reuniões</option>
           <option value="agendar">Agendar</option>
@@ -942,7 +974,7 @@ function ClientesView({clients,onSelect,today}){
     <div style={{flex:1,overflowY:'auto',padding:'0 32px 24px'}}>
       <div style={{background:'white',border:`1px solid ${P_BORDER}`,borderRadius:24,overflow:'hidden'}}>
         <div style={{display:'grid',gridTemplateColumns:'1fr 90px 120px 90px 90px 90px 100px',padding:'10px 20px',background:P_BG,borderBottom:`1px solid ${P_BORDER}`}}>
-          {['Cliente','Gestor','Tipo','Status','Evento','Contrato','Reunião'].map(h=><div key={h} style={{fontSize:10,fontWeight:700,color:'#C06090',letterSpacing:0.5}}>{h}</div>)}
+          {['Cliente','Gestor','Segmento','Status','Evento','Contrato','Reunião'].map(h=><div key={h} style={{fontSize:10,fontWeight:700,color:'#C06090',letterSpacing:0.5}}>{h}</div>)}
         </div>
         {list.length===0&&<div style={{padding:32,textAlign:'center',color:'#C06090',fontSize:13}}>Nenhum cliente encontrado</div>}
         {list.map(c=>{
@@ -958,7 +990,7 @@ function ClientesView({clients,onSelect,today}){
               {(c.obsEvento||c.obsContrato)&&<div style={{fontSize:10,color:'#C06090',marginTop:1,fontStyle:'italic'}}>{(c.obsEvento||c.obsContrato).substring(0,45)}{(c.obsEvento||c.obsContrato).length>45?'…':''}</div>}
             </div>
             <div style={{alignSelf:'center',fontSize:12,color:'#6B7280'}}>{c.gestor}</div>
-            <div style={{alignSelf:'center',fontSize:11,color:'#6B7280'}}>{c.tipo.substring(0,18)}{c.tipo.length>18?'…':''}</div>
+            <div style={{alignSelf:'center',fontSize:11,color:'#6B7280'}}>{(c.segmento||'—').substring(0,20)}{(c.segmento||'').length>20?'…':''}</div>
             <div style={{alignSelf:'center'}}>{c.status==='ativo'?<BrunoBdg status={c.brunoStatus}/>:<Bdg type="none" label="Pausado"/>}</div>
             <div style={{alignSelf:'center',fontSize:11,color:ev!=null&&ev<=10?'#DC2626':'#6B7280',fontWeight:ev!=null&&ev<=10?700:400}}>{ev!=null?`${fmtDate(c.eventoDate)} (${ev}d)`:'—'}</div>
             <div style={{alignSelf:'center'}}><RenovBdg status={renovSt(c,today)}/></div>
@@ -1158,7 +1190,7 @@ function NovoClienteView({clients,onAddClient}){
   const[form,setForm]=useState(null);
   const[error,setError]=useState('');
   const[msg,setMsg]=useState('');
-  const GESTORES=['Samuel','Felício','Gabriel','Bruno','—'];
+  // GESTORES global
   const si={border:`1px solid ${P_BORDER}`,borderRadius:8,padding:'6px 10px',fontSize:13,background:'white',color:GRAFITE,width:'100%'};
   const lbl={fontSize:10,fontWeight:700,color:'#C06090',marginBottom:3,textTransform:'uppercase',letterSpacing:0.5};
 
@@ -1169,7 +1201,7 @@ function NovoClienteView({clients,onAddClient}){
       const b64=await fileToB64(file);
       const text=await askClaude(b64,'application/pdf','Analise este contrato. Extraia dados do CONTRATANTE (cliente, não a Jurassic).\nRetorne APENAS JSON:\n{"nome":"empresa","responsavel":"nome","tel":"telefone com DDI","email":"email","valorMensal":"R$ X.XXX","dataInicio":"YYYY-MM-DD","dataFim":"YYYY-MM-DD","tipo":"tipo de negócio","eventoDate":"YYYY-MM-DD","obsContrato":"string"}\n\nPara obsContrato: liste APENAS o cronograma de parcelas no formato "Parcela 1 – R$ X.XXX – [data ou condição]; Parcela 2 – R$ X.XXX – ...". Se houver serviços extras negociados além do padrão, adicione no final "PS: [negociação especial]". NÃO inclua forma de pagamento, texto jurídico ou cláusulas.\n\nCampos não encontrados: null.');
       const parsed=parseJSON(text);
-      setForm({...parsed,gestor:'—',davi:false,obsEvento:'',brunoAlias:''});
+      setForm({...parsed,gestor:'—',davi:false,obsEvento:'',brunoAlias:'',segmento:'',instagram:''});
     }catch(e){
       if(e.message==='API_KEY_MISSING')setError('Chave API não configurada. Recarregue a página para inserir.');
       else setError('Erro ao ler o contrato: '+e.message);
@@ -1180,7 +1212,7 @@ function NovoClienteView({clients,onAddClient}){
   function confirmar(){
     if(!form?.nome){setError('Nome do cliente é obrigatório');return;}
     const newId=Math.max(0,...clients.map(c=>c.id))+1;
-    onAddClient({id:newId,name:form.nome,gestor:form.gestor||'—',contato:form.responsavel||'—',tel:form.tel||'—',tipo:form.tipo||'—',eventoDate:form.eventoDate||null,davi:false,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,dataInicio:form.dataInicio||null,contratoVenc:form.dataFim||null,contratoVal:form.valorMensal||'—',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',obsContrato:form.obsContrato||'',obsEvento:form.obsEvento||'',contratoAnterior:null,ultimoContato:null,brunoAlias:form.brunoAlias||''});
+    onAddClient({id:newId,name:form.nome,gestor:form.gestor||'—',contato:form.responsavel||'—',tel:form.tel||'—',segmento:form.segmento||'',tipo:form.tipo||'',instagram:form.instagram||null,eventoDate:form.eventoDate||null,davi:false,status:'ativo',brunoStatus:'sem_dados',brunoRoas:null,brunoGasto:0,dataInicio:form.dataInicio||null,contratoVenc:form.dataFim||null,contratoVal:form.valorMensal||'—',reuniaoStatus:'agendar',reuniaoData:null,alerta:null,obs:'',obsContrato:form.obsContrato||'',obsEvento:form.obsEvento||'',contratoAnterior:null,ultimoContato:null,brunoAlias:form.brunoAlias||''});
     setMsg(`${form.nome} adicionado com sucesso!`);setForm(null);setFile(null);setTimeout(()=>setMsg(''),5000);
   }
 
@@ -1192,7 +1224,7 @@ function NovoClienteView({clients,onAddClient}){
     {msg&&<div style={{background:'#DCFCE7',color:'#15803D',padding:'10px 16px',borderRadius:10,marginBottom:14,fontSize:13,fontWeight:700}}>✓ {msg}</div>}
 
     {/* Botão manual — abre formulário vazio direto */}
-    {!form&&<button onClick={()=>setForm({nome:'',responsavel:'',tel:'',email:'',tipo:'',valorMensal:'',dataInicio:null,dataFim:null,eventoDate:null,gestor:'—',obs:'',obsContrato:'',obsEvento:'',brunoAlias:''})}
+    {!form&&<button onClick={()=>setForm({nome:'',responsavel:'',tel:'',email:'',tipo:'',segmento:'',instagram:'',valorMensal:'',dataInicio:null,dataFim:null,eventoDate:null,gestor:'—',obs:'',obsContrato:'',obsEvento:'',brunoAlias:''})}
       style={{width:'100%',background:`linear-gradient(135deg,${P},${PESSEGO})`,color:'white',padding:'13px',borderRadius:16,fontSize:14,fontWeight:700,border:'none',cursor:'pointer',marginBottom:16,letterSpacing:0.3}}>
       ✦ Preencher manualmente (sem contrato)
     </button>}
@@ -1216,8 +1248,11 @@ function NovoClienteView({clients,onAddClient}){
         <div><div style={lbl}>Vencimento</div><input type="date" value={form.dataFim||''} onChange={e=>upd('dataFim',e.target.value||null)} style={si}/></div>
         <div><div style={lbl}>Data do evento</div><input type="date" value={form.eventoDate||''} onChange={e=>upd('eventoDate',e.target.value||null)} style={si}/></div>
         <div><div style={lbl}>Gestor</div><select value={form.gestor||'—'} onChange={e=>upd('gestor',e.target.value)} style={{...si,cursor:'pointer'}}>{GESTORES.map(g=><option key={g} value={g}>{g}</option>)}</select></div>
+        <div><div style={lbl}>Segmento</div><select value={form.segmento||''} onChange={e=>upd('segmento',e.target.value)} style={{...si,cursor:'pointer'}}><option value="">— Selecionar —</option>{SEGMENTOS.map(s=><option key={s} value={s}>{s}</option>)}</select></div>
+        <div><div style={lbl}>Tipo</div><select value={form.tipo||''} onChange={e=>upd('tipo',e.target.value)} style={{...si,cursor:'pointer'}}><option value="">— Selecionar —</option>{TIPOS_CLIENTE.map(t=><option key={t} value={t}>{t}</option>)}</select></div>
       </div>
-      <div style={{marginTop:12}}><div style={lbl}>Alias Bruno (nomes do relatório, separados por vírgula)</div><input value={form.brunoAlias||''} onChange={e=>upd('brunoAlias',e.target.value)} style={si} placeholder="ex: nome no meta, outro nome..."/></div>
+      <div style={{marginTop:12}}><div style={lbl}>Instagram (@perfil ou link)</div><input value={form.instagram||''} onChange={e=>upd('instagram',e.target.value)} style={si} placeholder="https://www.instagram.com/perfil"/></div>
+      <div style={{marginTop:8}}><div style={lbl}>Alias Bruno (nomes do relatório, separados por vírgula)</div><input value={form.brunoAlias||''} onChange={e=>upd('brunoAlias',e.target.value)} style={si} placeholder="ex: nome no meta, outro nome..."/></div>
       <div style={{marginTop:8}}><div style={lbl}>Obs. do contrato (parcelas)</div><textarea value={form.obsContrato||''} onChange={e=>upd('obsContrato',e.target.value)} rows={2} style={{...si,resize:'vertical'}} placeholder="Parcela 1 – R$ X – dia Y; Parcela 2 – ..."/></div>
       <div style={{marginTop:8}}><div style={lbl}>Obs. do evento</div><textarea value={form.obsEvento||''} onChange={e=>upd('obsEvento',e.target.value)} rows={2} style={{...si,resize:'vertical'}} placeholder="Datas, locais, detalhes do evento..."/></div>
       <div style={{display:'flex',gap:10,marginTop:14}}>
@@ -1389,6 +1424,71 @@ function App(){
           if(key==='kibixiga'||key==='kibexiga')return{...c,brunoAlias:'kibexiga,kibixiga'};
           return c;
         });
+      }
+      // Patch 12: segmento, tipo (novo padrão fixo), instagram e remoção do Gabriel
+      if(pv<12){
+        const norm=s=>(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').trim();
+        const m={
+          'apice':                        {segmento:'Entretenimento Multigênero',tipo:'Produtora / Organizadora',instagram:'https://www.instagram.com/apiceent'},
+          'baile de ouro':                {segmento:'Eventos Temáticos',tipo:'Evento / Festival',instagram:'https://www.instagram.com/dno.flashback/'},
+          'buteco costelao':              {segmento:'Gastronomia',tipo:'Casa / Espaço',instagram:'https://www.instagram.com/butecocostelao/'},
+          'camarote pride':               {segmento:'Eventos Temáticos',tipo:'Evento / Festival',instagram:'https://www.instagram.com/camarotepride/'},
+          'casa yala':                    {segmento:'Entretenimento Multigênero',tipo:'Casa / Espaço',instagram:'https://www.instagram.com/casayala_'},
+          'complexo fora do eixo':        {segmento:'Entretenimento Multigênero',tipo:'Casa / Espaço',instagram:null},
+          'dust pub':                     {segmento:'Sertanejo',tipo:'Casa / Espaço',instagram:null},
+          'somos entre':                  {segmento:'Corporativo / Negócios / Congressos e Feiras',tipo:'Produtora / Organizadora',instagram:'https://www.instagram.com/somosentre.br'},
+          'feijoada do serginho':         {segmento:'Samba e Pagode',tipo:'Evento / Festival',instagram:'https://www.instagram.com/feijoadadoserginhooficial/'},
+          'floresta infectada':           {segmento:'Música Eletrônica',tipo:'Evento / Festival',instagram:'https://www.instagram.com/florestainfectada/'},
+          'friends fuel':                 {segmento:'Evento Automotivo',tipo:'Evento / Festival',instagram:'https://www.instagram.com/friendsfuel/'},
+          'from heaven':                  {segmento:'Gastronomia',tipo:'Casa / Espaço',instagram:'https://www.instagram.com/fromheavenbadragaz/'},
+          'hipnotica festival':           {segmento:'Música Eletrônica',tipo:'Evento / Festival',instagram:'https://www.instagram.com/hipnoticacrew/'},
+          'mad in brazza':                {segmento:'Rap / Trap / Hip Hop',tipo:'Evento / Festival',instagram:'https://www.instagram.com/madinbrazza/'},
+          'mad in brazza sp':             {segmento:'Rap / Trap / Hip Hop',tipo:'Evento / Festival',instagram:'https://www.instagram.com/madinbrazzasp/'},
+          'magic boom tour':              {segmento:'Música Eletrônica',tipo:'Evento / Festival',instagram:'https://www.instagram.com/magicboomtour/'},
+          'moving festival':              {segmento:'Música Eletrônica',tipo:'Evento / Festival',instagram:'https://www.instagram.com/movingfestival/'},
+          'na pegada':                    {segmento:'Sertanejo',tipo:'Evento / Festival',instagram:null},
+          'neutratech & new sheet':       {segmento:'Corporativo / Negócios / Congressos e Feiras',tipo:'Produtora / Organizadora',instagram:'https://www.instagram.com/neutratech_angola/'},
+          'new sheet':                    {segmento:'Entretenimento Multigênero',tipo:'Produtora / Organizadora',instagram:'https://www.instagram.com/newsheet.pt/ https://www.instagram.com/revengeofthe90s/'},
+          'puma punku festival':          {segmento:'Música Eletrônica',tipo:'Evento / Festival',instagram:'https://www.instagram.com/pumapunkufestival/'},
+          'rcountry':                     {segmento:'Sertanejo',tipo:'Evento / Festival',instagram:'https://www.instagram.com/rcountryy'},
+          'savage':                       {segmento:'Música Eletrônica',tipo:'Evento / Festival',instagram:null},
+          'snapp':                        {segmento:'Entretenimento Multigênero',tipo:'Produtora / Organizadora',instagram:'https://www.instagram.com/snappproductions/'},
+          'starlight, templo, bdg e caos':{segmento:'Entretenimento Multigênero',tipo:'Produtora / Organizadora',instagram:'https://www.instagram.com/festastarlight/ https://www.instagram.com/bailedogomesofc/'},
+          'tardezinha':                   {segmento:'Samba e Pagode',tipo:'Evento / Festival',instagram:null},
+          'terra magica':                 {segmento:'Música Eletrônica',tipo:'Evento / Festival',instagram:'https://www.instagram.com/terracrewam/'},
+          'terratronic':                  {segmento:'Música Eletrônica',tipo:'Evento / Festival',instagram:'https://www.instagram.com/terratronic/'},
+          'um sonho (rmk)':               {segmento:'Música Brasileira',tipo:'Evento / Festival',instagram:null},
+          'use isy':                      {segmento:'E-commerce',tipo:'Marketplace',instagram:'https://www.instagram.com/useisy/'},
+          'villa sambo':                  {segmento:'Samba e Pagode',tipo:'Evento / Festival',instagram:null},
+          'you can productions':          {segmento:'Entretenimento Multigênero',tipo:'Produtora / Organizadora',instagram:null},
+          '404 (fuschini)':               {segmento:'Funk',tipo:'Evento / Festival',instagram:null},
+          '4u':                           {segmento:'Música Eletrônica',tipo:'Evento / Festival',instagram:null},
+          'cbago':                        {segmento:'Corporativo / Negócios / Congressos e Feiras',tipo:'Evento / Festival',instagram:null},
+          'choppadinha':                  {segmento:'Festa Universitária',tipo:'Evento / Festival',instagram:null},
+          'church tech':                  {segmento:'Eventos Temáticos',tipo:'Evento / Festival',instagram:'https://www.instagram.com/horrorexpobrasil/'},
+          'diamond experience':           {segmento:'Corporativo / Negócios / Congressos e Feiras',tipo:'Evento / Festival',instagram:null},
+          'drop open air':                {segmento:'Música Eletrônica',tipo:'Evento / Festival',instagram:null},
+          'gl producoes':                 {segmento:'Funk',tipo:'Produtora / Organizadora',instagram:null},
+          'magic boom':                   {segmento:'Música Eletrônica',tipo:'Evento / Festival',instagram:'https://www.instagram.com/magicboombel/'},
+          'w2k':                          {segmento:'Samba e Pagode',tipo:'Produtora / Organizadora',instagram:null},
+          '3cket':                        {segmento:'Ticketeira',tipo:'Plataforma de Ingressos',instagram:'https://www.instagram.com/3cket/'},
+          'dkbr':                         {segmento:'Evento Automotivo',tipo:'Evento / Festival',instagram:'https://www.instagram.com/dkbr.oficial/'},
+          'segundos encantados':          {segmento:'Entretenimento Multigênero',tipo:'Casa / Espaço',instagram:'https://www.instagram.com/lisboario/'},
+          'festival maiara coelho':       {segmento:'Sertanejo',tipo:'Evento / Festival',instagram:'https://www.instagram.com/texassunset_/'},
+          'festival sarava':              {segmento:'Música Brasileira',tipo:'Evento / Festival',instagram:'https://www.instagram.com/festivalsarava/'},
+          'kibixiga show':                {segmento:'Entretenimento Multigênero',tipo:'Casa / Espaço',instagram:'https://www.instagram.com/kibixiga_show/'},
+          'pagode do quadradinho':        {segmento:'Samba e Pagode',tipo:'Evento / Festival',instagram:'https://www.instagram.com/pagodedoquadradinho/'},
+          'deboxe eclipse':               {segmento:'Evento Automotivo',tipo:'Evento / Festival',instagram:'https://www.instagram.com/deboxeeclipseuberlandia/'},
+          'sonoora + natureza mistica':   {segmento:'Música Eletrônica',tipo:'Produtora / Organizadora',instagram:'https://www.instagram.com/sonooracg/'},
+          'unifarra':                     {segmento:'Festa Universitária',tipo:'Evento / Festival',instagram:'https://www.instagram.com/sigaunifarra'},
+        };
+        clients=clients.map(c=>{
+          const key=norm(c.name);
+          const p=m[key];
+          if(!p)return{...c,segmento:c.segmento||'',instagram:c.instagram||null};
+          return{...c,segmento:p.segmento,tipo:p.tipo,instagram:c.instagram||p.instagram||null};
+        });
+        clients=clients.map(c=>c.gestor==='Gabriel'?{...c,gestor:'—'}:c);
       }
       return{...d,clients,patchVersion:DATA_PATCH};
     }
