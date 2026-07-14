@@ -951,19 +951,19 @@ function ClientesView({clients,onSelect,today}){
   return<div style={{flex:1,display:'flex',flexDirection:'column',overflow:'hidden',background:P_BG}}>
     <div style={{padding:'24px 32px 0',flexShrink:0}}>
       <div style={{fontFamily:"'Playfair Display',serif",fontSize:22,fontWeight:800,color:GRAFITE,marginBottom:16}}><i className="ti ti-users" style={{color:P,marginRight:10}}/>Clientes</div>
-      <div style={{display:'flex',gap:10,marginBottom:16,flexWrap:'wrap'}}>
+      <div style={{display:'flex',gap:10,marginBottom:16,flexWrap:'wrap',alignItems:'center'}}>
         {['ativo','pausado'].map(t=><button key={t} onClick={()=>setTab(t)} style={{padding:'7px 18px',borderRadius:20,fontSize:12,fontWeight:700,cursor:'pointer',border:`1px solid ${tab===t?P:P_BORDER}`,background:tab===t?P:'white',color:tab===t?'white':P_DARK}}>
           {t==='ativo'?`Ativos (${clients.filter(c=>c.status==='ativo').length})`:`Pausados (${clients.filter(c=>c.status==='pausado').length})`}
         </button>)}
         <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Buscar cliente..." style={{flex:1,minWidth:150,padding:'7px 14px',borderRadius:20,fontSize:12,border:`1px solid ${P_BORDER}`,background:'white',color:GRAFITE}}/>
-        {tab==='ativo'&&<select value={gestor} onChange={e=>setGestor(e.target.value)} style={{padding:'7px 14px',borderRadius:20,fontSize:12,border:`1px solid ${P_BORDER}`,background:'white',color:GRAFITE,cursor:'pointer'}}>
-          <option value="">Todos os gestores</option>{GESTORES.map(g=><option key={g} value={g}>{g}</option>)}
+        {tab==='ativo'&&<select value={gestor} onChange={e=>setGestor(e.target.value)} style={{padding:'7px 12px',borderRadius:20,fontSize:12,border:`1px solid ${P_BORDER}`,background:'white',color:GRAFITE,cursor:'pointer'}}>
+          <option value="">Gestores</option>{GESTORES.map(g=><option key={g} value={g}>{g}</option>)}
         </select>}
-        <select value={segmento} onChange={e=>setSegmento(e.target.value)} style={{padding:'7px 14px',borderRadius:20,fontSize:12,border:`1px solid ${P_BORDER}`,background:'white',color:GRAFITE,cursor:'pointer'}}>
-          <option value="">Todos os segmentos</option>{SEGMENTOS.map(s=><option key={s} value={s}>{s}</option>)}
+        <select value={segmento} onChange={e=>setSegmento(e.target.value)} style={{padding:'7px 12px',borderRadius:20,fontSize:12,border:`1px solid ${P_BORDER}`,background:'white',color:GRAFITE,cursor:'pointer'}}>
+          <option value="">Segmentos</option>{SEGMENTOS.map(s=><option key={s} value={s}>{s}</option>)}
         </select>
-        <select value={reuniao} onChange={e=>setReuniaoF(e.target.value)} style={{padding:'7px 14px',borderRadius:20,fontSize:12,border:`1px solid ${P_BORDER}`,background:'white',color:GRAFITE,cursor:'pointer'}}>
-          <option value="">Todas as reuniões</option>
+        <select value={reuniao} onChange={e=>setReuniaoF(e.target.value)} style={{padding:'7px 12px',borderRadius:20,fontSize:12,border:`1px solid ${P_BORDER}`,background:'white',color:GRAFITE,cursor:'pointer'}}>
+          <option value="">Reuniões</option>
           <option value="agendar">Agendar</option>
           <option value="agendado">Agendado</option>
           <option value="realizado">Realizado</option>
