@@ -1504,14 +1504,14 @@
       "dataInicio": "2026-07-14",
       "contratoVenc": "2026-08-15",
       "contratoVal": "R$ 2.300,00",
-      "reuniaoStatus": "agendar",
-      "reuniaoData": null,
+      "reuniaoStatus": "agendado",
+      "reuniaoData": "2026-07-14",
       "alerta": null,
       "obs": "",
       "obsContrato": "Parcela 1 – R$ 1.380,00 – No ato da assinatura do contrato (14/07/2026); Parcela 2 – R$ 920,00 – 14/08/2026",
       "obsEvento": "",
       "contratoAnterior": null,
-      "ultimoContato": null,
+      "ultimoContato": "2026-07-14",
       "brunoAlias": ""
     }
   ],
