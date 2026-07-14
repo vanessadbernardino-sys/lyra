@@ -6,7 +6,7 @@
       "gestor": "Samuel",
       "contato": "JP Cunha",
       "tel": "+55 61 99571 2377",
-      "tipo": "Casa Noturna",
+      "tipo": "Produtora / Organizadora",
       "eventoDate": null,
       "davi": false,
       "status": "ativo",
@@ -29,7 +29,9 @@
       "obsContrato": "Mesmo responsável Gomes",
       "obsEvento": "",
       "dataInicio": null,
-      "contratoAnterior": null
+      "contratoAnterior": null,
+      "segmento": "Entretenimento Multigênero",
+      "instagram": "https://www.instagram.com/apiceent"
     },
     {
       "id": 2,
@@ -37,7 +39,7 @@
       "gestor": "Felício",
       "contato": "Alisson Castanho Gatti",
       "tel": "+55 11 98089-6070",
-      "tipo": "Evento",
+      "tipo": "Evento / Festival",
       "eventoDate": "2026-06-27",
       "davi": false,
       "status": "pausado",
@@ -60,15 +62,17 @@
       "obsContrato": "Novo cliente",
       "obsEvento": "",
       "dataInicio": null,
-      "contratoAnterior": null
+      "contratoAnterior": null,
+      "segmento": "Eventos Temáticos",
+      "instagram": "https://www.instagram.com/dno.flashback/"
     },
     {
       "id": 3,
       "name": "Buteco Costelão",
-      "gestor": "Gabriel",
+      "gestor": "—",
       "contato": "Elisangela Mendes",
       "tel": "+55 11 99436 7756",
-      "tipo": "Evento Gastronômico",
+      "tipo": "Casa / Espaço",
       "eventoDate": "2026-07-26",
       "davi": true,
       "status": "pausado",
@@ -91,7 +95,9 @@
       "obsContrato": "",
       "obsEvento": "Pausaram - Chamar dia 27/07 - Vamos voltar?",
       "dataInicio": null,
-      "contratoAnterior": null
+      "contratoAnterior": null,
+      "segmento": "Gastronomia",
+      "instagram": "https://www.instagram.com/butecocostelao/"
     },
     {
       "id": 4,
@@ -99,7 +105,7 @@
       "gestor": "Samuel",
       "contato": "Guto Melo",
       "tel": "+55 11 99405 1010",
-      "tipo": "Evento Premium LGBTQIA+",
+      "tipo": "Evento / Festival",
       "eventoDate": "2026-06-07",
       "davi": true,
       "status": "pausado",
@@ -117,7 +123,9 @@
       "obsContrato": "Evento já aconteceu em 07/06 | Pausado: evento 07/06/2026 passou",
       "obsEvento": "",
       "dataInicio": null,
-      "contratoAnterior": null
+      "contratoAnterior": null,
+      "segmento": "Eventos Temáticos",
+      "instagram": "https://www.instagram.com/camarotepride/"
     },
     {
       "id": 5,
@@ -125,7 +133,7 @@
       "gestor": "Felício",
       "contato": "Filipe",
       "tel": "+351 919 291 908",
-      "tipo": "Entretenimento / Eventos",
+      "tipo": "Casa / Espaço",
       "eventoDate": null,
       "davi": false,
       "status": "ativo",
@@ -148,15 +156,17 @@
       "obsContrato": "Novo cliente sem dados",
       "obsEvento": "",
       "dataInicio": null,
-      "contratoAnterior": null
+      "contratoAnterior": null,
+      "segmento": "Entretenimento Multigênero",
+      "instagram": "https://www.instagram.com/casayala_"
     },
     {
       "id": 6,
       "name": "Complexo Fora do Eixo",
-      "gestor": "Gabriel",
+      "gestor": "—",
       "contato": "Thiago",
       "tel": "+55 11 93002 1600",
-      "tipo": "Casa Noturna / Hub",
+      "tipo": "Casa / Espaço",
       "eventoDate": null,
       "davi": false,
       "status": "pausado",
@@ -179,15 +189,17 @@
       "obsContrato": "",
       "obsEvento": "Saiu",
       "dataInicio": null,
-      "contratoAnterior": null
+      "contratoAnterior": null,
+      "segmento": "Entretenimento Multigênero",
+      "instagram": null
     },
     {
       "id": 7,
       "name": "Dust Pub",
-      "gestor": "Gabriel",
+      "gestor": "—",
       "contato": "João",
       "tel": "+55 18 99693 5607",
-      "tipo": "Casa Noturna / Pub",
+      "tipo": "Casa / Espaço",
       "eventoDate": null,
       "davi": false,
       "status": "pausado",
@@ -205,7 +217,9 @@
       "obsEvento": "",
       "dataInicio": null,
       "contratoAnterior": null,
-      "brunoAlias": "dust pub,dust"
+      "brunoAlias": "dust pub,dust",
+      "segmento": "Sertanejo",
+      "instagram": null
     },
     {
       "id": 8,
@@ -213,8 +227,8 @@
       "gestor": "Felício",
       "contato": "Camila Nasser",
       "tel": "+55 11 99253-5646",
-      "tipo": "Treinamento / Parceria",
-      "eventoDate": "2026-07-29",
+      "tipo": "Produtora / Organizadora",
+      "eventoDate": "2026-07-06",
       "davi": false,
       "status": "ativo",
       "brunoStatus": "critico",
@@ -236,7 +250,9 @@
       "obsContrato": "Permuta · Eventos: 06/07, 16/07 e 29/07/2026",
       "obsEvento": "",
       "dataInicio": null,
-      "contratoAnterior": null
+      "contratoAnterior": null,
+      "segmento": "Corporativo / Negócios / Congressos e Feiras",
+      "instagram": "https://www.instagram.com/somosentre.br"
     },
     {
       "id": 9,
@@ -244,7 +260,7 @@
       "gestor": "Felício",
       "contato": "Sérgio",
       "tel": "+55 18 98100 5575",
-      "tipo": "Evento Cultural",
+      "tipo": "Evento / Festival",
       "eventoDate": "2026-07-12",
       "davi": false,
       "status": "pausado",
@@ -267,7 +283,9 @@
       "obsContrato": "",
       "obsEvento": "",
       "dataInicio": null,
-      "contratoAnterior": null
+      "contratoAnterior": null,
+      "segmento": "Samba e Pagode",
+      "instagram": "https://www.instagram.com/feijoadadoserginhooficial/"
     },
     {
       "id": 10,
@@ -275,7 +293,7 @@
       "gestor": "Felício",
       "contato": "Hebert Murilo de Souza",
       "tel": "+55 11 9 1784-0020",
-      "tipo": "Consultoria e Assessoria de Propaganda e Publicidade - Gestão de Tráfego Pago",
+      "tipo": "Evento / Festival",
       "eventoDate": "2026-07-18",
       "davi": false,
       "status": "ativo",
@@ -298,7 +316,9 @@
       "obsContrato": "Parcela 1 – R$ 5.000,00 – 12/05/26; Parcela 2 – R$ 4.000,00 – data a depender da demanda; Parcela 3 – R$ 4.000,00 – data a depender da demanda",
       "obsEvento": "",
       "dataInicio": "2026-05-12",
-      "contratoAnterior": null
+      "contratoAnterior": null,
+      "segmento": "Música Eletrônica",
+      "instagram": "https://www.instagram.com/florestainfectada/"
     },
     {
       "id": 11,
@@ -306,7 +326,7 @@
       "gestor": "Felício",
       "contato": "Pedro Campos Fabri",
       "tel": "+55 34 99270-1234",
-      "tipo": "Produções",
+      "tipo": "Evento / Festival",
       "eventoDate": "2026-06-11",
       "davi": false,
       "status": "ativo",
@@ -329,7 +349,9 @@
       "obsContrato": "Parcela 1 – R$ 1.800,00 – 18/05/2026; Parcela 2 – R$ 1.800,00 – 18/06/2026; Parcela 3 – R$ 2.000,00 – 18/07/2026; Parcela 4 – R$ 2.000,00 – 18/08/2026; Parcela 5 – R$ 2.000,00 – 18/09/2026; Parcela 6 – R$ 2.000,00 – 18/10/2026",
       "obsEvento": "",
       "dataInicio": "2026-05-18",
-      "contratoAnterior": null
+      "contratoAnterior": null,
+      "segmento": "Evento Automotivo",
+      "instagram": "https://www.instagram.com/friendsfuel/"
     },
     {
       "id": 12,
@@ -337,7 +359,7 @@
       "gestor": "Felício",
       "contato": "Sylvio Rodrigues",
       "tel": "+41 79 564 54 39",
-      "tipo": "Beratungen & Events",
+      "tipo": "Casa / Espaço",
       "eventoDate": null,
       "davi": false,
       "status": "ativo",
@@ -360,7 +382,9 @@
       "obsContrato": "Parcela 1 – CHF 1.050,00 – 11/06/2026 (parcela única)",
       "obsEvento": "",
       "dataInicio": "2026-06-11",
-      "contratoAnterior": null
+      "contratoAnterior": null,
+      "segmento": "Gastronomia",
+      "instagram": "https://www.instagram.com/fromheavenbadragaz/"
     },
     {
       "id": 13,
@@ -368,8 +392,8 @@
       "gestor": "Samuel",
       "contato": "Murillo Kobot",
       "tel": "+55 62 98491 4044",
-      "tipo": "Festival Eletrônico",
-      "eventoDate": "2026-09-19",
+      "tipo": "Evento / Festival",
+      "eventoDate": "2026-06-20",
       "davi": false,
       "status": "ativo",
       "brunoStatus": "saudavel",
@@ -391,7 +415,9 @@
       "obsContrato": "3x R$6.000,00",
       "obsEvento": "Data 19 e 20 de setembro - Hipnomundo Goiânia GO",
       "dataInicio": "2026-01-01",
-      "contratoAnterior": null
+      "contratoAnterior": null,
+      "segmento": "Música Eletrônica",
+      "instagram": "https://www.instagram.com/hipnoticacrew/"
     },
     {
       "id": 14,
@@ -399,7 +425,7 @@
       "gestor": "Samuel",
       "contato": "Thiago",
       "tel": "+55 41 99660 2293",
-      "tipo": "Festival Multigênero",
+      "tipo": "Evento / Festival",
       "eventoDate": "2026-08-08",
       "davi": false,
       "status": "ativo",
@@ -422,7 +448,9 @@
       "obsContrato": "",
       "obsEvento": "",
       "dataInicio": null,
-      "contratoAnterior": null
+      "contratoAnterior": null,
+      "segmento": "Rap / Trap / Hip Hop",
+      "instagram": "https://www.instagram.com/madinbrazza/"
     },
     {
       "id": 15,
@@ -430,7 +458,7 @@
       "gestor": "Samuel",
       "contato": "Thiago Moreira",
       "tel": "+55 41 9660-2293",
-      "tipo": "Produções",
+      "tipo": "Evento / Festival",
       "eventoDate": "2026-08-09",
       "davi": false,
       "status": "ativo",
@@ -453,15 +481,17 @@
       "obsContrato": "Parcela 1 – R$ 2.500,00 – na data de assinatura do contrato; Parcela 2 – R$ 2.500,00 – 10/06/2026; Parcela 3 – R$ 2.500,00 – 10/07/2026",
       "obsEvento": "",
       "dataInicio": "2026-05-05",
-      "contratoAnterior": null
+      "contratoAnterior": null,
+      "segmento": "Rap / Trap / Hip Hop",
+      "instagram": "https://www.instagram.com/madinbrazzasp/"
     },
     {
       "id": 16,
       "name": "Magic Boom Tour",
-      "gestor": "Gabriel",
+      "gestor": "—",
       "contato": "André Mesquita Ribeiro Moreira",
       "tel": "+55 48 9674-3529",
-      "tipo": "Turismo/Eventos",
+      "tipo": "Evento / Festival",
       "eventoDate": "2026-06-13",
       "davi": false,
       "status": "pausado",
@@ -484,7 +514,9 @@
       "obsContrato": "Parcela 1 – R$ 2.000,00 – 20/05/2026",
       "obsEvento": "",
       "dataInicio": "2026-05-15",
-      "contratoAnterior": null
+      "contratoAnterior": null,
+      "segmento": "Música Eletrônica",
+      "instagram": "https://www.instagram.com/magicboomtour/"
     },
     {
       "id": 17,
@@ -492,7 +524,7 @@
       "gestor": "Felício",
       "contato": "Henry Andrade Peruzzo",
       "tel": "+5551992976832",
-      "tipo": "Evento/Festival",
+      "tipo": "Evento / Festival",
       "eventoDate": "2026-10-17",
       "davi": false,
       "status": "ativo",
@@ -515,7 +547,9 @@
       "obsContrato": "Parcela 1 – R$ 8.500 – 22/06/2026",
       "obsEvento": "",
       "dataInicio": "2026-06-05",
-      "contratoAnterior": null
+      "contratoAnterior": null,
+      "segmento": "Música Eletrônica",
+      "instagram": "https://www.instagram.com/movingfestival/"
     },
     {
       "id": 18,
@@ -523,7 +557,7 @@
       "gestor": "Felício",
       "contato": "JP Daia",
       "tel": "+55 62 98117 8955",
-      "tipo": "Festa Sertaneja",
+      "tipo": "Evento / Festival",
       "eventoDate": "2026-10-17",
       "davi": false,
       "status": "ativo",
@@ -546,7 +580,9 @@
       "obsContrato": "Pagamento único realizado",
       "obsEvento": "",
       "dataInicio": null,
-      "contratoAnterior": null
+      "contratoAnterior": null,
+      "segmento": "Sertanejo",
+      "instagram": null
     },
     {
       "id": 19,
@@ -554,7 +590,7 @@
       "gestor": "Felício",
       "contato": "Paulo Roberto Semedo Silva",
       "tel": "+351 916 989 048",
-      "tipo": "Consultoria e assessoria de propaganda e publicidade - geração de leads",
+      "tipo": "Produtora / Organizadora",
       "eventoDate": null,
       "davi": true,
       "status": "ativo",
@@ -572,7 +608,9 @@
       "obsEvento": "",
       "dataInicio": "2026-06-29",
       "contratoAnterior": null,
-      "brunoAlias": "neutratech,neutratech new sheet"
+      "brunoAlias": "neutratech,neutratech new sheet",
+      "segmento": "Corporativo / Negócios / Congressos e Feiras",
+      "instagram": "https://www.instagram.com/neutratech_angola/"
     },
     {
       "id": 20,
@@ -580,7 +618,7 @@
       "gestor": "Felício",
       "contato": "Paulo Roberto Semedo Silva",
       "tel": "+351 916 989 048",
-      "tipo": "Festival/Evento",
+      "tipo": "Produtora / Organizadora",
       "eventoDate": "2026-07-19",
       "davi": false,
       "status": "ativo",
@@ -603,15 +641,17 @@
       "obsContrato": "Contrato 1: Parcela única – € 700 – 13/05/26 (Validade: 30/07)\nContrato 2: Parcela única – € 2.000 – 24/06/26 (Validade: 19/09)",
       "obsEvento": "Contrato 1: 19/07/2026\n\nContrato 2: Lisboa 12/09/2026 e Porto 19/09/2026",
       "dataInicio": "2025-05-13",
-      "contratoAnterior": null
+      "contratoAnterior": null,
+      "segmento": "Entretenimento Multigênero",
+      "instagram": "https://www.instagram.com/newsheet.pt/ https://www.instagram.com/revengeofthe90s/"
     },
     {
       "id": 21,
       "name": "Puma Punku Festival",
-      "gestor": "Gabriel",
+      "gestor": "—",
       "contato": "Ruan",
       "tel": "+55 12 98282 4615",
-      "tipo": "Festival Psicodélico",
+      "tipo": "Evento / Festival",
       "eventoDate": "2026-07-04",
       "davi": false,
       "status": "pausado",
@@ -634,7 +674,9 @@
       "obsContrato": "",
       "obsEvento": "",
       "dataInicio": null,
-      "contratoAnterior": null
+      "contratoAnterior": null,
+      "segmento": "Música Eletrônica",
+      "instagram": "https://www.instagram.com/pumapunkufestival/"
     },
     {
       "id": 22,
@@ -642,7 +684,7 @@
       "gestor": "Felício",
       "contato": "JP Daia",
       "tel": "+55 62 98117 8955",
-      "tipo": "Festa Sertaneja",
+      "tipo": "Evento / Festival",
       "eventoDate": "2026-09-05",
       "davi": false,
       "status": "ativo",
@@ -665,7 +707,9 @@
       "obsContrato": "Pagamento único realizado",
       "obsEvento": "",
       "dataInicio": null,
-      "contratoAnterior": null
+      "contratoAnterior": null,
+      "segmento": "Sertanejo",
+      "instagram": "https://www.instagram.com/rcountryy"
     },
     {
       "id": 23,
@@ -673,7 +717,7 @@
       "gestor": "Felício",
       "contato": "Juliane",
       "tel": "+55 48 99941 1076",
-      "tipo": "Festa Eletrônica",
+      "tipo": "Evento / Festival",
       "eventoDate": "2026-06-13",
       "davi": false,
       "status": "pausado",
@@ -696,7 +740,9 @@
       "obsContrato": " | Pausado: evento 13/06/2026 passou",
       "obsEvento": "",
       "dataInicio": null,
-      "contratoAnterior": null
+      "contratoAnterior": null,
+      "segmento": "Música Eletrônica",
+      "instagram": null
     },
     {
       "id": 24,
@@ -704,7 +750,7 @@
       "gestor": "Felício",
       "contato": "Marcelo",
       "tel": "+44 7495 865256",
-      "tipo": "Agência de Artistas",
+      "tipo": "Produtora / Organizadora",
       "eventoDate": null,
       "davi": false,
       "status": "ativo",
@@ -727,7 +773,9 @@
       "brunoCompras": 0,
       "brunoCpa": null,
       "brunoSaldo": "Cartão",
-      "brunoAlias": "snapp productions,snapp"
+      "brunoAlias": "snapp productions,snapp",
+      "segmento": "Entretenimento Multigênero",
+      "instagram": "https://www.instagram.com/snappproductions/"
     },
     {
       "id": 25,
@@ -735,8 +783,8 @@
       "gestor": "Samuel",
       "contato": "Matheus Cavalca.",
       "tel": "+55 61 98168 0095",
-      "tipo": "Festa Eletrônica",
-      "eventoDate": "2026-08-22",
+      "tipo": "Produtora / Organizadora",
+      "eventoDate": "2026-06-13",
       "davi": true,
       "status": "ativo",
       "brunoStatus": "saudavel",
@@ -759,7 +807,9 @@
       "obsEvento": "",
       "dataInicio": null,
       "contratoAnterior": null,
-      "_editingName": false
+      "_editingName": false,
+      "segmento": "Entretenimento Multigênero",
+      "instagram": "https://www.instagram.com/festastarlight/ https://www.instagram.com/bailedogomesofc/"
     },
     {
       "id": 26,
@@ -767,7 +817,7 @@
       "gestor": "Samuel",
       "contato": "Brito",
       "tel": "+55 61 99530 7575",
-      "tipo": "Pagode / Show",
+      "tipo": "Evento / Festival",
       "eventoDate": "2026-07-12",
       "davi": false,
       "status": "pausado",
@@ -790,7 +840,9 @@
       "obsContrato": "Pagamento único realizado",
       "obsEvento": "",
       "dataInicio": null,
-      "contratoAnterior": null
+      "contratoAnterior": null,
+      "segmento": "Samba e Pagode",
+      "instagram": null
     },
     {
       "id": 27,
@@ -798,7 +850,7 @@
       "gestor": "Felício",
       "contato": "Samurai",
       "tel": "+55 92 99311 8076",
-      "tipo": "Parque Temático",
+      "tipo": "Evento / Festival",
       "eventoDate": "2026-08-15",
       "davi": true,
       "status": "ativo",
@@ -821,7 +873,9 @@
       "obsContrato": "",
       "obsEvento": "",
       "dataInicio": null,
-      "contratoAnterior": null
+      "contratoAnterior": null,
+      "segmento": "Música Eletrônica",
+      "instagram": "https://www.instagram.com/terracrewam/"
     },
     {
       "id": 28,
@@ -829,7 +883,7 @@
       "gestor": "Samuel",
       "contato": "Marco Polo",
       "tel": "+55 21 98323 1727",
-      "tipo": "Festa Eletrônica",
+      "tipo": "Evento / Festival",
       "eventoDate": "2026-07-11",
       "davi": false,
       "status": "pausado",
@@ -852,7 +906,9 @@
       "obsContrato": "",
       "obsEvento": "",
       "dataInicio": null,
-      "contratoAnterior": null
+      "contratoAnterior": null,
+      "segmento": "Música Eletrônica",
+      "instagram": "https://www.instagram.com/terratronic/"
     },
     {
       "id": 29,
@@ -860,7 +916,7 @@
       "gestor": "Felício",
       "contato": "Marcelo",
       "tel": "+44 7495 865256",
-      "tipo": "Remarketing / Cantor",
+      "tipo": "Evento / Festival",
       "eventoDate": null,
       "davi": false,
       "status": "pausado",
@@ -878,7 +934,9 @@
       "obsEvento": "",
       "dataInicio": null,
       "contratoAnterior": null,
-      "brunoAlias": "um sonho,um sonho rmk"
+      "brunoAlias": "um sonho,um sonho rmk",
+      "segmento": "Música Brasileira",
+      "instagram": null
     },
     {
       "id": 30,
@@ -886,7 +944,7 @@
       "gestor": "Samuel",
       "contato": "Deisy",
       "tel": "+55 85 98929 6215",
-      "tipo": "Loja de Roupas / E-commerce",
+      "tipo": "Marketplace",
       "eventoDate": null,
       "davi": false,
       "status": "ativo",
@@ -909,7 +967,9 @@
       "obsContrato": "Renovar na primavera/verão",
       "obsEvento": "",
       "dataInicio": null,
-      "contratoAnterior": null
+      "contratoAnterior": null,
+      "segmento": "E-commerce",
+      "instagram": "https://www.instagram.com/useisy/"
     },
     {
       "id": 31,
@@ -917,7 +977,7 @@
       "gestor": "Bruno",
       "contato": "Claudio",
       "tel": "+351 913 729 873",
-      "tipo": "Samba / Assessoria",
+      "tipo": "Evento / Festival",
       "eventoDate": null,
       "davi": false,
       "status": "pausado",
@@ -940,7 +1000,9 @@
       "brunoCompras": null,
       "brunoCpa": null,
       "brunoSaldo": null,
-      "brunoAlias": "villa sambô,villa sambo,villa sambô"
+      "brunoAlias": "villa sambô,villa sambo,villa sambô",
+      "segmento": "Samba e Pagode",
+      "instagram": null
     },
     {
       "id": 32,
@@ -948,7 +1010,7 @@
       "gestor": "Samuel",
       "contato": "Otamyr Demetrios Correia de Melo",
       "tel": "+1 (778) 861-3392",
-      "tipo": "Produtora",
+      "tipo": "Produtora / Organizadora",
       "eventoDate": "2026-06-20",
       "davi": false,
       "status": "pausado",
@@ -971,7 +1033,9 @@
       "obsContrato": "Parcela 1 – $ 300,00 – 16/04/2026",
       "obsEvento": "",
       "dataInicio": "2026-03-27",
-      "contratoAnterior": null
+      "contratoAnterior": null,
+      "segmento": "Entretenimento Multigênero",
+      "instagram": null
     },
     {
       "id": 33,
@@ -979,7 +1043,7 @@
       "gestor": "—",
       "contato": "—",
       "tel": "—",
-      "tipo": "Festa Funk",
+      "tipo": "Evento / Festival",
       "eventoDate": null,
       "davi": false,
       "status": "pausado",
@@ -996,15 +1060,17 @@
       "obsContrato": "",
       "obsEvento": "",
       "dataInicio": null,
-      "contratoAnterior": null
+      "contratoAnterior": null,
+      "segmento": "Funk",
+      "instagram": null
     },
     {
       "id": 34,
       "name": "4U",
-      "gestor": "Gabriel",
+      "gestor": "—",
       "contato": "—",
       "tel": "—",
-      "tipo": "Festa Universitária",
+      "tipo": "Evento / Festival",
       "eventoDate": null,
       "davi": false,
       "status": "pausado",
@@ -1021,7 +1087,9 @@
       "obsContrato": "",
       "obsEvento": "📩 18/06 — Contato para Reativação enviado",
       "dataInicio": null,
-      "contratoAnterior": null
+      "contratoAnterior": null,
+      "segmento": "Música Eletrônica",
+      "instagram": null
     },
     {
       "id": 35,
@@ -1029,7 +1097,7 @@
       "gestor": "—",
       "contato": "—",
       "tel": "—",
-      "tipo": "Congresso Veterinário",
+      "tipo": "Evento / Festival",
       "eventoDate": null,
       "davi": false,
       "status": "pausado",
@@ -1046,7 +1114,9 @@
       "obsContrato": "",
       "obsEvento": "",
       "dataInicio": null,
-      "contratoAnterior": null
+      "contratoAnterior": null,
+      "segmento": "Corporativo / Negócios / Congressos e Feiras",
+      "instagram": null
     },
     {
       "id": 36,
@@ -1054,7 +1124,7 @@
       "gestor": "—",
       "contato": "—",
       "tel": "—",
-      "tipo": "Festa Universitária",
+      "tipo": "Evento / Festival",
       "eventoDate": null,
       "davi": false,
       "status": "pausado",
@@ -1071,7 +1141,9 @@
       "obsContrato": "",
       "obsEvento": "",
       "dataInicio": null,
-      "contratoAnterior": null
+      "contratoAnterior": null,
+      "segmento": "Festa Universitária",
+      "instagram": null
     },
     {
       "id": 37,
@@ -1079,7 +1151,7 @@
       "gestor": "—",
       "contato": "—",
       "tel": "—",
-      "tipo": "Evento Religioso",
+      "tipo": "Evento / Festival",
       "eventoDate": null,
       "davi": false,
       "status": "pausado",
@@ -1096,7 +1168,9 @@
       "obsContrato": "Em negociação de renovação",
       "obsEvento": "",
       "dataInicio": null,
-      "contratoAnterior": null
+      "contratoAnterior": null,
+      "segmento": "Eventos Temáticos",
+      "instagram": "https://www.instagram.com/horrorexpobrasil/"
     },
     {
       "id": 38,
@@ -1104,7 +1178,7 @@
       "gestor": "—",
       "contato": "—",
       "tel": "—",
-      "tipo": "Imersão Empresarial",
+      "tipo": "Evento / Festival",
       "eventoDate": null,
       "davi": false,
       "status": "pausado",
@@ -1121,7 +1195,9 @@
       "obsContrato": "",
       "obsEvento": "",
       "dataInicio": null,
-      "contratoAnterior": null
+      "contratoAnterior": null,
+      "segmento": "Corporativo / Negócios / Congressos e Feiras",
+      "instagram": null
     },
     {
       "id": 39,
@@ -1129,7 +1205,7 @@
       "gestor": "—",
       "contato": "—",
       "tel": "—",
-      "tipo": "Festa Eletrônica",
+      "tipo": "Evento / Festival",
       "eventoDate": null,
       "davi": false,
       "status": "pausado",
@@ -1146,7 +1222,9 @@
       "obsContrato": "",
       "obsEvento": "",
       "dataInicio": null,
-      "contratoAnterior": null
+      "contratoAnterior": null,
+      "segmento": "Música Eletrônica",
+      "instagram": null
     },
     {
       "id": 40,
@@ -1154,7 +1232,7 @@
       "gestor": "—",
       "contato": "—",
       "tel": "—",
-      "tipo": "Produtora",
+      "tipo": "Produtora / Organizadora",
       "eventoDate": null,
       "davi": false,
       "status": "pausado",
@@ -1171,7 +1249,9 @@
       "obsContrato": "",
       "obsEvento": "",
       "dataInicio": null,
-      "contratoAnterior": null
+      "contratoAnterior": null,
+      "segmento": "Funk",
+      "instagram": null
     },
     {
       "id": 41,
@@ -1179,7 +1259,7 @@
       "gestor": "—",
       "contato": "—",
       "tel": "—",
-      "tipo": "Festa Eletrônica",
+      "tipo": "Evento / Festival",
       "eventoDate": null,
       "davi": false,
       "status": "pausado",
@@ -1196,7 +1276,9 @@
       "obsContrato": "",
       "obsEvento": "",
       "dataInicio": null,
-      "contratoAnterior": null
+      "contratoAnterior": null,
+      "segmento": "Música Eletrônica",
+      "instagram": "https://www.instagram.com/magicboombel/"
     },
     {
       "id": 42,
@@ -1204,7 +1286,7 @@
       "gestor": "Samuel",
       "contato": "José Henrique Alves",
       "tel": "+5548996126329",
-      "tipo": "GA Stage",
+      "tipo": "Evento / Festival",
       "eventoDate": null,
       "davi": false,
       "status": "ativo",
@@ -1227,7 +1309,9 @@
       "obsEvento": "",
       "dataInicio": "2026-06-08",
       "contratoAnterior": null,
-      "brunoAlias": "all collections,dkbr"
+      "brunoAlias": "all collections,dkbr",
+      "segmento": "Sertanejo",
+      "instagram": "https://www.instagram.com/texassunset_/"
     },
     {
       "id": 43,
@@ -1235,8 +1319,8 @@
       "gestor": "Samuel",
       "contato": "Alberto David Lopes Pinto Vaz",
       "tel": "+1 415 770 2779",
-      "tipo": "Entretenimento/Eventos",
-      "eventoDate": "2026-07-11",
+      "tipo": "Produtora / Organizadora",
+      "eventoDate": null,
       "davi": false,
       "status": "pausado",
       "brunoStatus": null,
@@ -1258,7 +1342,9 @@
       "brunoCompras": null,
       "brunoCpa": null,
       "brunoSaldo": null,
-      "brunoAlias": "segundos encantados"
+      "brunoAlias": "segundos encantados",
+      "segmento": "Samba e Pagode",
+      "instagram": null
     },
     {
       "id": 44,
@@ -1266,7 +1352,7 @@
       "gestor": "Samuel",
       "contato": "Danilo Freitas",
       "tel": "+554199928911",
-      "tipo": "Drift/Automobilismo",
+      "tipo": "Evento / Festival",
       "eventoDate": null,
       "davi": false,
       "status": "ativo",
@@ -1289,15 +1375,17 @@
       "brunoCompras": 22,
       "brunoCpa": 42.38,
       "brunoSaldo": "351.13",
-      "brunoAlias": "maiara coelho,festival maiara coelho"
+      "brunoAlias": "maiara coelho,festival maiara coelho",
+      "segmento": "Evento Automotivo",
+      "instagram": "https://www.instagram.com/dkbr.oficial/"
     },
     {
       "id": 45,
       "name": "3CKET",
-      "gestor": "Gabriel",
+      "gestor": "—",
       "contato": "Nuno Coelho",
       "tel": "+351 910 618 335",
-      "tipo": "Ticketeira",
+      "tipo": "Plataforma de Ingressos",
       "eventoDate": null,
       "davi": false,
       "status": "pausado",
@@ -1320,7 +1408,9 @@
       "brunoCompras": 680,
       "brunoCpa": 0.54,
       "brunoSaldo": "Cartão",
-      "brunoAlias": "3cket"
+      "brunoAlias": "3cket",
+      "segmento": "Ticketeira",
+      "instagram": "https://www.instagram.com/3cket/"
     },
     {
       "id": 46,
@@ -1328,7 +1418,7 @@
       "gestor": "Felício",
       "contato": "Adriano Saito",
       "tel": "+5548996210841",
-      "tipo": "Produção cultural / Festival",
+      "tipo": "Evento / Festival",
       "eventoDate": null,
       "davi": false,
       "status": "ativo",
@@ -1351,7 +1441,9 @@
       "brunoCompras": 17,
       "brunoCpa": 31.29,
       "brunoSaldo": "36.95",
-      "brunoAlias": "festival saravá 2026,festival sarava 2026,festival sarava,saravá"
+      "brunoAlias": "festival saravá 2026,festival sarava 2026,festival sarava,saravá",
+      "segmento": "Música Brasileira",
+      "instagram": "https://www.instagram.com/festivalsarava/"
     },
     {
       "id": 47,
@@ -1359,7 +1451,7 @@
       "gestor": "Samuel",
       "contato": "Leonardo Lemos Silva",
       "tel": "+55 11 9 8684-8678",
-      "tipo": "Casa de shows/Entretenimento",
+      "tipo": "Casa / Espaço",
       "eventoDate": null,
       "davi": false,
       "status": "ativo",
@@ -1383,7 +1475,9 @@
       "brunoCpa": 25.04,
       "brunoSaldo": "1068.67",
       "_editingName": false,
-      "brunoAlias": "kibexiga,kibixiga,kibixiga show"
+      "brunoAlias": "kibexiga,kibixiga,kibixiga show",
+      "segmento": "Entretenimento Multigênero",
+      "instagram": "https://www.instagram.com/kibixiga_show/"
     },
     {
       "id": 48,
@@ -1391,7 +1485,7 @@
       "gestor": "Samuel",
       "contato": "João Salgueiro",
       "tel": "+351925197865",
-      "tipo": "Casa Noturna",
+      "tipo": "Casa / Espaço",
       "eventoDate": null,
       "davi": false,
       "status": "ativo",
@@ -1409,7 +1503,9 @@
       "obsEvento": "Vários eventos - 5 Páginas de Instagram",
       "contratoAnterior": null,
       "ultimoContato": "2026-06-26",
-      "brunoAlias": "pagode do quadradinho,quadradinho"
+      "brunoAlias": "pagode do quadradinho,quadradinho",
+      "segmento": "Entretenimento Multigênero",
+      "instagram": "https://www.instagram.com/lisboario/"
     },
     {
       "id": 49,
@@ -1417,7 +1513,7 @@
       "gestor": "Samuel",
       "contato": "Antônio Carlos Costa Cordeiro",
       "tel": "+55 61 9 8188-9144",
-      "tipo": "Produções e Eventos",
+      "tipo": "Evento / Festival",
       "eventoDate": "2026-12-29",
       "davi": false,
       "status": "ativo",
@@ -1434,7 +1530,9 @@
       "obsContrato": "Parcela 1 – R$ 8.500,00 – 29/06/2026; Parcela 2 – R$ 4.500,00 – 18/10/2026. PS: Taxa de implementação de R$ 1.000,00 inclusa no valor total de R$ 13.000,00",
       "obsEvento": "Vários eventos",
       "contratoAnterior": null,
-      "ultimoContato": null
+      "ultimoContato": null,
+      "segmento": "Samba e Pagode",
+      "instagram": "https://www.instagram.com/pagodedoquadradinho/"
     },
     {
       "id": 50,
@@ -1442,7 +1540,7 @@
       "gestor": "Felício",
       "contato": "Breno Ferreira Florêncio",
       "tel": "+55 64 9281-7847",
-      "tipo": "Consultoria e assessoria de propaganda e publicidade - Tráfego pago",
+      "tipo": "Evento / Festival",
       "eventoDate": "2026-08-15",
       "davi": false,
       "status": "ativo",
@@ -1460,7 +1558,9 @@
       "obsEvento": "",
       "contratoAnterior": null,
       "ultimoContato": null,
-      "brunoAlias": ""
+      "brunoAlias": "",
+      "segmento": "Evento Automotivo",
+      "instagram": "https://www.instagram.com/deboxeeclipseuberlandia/"
     },
     {
       "id": 51,
@@ -1468,7 +1568,7 @@
       "gestor": "Samuel",
       "contato": "Fagner Redigolo Gomes",
       "tel": "+55 18 99151-8371",
-      "tipo": "Festa Eletrônica",
+      "tipo": "Produtora / Organizadora",
       "eventoDate": "2026-10-12",
       "davi": false,
       "status": "ativo",
@@ -1486,7 +1586,9 @@
       "obsEvento": "",
       "contratoAnterior": null,
       "ultimoContato": "2026-07-07",
-      "brunoAlias": "Natureza Mística"
+      "brunoAlias": "Natureza Mística",
+      "segmento": "Música Eletrônica",
+      "instagram": "https://www.instagram.com/sonooracg/"
     },
     {
       "id": 52,
@@ -1494,7 +1596,7 @@
       "gestor": "Samuel",
       "contato": "Vitor Oliveira Monéa",
       "tel": "+55 11 95394-3407",
-      "tipo": "Consultoria e Assessoria de Propaganda e Publicidade - Tráfego Pago",
+      "tipo": "Evento / Festival",
       "eventoDate": "2026-08-15",
       "davi": false,
       "status": "ativo",
@@ -1512,12 +1614,14 @@
       "obsEvento": "",
       "contratoAnterior": null,
       "ultimoContato": "2026-07-14",
-      "brunoAlias": ""
+      "brunoAlias": "",
+      "segmento": "Festa Universitária",
+      "instagram": "https://www.instagram.com/sigaunifarra"
     }
   ],
   "brunoDate": "2026-07-06",
   "hojeData": "2026-07-14",
   "hojeIds": [],
-  "patchVersion": 11,
+  "patchVersion": 12,
   "lastResetMonth": "2026-07"
 }
