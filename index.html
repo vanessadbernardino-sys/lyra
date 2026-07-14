@@ -153,7 +153,7 @@ function calcScore(c,t){
   if(c.eventoDate){const d=daysTo(c.eventoDate,t);if(d!=null&&d>=0){if(d<=10)s+=15;else if(d<=20)s+=8;else if(d<=30)s+=5;else if(d<=60)s+=2;else s+=1;}}
   if(!c.davi&&c.contratoVenc){const v=daysTo(c.contratoVenc,t);if(v!=null){if(v<=0)s+=6;else if(v<=30)s+=3;}}
   if(c.alerta==='cancelamento')s+=50;else if(c.alerta==='reclamacao')s+=30;else if(c.alerta==='problema')s+=20;else if(c.alerta==='davi')s+=15;
-  if(c.reuniaoStatus==='realizado')s-=100;else if(c.reuniaoStatus==='agendado')s-=10;
+  if(c.reuniaoStatus==='realizado')s-=100;else if(c.reuniaoStatus==='agendado')s-=10;else if(c.reuniaoStatus==='onboarding')s-=20;else if(c.reuniaoStatus==='nao_compareceu')s+=5;
   return s+c.id*0.001;
 }
 function getMotivo(c,t){
@@ -294,6 +294,8 @@ function Bdg({type,label,size=11}){
     agendado:{bg:'#FEF3C7',c:'#B45309'},
     realizado:{bg:'#DCFCE7',c:'#15803D'},
     nao_precisa:{bg:'#EDE9FE',c:'#6D28D9'},
+    nao_compareceu:{bg:'#FFEDD5',c:'#C2410C'},
+    onboarding:{bg:'#DBEAFE',c:'#1D4ED8'},
     vencido:{bg:'#FEE2E2',c:'#DC2626'},
     avencer:{bg:'#FEF3C7',c:'#B45309'},
     vigente:{bg:'#DCFCE7',c:'#15803D'},
@@ -305,7 +307,7 @@ function Bdg({type,label,size=11}){
   return<span style={{background:s.bg,color:s.c,padding:'2px 8px',borderRadius:20,fontSize:size,fontWeight:600,whiteSpace:'nowrap'}}>{label}</span>;
 }
 function BrunoBdg({status}){const m={critico:'Crítico',atencao:'Atenção',saudavel:'Saudável',sem_dados:'Sem dados'};return<Bdg type={status} label={m[status]||'—'}/>;}
-function ReuniaBdg({status}){const m={agendar:'Agendar',agendado:'Agendado',realizado:'Realizado',nao_precisa:'Não precisa'};return<Bdg type={status} label={m[status]||'—'}/>;}
+function ReuniaBdg({status}){const m={agendar:'Agendar',agendado:'Agendado',realizado:'Realizado',nao_precisa:'Não precisa',nao_compareceu:'Não compareceu',onboarding:'Onboarding'};return<Bdg type={status} label={m[status]||'—'}/>;}
 function RenovBdg({status}){
   if(status==='davi')return<Bdg type="davi" label="Davi"/>;
   if(status==='vencido')return<Bdg type="vencido" label="Vencido"/>;
@@ -498,6 +500,7 @@ function DetailPanel({c,onClose,onSave,onDelete,today}){
           <select value={f.reuniaoStatus} onChange={e=>upd('reuniaoStatus',e.target.value)} disabled={ro} style={{...si('rosa'),marginBottom:8,cursor:ro?'default':'pointer'}}>
             <option value="agendar">Agendar</option><option value="agendado">Agendado</option>
             <option value="realizado">Realizado</option><option value="nao_precisa">Não precisa</option>
+            <option value="nao_compareceu">Não compareceu</option><option value="onboarding">Onboarding</option>
           </select>
           {f.reuniaoStatus!=='agendar'&&<input type="date" value={f.reuniaoData||''} onChange={e=>upd('reuniaoData',e.target.value||null)} readOnly={ro} style={si('rosa')}/>}
         </div>
@@ -643,10 +646,10 @@ function LyraHome({clients,onSelect,onUpd,hoje,onToggleHoje,today,userName}){
   const[kpiModal,setKpiModal]=useState(null);
   const active=clients.filter(c=>c.status==='ativo');
   const scored=active.map(c=>({...c,sc:calcScore(c,today)})).sort((a,b)=>b.sc-a.sc);
-  const queue=scored.filter(c=>c.sc>-50&&c.reuniaoStatus!=='nao_precisa');
+  const queue=scored.filter(c=>c.sc>-50&&c.reuniaoStatus!=='nao_precisa'&&c.reuniaoStatus!=='onboarding');
   const agendados=scored.filter(c=>c.reuniaoStatus==='agendado');
   const hojeList=clients.filter(c=>hoje.includes(c.id));
-  const done=hojeList.filter(c=>c.reuniaoStatus==='realizado'||c.reuniaoStatus==='nao_precisa').length;
+  const done=hojeList.filter(c=>c.reuniaoStatus==='realizado'||c.reuniaoStatus==='nao_precisa'||c.reuniaoStatus==='onboarding').length;
   const nC=active.filter(c=>c.brunoStatus==='critico');
   const nA=active.filter(c=>c.brunoStatus==='atencao');
   const nAg=active.filter(c=>c.reuniaoStatus==='agendar');
@@ -968,6 +971,8 @@ function ClientesView({clients,onSelect,today}){
           <option value="agendado">Agendado</option>
           <option value="realizado">Realizado</option>
           <option value="nao_precisa">Não precisa</option>
+          <option value="nao_compareceu">Não compareceu</option>
+          <option value="onboarding">Onboarding</option>
         </select>
       </div>
     </div>
