@@ -973,14 +973,14 @@ function ClientesView({clients,onSelect,today}){
     </div>
     <div style={{flex:1,overflowY:'auto',padding:'0 32px 24px'}}>
       <div style={{background:'white',border:`1px solid ${P_BORDER}`,borderRadius:24,overflow:'hidden'}}>
-        <div style={{display:'grid',gridTemplateColumns:'1fr 90px 120px 90px 90px 90px 100px',padding:'10px 20px',background:P_BG,borderBottom:`1px solid ${P_BORDER}`}}>
-          {['Cliente','Gestor','Segmento','Status','Evento','Contrato','Reunião'].map(h=><div key={h} style={{fontSize:10,fontWeight:700,color:'#C06090',letterSpacing:0.5}}>{h}</div>)}
+        <div style={{display:'grid',gridTemplateColumns:'1fr 70px 130px 110px 80px 80px 80px 90px',padding:'10px 20px',background:P_BG,borderBottom:`1px solid ${P_BORDER}`}}>
+          {['Cliente','Gestor','Segmento','Tipo','Evento','Status','Contrato','Reunião'].map(h=><div key={h} style={{fontSize:10,fontWeight:700,color:'#C06090',letterSpacing:0.5}}>{h}</div>)}
         </div>
         {list.length===0&&<div style={{padding:32,textAlign:'center',color:'#C06090',fontSize:13}}>Nenhum cliente encontrado</div>}
         {list.map(c=>{
           const ev=c.eventoDate?daysTo(c.eventoDate,today):null;
           return<div key={c.id}
-            style={{display:'grid',gridTemplateColumns:'1fr 90px 120px 90px 90px 90px 100px',padding:'11px 20px',borderBottom:'1px solid #FCE4EC',cursor:'pointer',transition:'background 0.1s'}}
+            style={{display:'grid',gridTemplateColumns:'1fr 70px 130px 110px 80px 80px 80px 90px',padding:'11px 20px',borderBottom:'1px solid #FCE4EC',cursor:'pointer',transition:'background 0.1s'}}
             onClick={()=>onSelect(c.id)}
             onMouseEnter={e=>e.currentTarget.style.background=P_BG}
             onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
@@ -990,9 +990,10 @@ function ClientesView({clients,onSelect,today}){
               {(c.obsEvento||c.obsContrato)&&<div style={{fontSize:10,color:'#C06090',marginTop:1,fontStyle:'italic'}}>{(c.obsEvento||c.obsContrato).substring(0,45)}{(c.obsEvento||c.obsContrato).length>45?'…':''}</div>}
             </div>
             <div style={{alignSelf:'center',fontSize:12,color:'#6B7280'}}>{c.gestor}</div>
-            <div style={{alignSelf:'center',fontSize:11,color:'#6B7280'}}>{(c.segmento||'—').substring(0,20)}{(c.segmento||'').length>20?'…':''}</div>
-            <div style={{alignSelf:'center'}}>{c.status==='ativo'?<BrunoBdg status={c.brunoStatus}/>:<Bdg type="none" label="Pausado"/>}</div>
+            <div style={{alignSelf:'center',fontSize:11,color:'#6B7280'}}>{(c.segmento||'—').substring(0,18)}{(c.segmento||'').length>18?'…':''}</div>
+            <div style={{alignSelf:'center',fontSize:11,color:'#6B7280'}}>{(c.tipo||'—').substring(0,16)}{(c.tipo||'').length>16?'…':''}</div>
             <div style={{alignSelf:'center',fontSize:11,color:ev!=null&&ev<=10?'#DC2626':'#6B7280',fontWeight:ev!=null&&ev<=10?700:400}}>{ev!=null?`${fmtDate(c.eventoDate)} (${ev}d)`:'—'}</div>
+            <div style={{alignSelf:'center'}}>{c.status==='ativo'?<BrunoBdg status={c.brunoStatus}/>:<Bdg type="none" label="Pausado"/>}</div>
             <div style={{alignSelf:'center'}}><RenovBdg status={renovSt(c,today)}/></div>
             <div style={{alignSelf:'center'}}><ReuniaBdg status={c.reuniaoStatus}/></div>
           </div>;
