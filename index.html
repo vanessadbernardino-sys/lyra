@@ -1169,7 +1169,7 @@ function RelatorioView({clients,onUpdate,brunoDate,onSetDate}){
       <div style={{padding:'12px 20px',borderBottom:`1px solid ${P_BORDER}`,display:'flex',justifyContent:'space-between'}}>
         <span style={{fontSize:13,fontWeight:700,color:P}}>✦ IA identificou {preview.length} clientes — confirme</span>
       </div>
-      {preview.map((item,i)=>{const norm=s=>(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9\s]/g,'').trim();const nr=norm(item.nome);const matches=allClients.filter(a=>{const na=norm(a.name);if(na.includes(nr)||nr.includes(na))return true;if(a.brunoAlias)return a.brunoAlias.split(',').some(al=>{const nal=norm(al.trim());return nal===nr||nal.includes(nr)||nr.includes(nal);});return false;});const hasPaused=matches.some(m=>m.status==='pausado');const activeMatches=matches.filter(m=>m.status!=='pausado');return<div key={i} style={{padding:'9px 20px',borderBottom:'1px solid #FCE4EC'}}>
+      {preview.map((item,i)=>{const norm=s=>(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9\s]/g,'').trim();const nr=norm(item.nome);const matches=allClients.filter(a=>{const na=norm(a.name);if(na===nr)return true;if(na.length>=5&&nr.length>=5&&(na.includes(nr)||nr.includes(na)))return true;if(a.brunoAlias)return a.brunoAlias.split(',').some(al=>{const nal=norm(al.trim());if(!nal||nal.length<3)return false;return nal===nr||(nal.length>=5&&nr.length>=5&&(nal.includes(nr)||nr.includes(nal)));});return false;});const hasPaused=matches.some(m=>m.status==='pausado');const activeMatches=matches.filter(m=>m.status!=='pausado');return<div key={i} style={{padding:'9px 20px',borderBottom:'1px solid #FCE4EC'}}>
         <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:4}}>
           <div style={{flex:1}}><span style={{fontSize:12,fontWeight:600}}>{item.nome}</span>{activeMatches.length>0&&<span style={{fontSize:10,color:'#15803D',marginLeft:6,fontWeight:600}}>→ {activeMatches.map(m=>m.name).join(' + ')}</span>}{activeMatches.length===0&&hasPaused&&<span style={{fontSize:10,color:'#9CA3AF',marginLeft:6}}>(pausado)</span>}{matches.length===0&&<span style={{fontSize:10,color:'#DC2626',marginLeft:6}}>(não encontrado)</span>}</div>
           <BrunoBdg status={item.status}/>
@@ -1566,13 +1566,13 @@ function App(){
           'rcountry':                       'retrogyn,rcountry',
           'savage':                         'savage festival,savage',
           'snapp':                          'snapp productions,snapp',
-          'starlight, templo, bdg e caos':  'baile do gomes,starlight,gomes,templo,bdg,caos',
+          'starlight, templo, bdg e caos':  'baile do gomes,starlight,gomes,templo,bdg,caos,baile do gomes caos,baile do gomes templo',
           'tardezinha':                     'tardezinha',
           'terra magica':                   'terra magica,terra magica parque',
           'terratronic':                    'terratronic',
           'um sonho (rmk)':                 'um sonho,um sonho rmk',
           'use isy':                        'isy,use isy,isy store',
-          'villa sambo':                    'villa sambo,villa sambo',
+          'villa sambo':                    'villa sambô,villa sambo',
           'you can productions':            'you can,you can productions',
           'festival maiara coelho':         'maiara coelho,festival maiara coelho,maiara',
           'w2k':                            'w2k',
