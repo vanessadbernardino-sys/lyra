@@ -1018,6 +1018,7 @@ function RelatorioView({clients,onUpdate,brunoDate,onSetDate}){
   const[msg,setMsg]=useState('');
   const[perfModal,setPerfModal]=useState(null);
   const active=clients.filter(c=>c.status==='ativo').sort((a,b)=>['critico','atencao','sem_dados','saudavel'].indexOf(a.brunoStatus)-['critico','atencao','sem_dados','saudavel'].indexOf(b.brunoStatus));
+  const allClients=clients;
   const si={border:`1px solid ${P_BORDER}`,borderRadius:8,padding:'6px 10px',fontSize:12,background:'white',color:GRAFITE,width:'100%'};
 
   async function analyze(){
@@ -1040,7 +1041,7 @@ function RelatorioView({clients,onUpdate,brunoDate,onSetDate}){
     const norm=s=>(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9\s]/g,'').trim();
     function matchClients(nome){
       const nr=norm(nome);
-      return active.filter(a=>{
+      return allClients.filter(a=>{
         const na=norm(a.name);
         if(na.includes(nr)||nr.includes(na))return true;
         if(a.brunoAlias){
