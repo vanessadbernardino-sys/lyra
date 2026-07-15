@@ -306,7 +306,7 @@ function Bdg({type,label,size=11}){
   const s=colors[type]||colors.none;
   return<span style={{background:s.bg,color:s.c,padding:'2px 8px',borderRadius:20,fontSize:size,fontWeight:600,whiteSpace:'nowrap'}}>{label}</span>;
 }
-function BrunoBdg({status}){const m={critico:'Crítico',atencao:'Atenção',saudavel:'Saudável',sem_dados:'Sem dados'};return<Bdg type={status} label={m[status]||'—'}/>;}
+function BrunoBdg({status}){const m={critico:'Crítico',atencao:'Atenção',saudavel:'Saudável',sem_dados:'Sem dados',pausado_relatorio:'Pausado'};return<Bdg type={status==='pausado_relatorio'?'none':status} label={m[status]||'—'}/>;}
 function ReuniaBdg({status}){const m={agendar:'Agendar',agendado:'Agendado',realizado:'Realizado',nao_precisa:'Não precisa',nao_compareceu:'Não compareceu',onboarding:'Onboarding'};return<Bdg type={status} label={m[status]||'—'}/>;}
 function RenovBdg({status}){
   if(status==='davi')return<Bdg type="davi" label="Davi"/>;
@@ -1056,25 +1056,48 @@ function RelatorioView({clients,onUpdate,brunoDate,onSetDate}){
         return false;
       });
     }
-    let n=0;
+    // 1. Agrupa itens do PDF por cliente (id)
+    const byClient={};
     preview.forEach(item=>{
       const matches=matchClients(item.nome);
       matches.forEach(c=>{
-        onUpdate(c.id,{
-          brunoStatus:item.status,
-          brunoRoas:item.roas!=null?item.roas:c.brunoRoas,
-          brunoGasto:item.gasto!=null?item.gasto:c.brunoGasto,
-          brunoCtr:item.ctr!=null?item.ctr:null,
-          brunoFreq:item.freq!=null?item.freq:null,
-          brunoCompras:item.compras!=null?item.compras:null,
-          brunoCpa:item.cpa!=null?item.cpa:null,
-          brunoSaldo:item.saldo!=null?item.saldo:null,
-        });
-        n++;
+        if(!byClient[c.id])byClient[c.id]={client:c,items:[]};
+        byClient[c.id].items.push(item);
       });
     });
+    // 2. Para cada cliente: pausado → sinaliza; ativo → média dos valores
+    const STATUS_ORDER=['critico','atencao','sem_dados','saudavel'];
+    let nAtivos=0,nPausados=0;
+    Object.values(byClient).forEach(({client:c,items})=>{
+      if(c.status==='pausado'){
+        // Sinaliza cliente pausado sem alterar dados de performance
+        onUpdate(c.id,{brunoStatus:'pausado_relatorio'});
+        nPausados++;
+        return;
+      }
+      // Ativo: calcula média dos campos numéricos, pior status
+      const avg=arr=>{ const v=arr.filter(x=>x!=null); return v.length?+(v.reduce((a,b)=>a+b,0)/v.length).toFixed(2):null; };
+      const worstStatus=items.reduce((w,it)=>{
+        const wi=STATUS_ORDER.indexOf(w),ii=STATUS_ORDER.indexOf(it.status);
+        return ii!==-1&&ii<wi?it.status:w;
+      },items[0].status||'sem_dados');
+      onUpdate(c.id,{
+        brunoStatus:worstStatus,
+        brunoRoas:avg(items.map(i=>i.roas)),
+        brunoGasto:items.reduce((s,i)=>s+(i.gasto||0),0),
+        brunoCtr:avg(items.map(i=>i.ctr)),
+        brunoFreq:avg(items.map(i=>i.freq)),
+        brunoCompras:items.reduce((s,i)=>s+(i.compras||0),0),
+        brunoCpa:avg(items.map(i=>i.cpa)),
+        brunoSaldo:items[items.length-1].saldo??null,
+      });
+      nAtivos++;
+    });
     if(date)onSetDate(date);
-    setMsg(`${n} clientes atualizados!`);setPreview(null);setFile(null);setTimeout(()=>setMsg(''),4000);
+    const parts=[];
+    if(nAtivos)parts.push(`${nAtivos} cliente${nAtivos>1?'s':''} atualizado${nAtivos>1?'s':''}`);
+    if(nPausados)parts.push(`${nPausados} pausado${nPausados>1?'s':''} sinalizado${nPausados>1?'s':''}`);
+    setMsg(parts.join(' · ')+'!');setPreview(null);setFile(null);setTimeout(()=>setMsg(''),5000);
   }
 
   return<div style={{flex:1,overflowY:'auto',padding:'28px 32px',background:'transparent'}}>
