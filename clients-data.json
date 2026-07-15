@@ -228,7 +228,7 @@
       "contato": "Camila Nasser",
       "tel": "+55 11 99253-5646",
       "tipo": "Produtora / Organizadora",
-      "eventoDate": "2026-07-29",
+      "eventoDate": "2026-07-06",
       "davi": false,
       "status": "ativo",
       "brunoStatus": "critico",
@@ -327,7 +327,7 @@
       "contato": "Pedro Campos Fabri",
       "tel": "+55 34 99270-1234",
       "tipo": "Evento / Festival",
-      "eventoDate": "2026-07-23",
+      "eventoDate": "2026-06-11",
       "davi": false,
       "status": "ativo",
       "brunoStatus": "critico",
@@ -1287,7 +1287,7 @@
       "contato": "José Henrique Alves",
       "tel": "+5548996126329",
       "tipo": "Evento / Festival",
-      "eventoDate": "2026-08-15",
+      "eventoDate": null,
       "davi": false,
       "status": "ativo",
       "brunoStatus": "atencao",
@@ -1353,7 +1353,7 @@
       "contato": "Danilo Freitas",
       "tel": "+554199928911",
       "tipo": "Evento / Festival",
-      "eventoDate": "2026-08-28",
+      "eventoDate": null,
       "davi": false,
       "status": "ativo",
       "brunoStatus": "atencao",
@@ -1419,7 +1419,7 @@
       "contato": "Adriano Saito",
       "tel": "+5548996210841",
       "tipo": "Evento / Festival",
-      "eventoDate": "2026-12-12",
+      "eventoDate": null,
       "davi": false,
       "status": "ativo",
       "brunoStatus": "saudavel",
@@ -1532,7 +1532,8 @@
       "contratoAnterior": null,
       "ultimoContato": null,
       "segmento": "Samba e Pagode",
-      "instagram": "https://www.instagram.com/pagodedoquadradinho/"
+      "instagram": "https://www.instagram.com/pagodedoquadradinho/",
+      "brunoAlias": "pagode do quadradinho,quadradinho"
     },
     {
       "id": 50,
@@ -1558,7 +1559,7 @@
       "obsEvento": "",
       "contratoAnterior": null,
       "ultimoContato": null,
-      "brunoAlias": "",
+      "brunoAlias": "ca - megadeboxe,megadeboxe,ca megadeboxe,deboxe eclipse uberlandia",
       "segmento": "Evento Automotivo",
       "instagram": "https://www.instagram.com/deboxeeclipseuberlandia/"
     },
@@ -1614,7 +1615,7 @@
       "obsEvento": "",
       "contratoAnterior": null,
       "ultimoContato": "2026-07-14",
-      "brunoAlias": "",
+      "brunoAlias": "unifarra,sigaunifarra",
       "segmento": "Festa Universitária",
       "instagram": "https://www.instagram.com/sigaunifarra"
     }
@@ -1622,6 +1623,6 @@
   "brunoDate": "2026-07-06",
   "hojeData": "2026-07-15",
   "hojeIds": [],
-  "patchVersion": 12,
+  "patchVersion": 13,
   "lastResetMonth": "2026-07"
 }
