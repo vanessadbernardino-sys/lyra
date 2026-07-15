@@ -34,7 +34,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
 const KEY = "lyra-cs-v4";
 const KEY_BACKUP = "lyra-cs-backup";
 const GITHUB_TOKEN_KEY = "lyra-github-token";
-const DATA_PATCH = 13;
+const DATA_PATCH = 14;
 const AUTH_KEY = "lyra-auth";
 const PASS_PREFIX = "lyra-pw-";
 // ─── USUÁRIOS E PERMISSÕES ────────────────────────────────────────────────────
@@ -1026,8 +1026,8 @@ function RelatorioView({clients,onUpdate,brunoDate,onSetDate}){
     setLoading(true);setError('');setPreview(null);
     try{
       const b64=await fileToB64(file);
-      const nomes=active.map(c=>c.name).join(', ');
-      const text=await askClaude(b64,'application/pdf',`Relatório de performance Jurassic Marketing. Clientes cadastrados: ${nomes}\nExtraia TODOS os clientes do relatório. USE o status exato do relatório (não recalcule).\nRetorne APENAS JSON:\n{"clientes":[{"nome":"...","status":"critico|atencao|saudavel|sem_dados","roas":0.0,"gasto":0.0,"ctr":0.0,"freq":0.0,"compras":0,"cpa":0.0,"saldo":"texto ou null"}]}\nRegras de status: use o status que está no relatório — Crítico=critico, Atenção=atencao, Saudável=saudavel, Sem dados=sem_dados. Campos não encontrados: null.`);
+      const aliasInfo=allClients.map(c=>c.brunoAlias?`${c.name} (alias: ${c.brunoAlias})`:c.name).join('; ');
+      const text=await askClaude(b64,'application/pdf',`Relatório de performance Jurassic Marketing.\nClientes e aliases cadastrados: ${aliasInfo}\nExtraia TODOS os clientes do relatório. USE o nome EXATO como aparece no relatório (nome da conta no Meta Ads), não mapeie para o nome do cliente cadastrado.\nUSE o status exato do relatório (não recalcule).\nRetorne APENAS JSON:\n{"clientes":[{"nome":"...","status":"critico|atencao|saudavel|sem_dados","roas":0.0,"gasto":0.0,"ctr":0.0,"freq":0.0,"compras":0,"cpa":0.0,"saldo":"texto ou null"}]}\nRegras de status: Crítico=critico, Atenção=atencao, Saudável=saudavel, Sem dados=sem_dados. Campos não encontrados: null.`);
       const parsed=parseJSON(text);
       setPreview(parsed.clientes||[]);
     }catch(e){
@@ -1041,13 +1041,16 @@ function RelatorioView({clients,onUpdate,brunoDate,onSetDate}){
     const norm=s=>(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9\s]/g,'').trim();
     function matchClients(nome){
       const nr=norm(nome);
+      if(!nr||nr.length<3)return[];
       return allClients.filter(a=>{
         const na=norm(a.name);
-        if(na.includes(nr)||nr.includes(na))return true;
+        if(na===nr)return true;
+        if(na.length>=5&&nr.length>=5&&(na.includes(nr)||nr.includes(na)))return true;
         if(a.brunoAlias){
           return a.brunoAlias.split(',').some(al=>{
             const nal=norm(al.trim());
-            return nal===nr||nal.includes(nr)||nr.includes(nal);
+            if(!nal||nal.length<3)return false;
+            return nal===nr||(nal.length>=5&&nr.length>=5&&(nal.includes(nr)||nr.includes(nal)));
           });
         }
         return false;
@@ -1510,6 +1513,61 @@ function App(){
           const a=aliases[key];
           if(!a||c.brunoAlias)return c;
           return{...c,brunoAlias:a};
+        });
+      }
+      if(pv<14){
+        // Corrige brunoAlias por nome para todos os clientes — sobrescreve valores incorretos
+        const norm=s=>(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').trim();
+        const aliases={
+          'apice':                          'apice,apex',
+          'baile de ouro':                  'ca 01 power,ca01 power,baile ouro,ca 01',
+          'buteco costelao':                'buteco costelao,buteco',
+          'camarote pride':                 'camarote pride,pride',
+          'casa yala':                      'unik,casa yala',
+          'complexo fora do eixo':          'cpx fora do eixo,fora do eixo,cpx',
+          'dust pub':                       'dust pub,dust',
+          'somos entre':                    'space tune,somos entre',
+          'feijoada do serginho':           'feijoada do serginho,feijoada serginho',
+          'floresta infectada':             'floresta infectada',
+          'friends fuel':                   'friends fuel - eventos,friends fuel eventos,friends fuel',
+          'from heaven':                    'jm - from heaven,jm from heaven,from heaven,jm heaven',
+          'hipnotica festival':             'hipnotica festival,hipnotica',
+          'mad in brazza':                  'mad in funk,mad funk,mad in brazza',
+          'mad in brazza sp':               'mad in funk sp,mad funk sp,mad in brazza sp',
+          'magic boom tour':                'magic boom floripa,magic boom tour',
+          'moving festival':                'ca moving festival,moving festival,ca moving',
+          'na pegada':                      'na pegada',
+          'neutratech & new sheet':         'neutratech,neutratech new sheet',
+          'new sheet':                      'newsheet brand activation,newsheet brand,new sheet',
+          'puma punku festival':            'puma punku festival,puma punku',
+          'rcountry':                       'retrogyn,rcountry',
+          'savage':                         'savage festival,savage',
+          'snapp':                          'snapp productions,snapp',
+          'starlight, templo, bdg e caos':  'baile do gomes,starlight,gomes,templo,bdg,caos',
+          'tardezinha':                     'tardezinha',
+          'terra magica':                   'terra magica,terra magica parque',
+          'terratronic':                    'terratronic',
+          'um sonho (rmk)':                 'um sonho,um sonho rmk',
+          'use isy':                        'isy,use isy,isy store',
+          'villa sambo':                    'villa sambo,villa sambo',
+          'you can productions':            'you can,you can productions',
+          'festival maiara coelho':         'maiara coelho,festival maiara coelho,maiara',
+          'w2k':                            'w2k',
+          'dkbr':                           'all collections,dkbr',
+          '3cket':                          '3cket',
+          'festival sarava':                'festival sarava 2026,festival sarava,sarava',
+          'kibixiga show':                  'kibexiga,kibixiga,kibixiga show',
+          'segundos encantados':            'segundos encantados',
+          'pagode do quadradinho':          'pagode do quadradinho,quadradinho',
+          'deboxe eclipse':                 'ca - megadeboxe,megadeboxe,ca megadeboxe,deboxe eclipse uberlandia,deboxe eclipse',
+          'sonoora + natureza mistica':     'sonoora,natureza mistica,sonoora natureza mistica',
+          'unifarra':                       'unifarra,sigaunifarra',
+        };
+        clients=clients.map(c=>{
+          const key=norm(c.name);
+          const a=aliases[key];
+          if(!a)return c;
+          return{...c,brunoAlias:a}; // sempre sobrescreve
         });
       }
       return{...d,clients,patchVersion:DATA_PATCH};
