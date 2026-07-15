@@ -34,7 +34,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
 const KEY = "lyra-cs-v4";
 const KEY_BACKUP = "lyra-cs-backup";
 const GITHUB_TOKEN_KEY = "lyra-github-token";
-const DATA_PATCH = 12;
+const DATA_PATCH = 13;
 const AUTH_KEY = "lyra-auth";
 const PASS_PREFIX = "lyra-pw-";
 // ─── USUÁRIOS E PERMISSÕES ────────────────────────────────────────────────────
@@ -1496,6 +1496,21 @@ function App(){
           return{...c,segmento:p.segmento,tipo:p.tipo,instagram:c.instagram||p.instagram||null};
         });
         clients=clients.map(c=>c.gestor==='Gabriel'?{...c,gestor:'—'}:c);
+      }
+      if(pv<13){
+        const norm=s=>(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').trim();
+        const aliases={
+          'deboxe eclipse':'ca - megadeboxe,megadeboxe,ca megadeboxe,deboxe eclipse uberlandia',
+          'pagode do quadradinho':'pagode do quadradinho,quadradinho',
+          'sonoora + natureza mistica':'sonoora,natureza mistica,sonoora natureza mistica',
+          'unifarra':'unifarra,sigaunifarra',
+        };
+        clients=clients.map(c=>{
+          const key=norm(c.name);
+          const a=aliases[key];
+          if(!a||c.brunoAlias)return c;
+          return{...c,brunoAlias:a};
+        });
       }
       return{...d,clients,patchVersion:DATA_PATCH};
     }
