@@ -580,7 +580,7 @@ function DetailPanel({c,onClose,onSave,onDelete,today}){
         <div style={box()}>
           <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:6}}>
             <div style={lbl('#C2410C')}>Contrato vigente</div>
-            <span style={{fontSize:9,background:'#D1FAE5',color:'#065F46',padding:'2px 7px',borderRadius:4,fontWeight:700}}>Vigente</span>
+            {(()=>{const st=renovSt(f,today);const map={vigente:{bg:'#D1FAE5',c:'#065F46',l:'Vigente'},avencer:{bg:'#FEF3C7',c:'#B45309',l:'À vencer'},vencido:{bg:'#FEE2E2',c:'#DC2626',l:'Vencido'},davi:{bg:'#F3E8FF',c:'#7E22CE',l:'Davi'},none:{bg:'#F3F4F6',c:'#6B7280',l:'—'}};const s=map[st]||map.none;return<span style={{fontSize:9,background:s.bg,color:s.c,padding:'2px 7px',borderRadius:4,fontWeight:700}}>{s.l}</span>;})()}
           </div>
           <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8,marginBottom:8}}>
             <div>
@@ -1199,7 +1199,7 @@ function RelatorioView({clients,onUpdate,brunoDate,onSetDate}){
               {c.gestor}
               {c.brunoRoas!=null&&<span style={{marginLeft:6,color:c.brunoRoas<1?'#DC2626':c.brunoRoas<2?'#D97706':'#16A34A',fontWeight:700}}>ROAS {c.brunoRoas}x</span>}
               {c.brunoCtr!=null&&<span style={{marginLeft:6}}>CTR {c.brunoCtr}%</span>}
-              {c.brunoFreq!=null&&<span style={{marginLeft:6,color:c.brunoFreq>=6?'#DC2626':c.brunoFreq>=4?'#D97706':'inherit'}}>{c.brunoFreq>=6?'⚠ ':''}{c.brunoFreq>=4?'⚠ ':''}Freq {c.brunoFreq}</span>}
+              {c.brunoFreq!=null&&<span style={{marginLeft:6,color:c.brunoFreq>=6?'#DC2626':c.brunoFreq>=4?'#D97706':'inherit'}}>{c.brunoFreq>=6?'⚠ ':c.brunoFreq>=4?'⚠ ':''}Freq {c.brunoFreq}</span>}
               {c.brunoCompras!=null&&<span style={{marginLeft:6,color:c.brunoCompras===0?'#DC2626':'inherit'}}>{c.brunoCompras===0?'⚠ ':''}Compras {c.brunoCompras}</span>}
             </div>
             <div style={{fontSize:9,color:P,marginTop:2,opacity:0.7}}>clique para ver detalhes</div>
