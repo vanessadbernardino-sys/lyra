@@ -1652,14 +1652,14 @@
       "dataInicio": "2026-07-30",
       "contratoVenc": "2026-10-18",
       "contratoVal": "R$ 2.000,00",
-      "reuniaoStatus": "agendar",
-      "reuniaoData": null,
+      "reuniaoStatus": "onboarding",
+      "reuniaoData": "2026-07-17",
       "alerta": null,
       "obs": "",
       "obsContrato": "Parcela 1 – R$ 2.000,00 – 30/07/2026; Parcela 2 – R$ 2.000,00 – 30/08/2026; Parcela 3 – R$ 2.000,00 – 30/09/2026.",
       "obsEvento": "",
       "contratoAnterior": null,
-      "ultimoContato": null,
+      "ultimoContato": "2026-07-16",
       "brunoAlias": "Horror Expo, Church Tech"
     }
   ],
