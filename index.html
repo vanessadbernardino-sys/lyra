@@ -1369,13 +1369,13 @@ function App(){
       const pv=d.patchVersion||0;
       if(pv>=DATA_PATCH)return d;
       let clients=[...d.clients];
-      // Patch 1+2: sincroniza eventoDate e brunoAlias do CLIENTS_DEFAULT
+      // Patch 1+2: sincroniza brunoAlias do CLIENTS_DEFAULT (eventoDate NÃO é sobrescrito — é dado do usuário)
       const baseMap={};
-      CLIENTS_DEFAULT.forEach(c=>{baseMap[c.id]={eventoDate:c.eventoDate,name:c.name,obs:c.obs,brunoAlias:c.brunoAlias};});
+      CLIENTS_DEFAULT.forEach(c=>{baseMap[c.id]={name:c.name,obs:c.obs,brunoAlias:c.brunoAlias};});
       clients=clients.map(c=>{
         const b=baseMap[c.id];
         if(!b)return c;
-        return{...c,eventoDate:b.eventoDate,brunoAlias:b.brunoAlias};
+        return{...c,brunoAlias:b.brunoAlias};
       });
       // Garante que todos os clientes do CLIENTS_DEFAULT existem
       const existingIds=new Set(clients.map(c=>c.id));
