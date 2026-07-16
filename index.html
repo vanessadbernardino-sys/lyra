@@ -1699,8 +1699,9 @@ function App(){
   }),[persist]);
 
   const saveClient=useCallback((id,f)=>{
+    const{_editingName,...clean}=f;
     setData(p=>{
-      const next={...p,clients:p.clients.map(c=>c.id===id?{...f}:c)};
+      const next={...p,clients:p.clients.map(c=>c.id===id?{...clean}:c)};
       persist(next);
       return next;
     });
