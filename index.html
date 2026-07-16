@@ -1654,13 +1654,13 @@ function App(){
     try{localStorage.setItem(KEY_BACKUP,json);}catch(e){}
   },[data,loading]);
 
-  // Auto-sync para GitHub: 10s após qualquer mudança, se token disponível
+  // Auto-sync para GitHub: 3s após qualquer mudança, se token disponível
   useEffect(()=>{
     if(!data||loading)return;
     const token=localStorage.getItem(GITHUB_TOKEN_KEY);
     if(!token)return;
     if(autoSyncRef.current)clearTimeout(autoSyncRef.current);
-    autoSyncRef.current=setTimeout(async()=>{
+    const doSync=async()=>{
       const owner='vanessadbernardino-sys',repo='lyra',path='clients-data.json';
       const content=btoa(unescape(encodeURIComponent(JSON.stringify(data,null,2))));
       try{
@@ -1671,7 +1671,8 @@ function App(){
         if(sha)body.sha=sha;
         await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`,{method:'PUT',headers:{'Authorization':`token ${token}`,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},body:JSON.stringify(body)});
       }catch(e){}
-    },10000);
+    };
+    autoSyncRef.current=setTimeout(doSync,3000);
     return()=>{if(autoSyncRef.current)clearTimeout(autoSyncRef.current);};
   },[data,loading]);
 
