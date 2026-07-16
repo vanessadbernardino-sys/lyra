@@ -1519,7 +1519,7 @@ function App(){
           const key=norm(c.name);
           const p=m[key];
           if(!p)return{...c,segmento:c.segmento||'',instagram:c.instagram||null};
-          return{...c,segmento:p.segmento,tipo:p.tipo,instagram:c.instagram||p.instagram||null};
+          return{...c,segmento:c.segmento||p.segmento,tipo:c.tipo||p.tipo,instagram:c.instagram||p.instagram||null};
         });
         clients=clients.map(c=>c.gestor==='Gabriel'?{...c,gestor:'—'}:c);
       }
@@ -1753,7 +1753,7 @@ function App(){
       try{
         const parsed=JSON.parse(e.target.result);
         if(!parsed.clients||!Array.isArray(parsed.clients))throw new Error('Arquivo inválido');
-        parsed.patchVersion=0;
+        parsed.patchVersion=parsed.patchVersion||0;
         const json=JSON.stringify(parsed);
         localStorage.setItem(KEY,json);
         localStorage.setItem(KEY_BACKUP,json);
