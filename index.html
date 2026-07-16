@@ -1285,7 +1285,7 @@ function NovoClienteView({clients,onAddClient}){
         <div><div style={lbl}>Tipo</div><select value={form.tipo||''} onChange={e=>upd('tipo',e.target.value)} style={{...si,cursor:'pointer'}}><option value="">— Selecionar —</option>{TIPOS_CLIENTE.map(t=><option key={t} value={t}>{t}</option>)}</select></div>
       </div>
       <div style={{marginTop:12}}><div style={lbl}>Instagram (@perfil ou link)</div><input value={form.instagram||''} onChange={e=>upd('instagram',e.target.value)} style={si} placeholder="https://www.instagram.com/perfil"/></div>
-      <div style={{marginTop:8}}><div style={lbl}>Alias Bruno (nomes do relatório, separados por vírgula)</div><input value={form.brunoAlias||''} onChange={e=>upd('brunoAlias',e.target.value)} style={si} placeholder="ex: nome no meta, outro nome..."/></div>
+      <div style={{marginTop:8}}><div style={lbl}>Relatório de Conta (nomes no relatório, separados por vírgula)</div><input value={form.brunoAlias||''} onChange={e=>upd('brunoAlias',e.target.value)} style={si} placeholder="ex: nome no meta, outro nome..."/></div>
       <div style={{marginTop:8}}><div style={lbl}>Obs. do contrato (parcelas)</div><textarea value={form.obsContrato||''} onChange={e=>upd('obsContrato',e.target.value)} rows={2} style={{...si,resize:'vertical'}} placeholder="Parcela 1 – R$ X – dia Y; Parcela 2 – ..."/></div>
       <div style={{marginTop:8}}><div style={lbl}>Obs. do evento</div><textarea value={form.obsEvento||''} onChange={e=>upd('obsEvento',e.target.value)} rows={2} style={{...si,resize:'vertical'}} placeholder="Datas, locais, detalhes do evento..."/></div>
       <div style={{display:'flex',gap:10,marginTop:14}}>
