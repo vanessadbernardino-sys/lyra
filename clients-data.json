@@ -1665,7 +1665,11 @@
   ],
   "brunoDate": "2026-07-15",
   "hojeData": "2026-07-20",
-  "hojeIds": [],
+  "hojeIds": [
+    13,
+    20,
+    11
+  ],
   "patchVersion": 14,
   "lastResetMonth": "2026-07"
 }
