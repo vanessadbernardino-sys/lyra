@@ -297,7 +297,7 @@
       "eventoDate": "2026-07-18",
       "davi": false,
       "status": "pausado",
-      "brunoStatus": "atencao",
+      "brunoStatus": "pausado_relatorio",
       "brunoRoas": 1.57,
       "brunoGasto": 1037.75,
       "contratoVenc": "2026-11-12",
