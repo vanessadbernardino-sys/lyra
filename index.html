@@ -1618,57 +1618,42 @@ function App(){
           return{...c,brunoAlias:a}; // sempre sobrescreve
         });
       }
-      // Patch 15: aliases exatos conforme PDF do relatório (15/07/2026)
+      // Patch 15: apenas o nome exato da conta conforme aparece no PDF do relatório
       if(pv<15){
         const norm=s=>(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').trim();
         const aliases={
-          'kibixiga show':                  'kibexiga,kibixiga,kibixiga show',
-          'somos entre':                    'somos entre,space tune',
-          'pagode do quadradinho':          'pagode do quadradinho,quadradinho',
-          'rcountry':                       'retrogyn,rcountry',
-          'from heaven':                    'jm - from heaven,from heaven,jm from heaven,jm heaven',
-          'sonoora + natureza mistica':     'natureza mistica,sonoora,sonoora natureza mistica',
-          'dkbr':                           'all collections,dkbr',
-          'festival maiara coelho':         'maiara coelho,festival maiara coelho,maiara',
-          'apice':                          'apice,apex',
-          'casa yala':                      'unik,casa yala',
-          'floresta infectada':             'floresta infectada',
-          'friends fuel':                   'friends fuel - eventos,friends fuel eventos,friends fuel',
-          'new sheet':                      'newsheet brand activation lda,newsheet brand activation,newsheet brand,new sheet',
-          'mad in brazza':                  'mad in funk,mad funk,mad in brazza',
-          'mad in brazza sp':               'mad in funk sp,mad funk sp,mad in brazza sp',
-          'starlight, templo, bdg e caos':  'ca - templo,starlight,baile do gomes,gomes,templo,bdg,caos,baile do gomes caos,baile do gomes templo',
-          'tardezinha':                     'tardezinha',
-          'terratronic':                    'terratronic',
-          'terra magica':                   'terra magica,terra magica parque',
-          'moving festival':                'ca - moving festival,ca moving festival,moving festival,ca moving',
-          'festival sarava':                'festival sarava 2026,festival sarava,sarava',
-          'feijoada do serginho':           'feijoada do serginho,feijoada serginho',
-          'use isy':                        'isy,use isy,isy store',
-          'hipnotica festival':             'hipnotica,hipnotica festival',
-          'deboxe eclipse':                 'ca - megadeboxe,megadeboxe,ca megadeboxe,deboxe eclipse uberlandia,deboxe eclipse',
-          'snapp':                          'snapp productions,snapp',
-          'na pegada':                      'na pegada',
-          'w2k':                            'w2k',
-          '3cket':                          '3cket',
-          'segundos encantados':            'segundos encantados',
-          'unifarra':                       'unifarra,sigaunifarra',
-          'buteco costelao':                'buteco costelao,buteco',
-          'camarote pride':                 'camarote pride,pride',
-          'complexo fora do eixo':          'cpx fora do eixo,fora do eixo,cpx',
-          'dust pub':                       'dust pub,dust',
-          'magic boom tour':                'magic boom floripa,magic boom tour,magic boom',
-          'puma punku festival':            'puma punku festival,puma punku',
-          'savage':                         'savage festival,savage',
-          'um sonho (rmk)':                 'um sonho,um sonho rmk',
-          'villa sambo':                    'villa sambô,villa sambo',
-          'you can productions':            'you can,you can productions',
-          'neutratech & new sheet':         'neutratech,neutratech new sheet',
+          'kibixiga show':                  'Kibexiga',
+          'somos entre':                    'Somos Entre',
+          'pagode do quadradinho':          'Pagode do Quadradinho',
+          'rcountry':                       'Retrogyn',
+          'from heaven':                    'jm - from heaven',
+          'sonoora + natureza mistica':     'Natureza Mística',
+          'dkbr':                           'ALL COLLECTIONS',
+          'festival maiara coelho':         'Maiara Coelho',
+          'apice':                          'Apice',
+          'casa yala':                      'UNIK',
+          'floresta infectada':             'Floresta Infectada',
+          'friends fuel':                   'Friends Fuel - Eventos',
+          'new sheet':                      'NEWSHEET BRAND ACTIVATION LDA',
+          'mad in brazza':                  'Mad in Funk',
+          'starlight, templo, bdg e caos':  'CA - Templo,Starlight,Baile do Gomes',
+          'tardezinha':                     'Tardezinha',
+          'terratronic':                    'Terratronic',
+          'terra magica':                   'TERRA MAGICA',
+          'moving festival':                'CA - Moving Festival',
+          'festival sarava':                'Festival Saravá 2026',
+          'feijoada do serginho':           'Feijoada do Serginho',
+          'use isy':                        'Ísy',
+          'hipnotica festival':             'Hipnotica',
+          'deboxe eclipse':                 'CA - MEGADEBOXE',
+          'snapp':                          'Snapp Productions',
+          'na pegada':                      'Na Pegada',
         };
         clients=clients.map(c=>{
-          const key=norm(c.name);
+          const norm2=s=>(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').trim();
+          const key=norm2(c.name);
           const a=aliases[key];
-          if(!a)return c;
+          if(!a)return{...c,brunoAlias:''};
           return{...c,brunoAlias:a};
         });
       }
