@@ -472,7 +472,7 @@
       "alerta": null,
       "obs": "",
       "ultimoContato": "2026-07-07",
-      "brunoAlias": "mad in funk,mad funk,mad in brazza sp",
+      "brunoAlias": "Mad in Funk",
       "brunoCtr": 1.51,
       "brunoFreq": 4.7,
       "brunoCompras": 449,
@@ -608,7 +608,7 @@
       "obsEvento": "",
       "dataInicio": "2026-06-29",
       "contratoAnterior": null,
-      "brunoAlias": "neutratech,neutratech new sheet",
+      "brunoAlias": "",
       "segmento": "Corporativo / Negócios / Congressos e Feiras",
       "instagram": "https://www.instagram.com/neutratech_angola/"
     },
@@ -1503,7 +1503,7 @@
       "obsEvento": "Vários eventos - 5 Páginas de Instagram",
       "contratoAnterior": null,
       "ultimoContato": "2026-07-17",
-      "brunoAlias": "pagode do quadradinho,quadradinho",
+      "brunoAlias": "",
       "segmento": "Entretenimento Multigênero",
       "instagram": "https://www.instagram.com/lisboario/"
     },
@@ -1630,7 +1630,7 @@
       "obsEvento": "",
       "contratoAnterior": null,
       "ultimoContato": "2026-07-14",
-      "brunoAlias": "unifarra,sigaunifarra",
+      "brunoAlias": "",
       "segmento": "Festa Universitária",
       "instagram": "https://www.instagram.com/sigaunifarra"
     },
@@ -1660,7 +1660,7 @@
       "obsEvento": "",
       "contratoAnterior": null,
       "ultimoContato": "2026-07-16",
-      "brunoAlias": "Horror Expo, Church Tech"
+      "brunoAlias": ""
     },
     {
       "id": 54,
@@ -1694,6 +1694,6 @@
   "brunoDate": "2026-07-15",
   "hojeData": "2026-07-21",
   "hojeIds": [],
-  "patchVersion": 16,
+  "patchVersion": 17,
   "lastResetMonth": "2026-07"
 }
