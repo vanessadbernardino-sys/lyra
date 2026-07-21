@@ -706,18 +706,18 @@ function LyraHome({clients,onSelect,onUpd,hoje,onToggleHoje,today,userName}){
             {g.cards.map(k=>(
               <div key={k.l}
                 onClick={()=>setKpiModal({title:k.l,list:k.list})}
-                style={{background:k.bg,borderRadius:18,padding:'14px 14px 10px',color:'white',boxShadow:'0 6px 20px rgba(230,75,151,0.20)',cursor:'pointer',transition:'transform 0.15s,box-shadow 0.15s',display:'flex',flexDirection:'column',justifyContent:'space-between',aspectRatio:'1/1'}}
-                onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-2px)';e.currentTarget.style.boxShadow='0 12px 28px rgba(230,75,151,0.32)';}}
-                onMouseLeave={e=>{e.currentTarget.style.transform='';e.currentTarget.style.boxShadow='0 6px 20px rgba(230,75,151,0.20)';}}>
+                style={{background:k.bg,borderRadius:14,padding:'10px 10px 7px',color:'white',boxShadow:'0 4px 14px rgba(230,75,151,0.18)',cursor:'pointer',transition:'transform 0.15s,box-shadow 0.15s',display:'flex',flexDirection:'column',justifyContent:'space-between',aspectRatio:'1/1',maxHeight:110}}
+                onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-2px)';e.currentTarget.style.boxShadow='0 8px 20px rgba(230,75,151,0.30)';}}
+                onMouseLeave={e=>{e.currentTarget.style.transform='';e.currentTarget.style.boxShadow='0 4px 14px rgba(230,75,151,0.18)';}}>
                 <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
-                  <div style={{fontSize:34,fontWeight:800,lineHeight:1,letterSpacing:-1}}>{k.v}</div>
-                  <div style={{width:32,height:32,borderRadius:'50%',background:'rgba(255,255,255,0.25)',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
-                    <i className={`ti ${k.icon}`} style={{fontSize:15,color:'white'}}/>
+                  <div style={{fontSize:26,fontWeight:800,lineHeight:1,letterSpacing:-1}}>{k.v}</div>
+                  <div style={{width:24,height:24,borderRadius:'50%',background:'rgba(255,255,255,0.25)',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
+                    <i className={`ti ${k.icon}`} style={{fontSize:12,color:'white'}}/>
                   </div>
                 </div>
                 <div>
-                  <div style={{fontSize:11,fontWeight:700,opacity:0.95,marginBottom:5}}>{k.l}</div>
-                  <svg width="100%" height="20" viewBox="0 0 100 30" preserveAspectRatio="none">
+                  <div style={{fontSize:10,fontWeight:700,opacity:0.95,marginBottom:4}}>{k.l}</div>
+                  <svg width="100%" height="14" viewBox="0 0 100 30" preserveAspectRatio="none">
                     <polyline points={k.spark} fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 </div>
