@@ -651,6 +651,7 @@ function LyraHome({clients,onSelect,onUpd,hoje,onToggleHoje,today,userName}){
   const hr=new Date().getHours();
   const greeting=hr<12?'Bom dia':hr<18?'Boa tarde':'Boa noite';
   const dateStr=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long'});
+  const rCol=(i)=>i<3?'#DC2626':i<6?'#B45309':'#2563EB';
 
   const nCritico=active.filter(c=>c.brunoStatus==='critico');
   const nAtencao=active.filter(c=>c.brunoStatus==='atencao');
