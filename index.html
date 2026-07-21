@@ -1653,7 +1653,7 @@ function App(){
           const norm2=s=>(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').trim();
           const key=norm2(c.name);
           const a=aliases[key];
-          if(!a)return{...c,brunoAlias:''};
+          if(!a)return c; // preserva alias existente (ex: clientes pausados que já tinham)
           return{...c,brunoAlias:a};
         });
       }
