@@ -34,7 +34,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
 const KEY = "lyra-cs-v4";
 const KEY_BACKUP = "lyra-cs-backup";
 const GITHUB_TOKEN_KEY = "lyra-github-token";
-const DATA_PATCH = 15;
+const DATA_PATCH = 16;
 const AUTH_KEY = "lyra-auth";
 const PASS_PREFIX = "lyra-pw-";
 // ─── USUÁRIOS E PERMISSÕES ────────────────────────────────────────────────────
@@ -1618,8 +1618,8 @@ function App(){
           return{...c,brunoAlias:a}; // sempre sobrescreve
         });
       }
-      // Patch 15: apenas o nome exato da conta conforme aparece no PDF do relatório
-      if(pv<15){
+      // Patch 15+16: apenas o nome exato da conta conforme aparece no PDF do relatório
+      if(pv<16){
         const norm=s=>(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').trim();
         const aliases={
           'kibixiga show':                  'Kibexiga',
