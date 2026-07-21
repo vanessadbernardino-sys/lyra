@@ -34,7 +34,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
 const KEY = "lyra-cs-v4";
 const KEY_BACKUP = "lyra-cs-backup";
 const GITHUB_TOKEN_KEY = "lyra-github-token";
-const DATA_PATCH = 14;
+const DATA_PATCH = 15;
 const AUTH_KEY = "lyra-auth";
 const PASS_PREFIX = "lyra-pw-";
 // ─── USUÁRIOS E PERMISSÕES ────────────────────────────────────────────────────
@@ -1616,6 +1616,60 @@ function App(){
           const a=aliases[key];
           if(!a)return c;
           return{...c,brunoAlias:a}; // sempre sobrescreve
+        });
+      }
+      // Patch 15: aliases exatos conforme PDF do relatório (15/07/2026)
+      if(pv<15){
+        const norm=s=>(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').trim();
+        const aliases={
+          'kibixiga show':                  'kibexiga,kibixiga,kibixiga show',
+          'somos entre':                    'somos entre,space tune',
+          'pagode do quadradinho':          'pagode do quadradinho,quadradinho',
+          'rcountry':                       'retrogyn,rcountry',
+          'from heaven':                    'jm - from heaven,from heaven,jm from heaven,jm heaven',
+          'sonoora + natureza mistica':     'natureza mistica,sonoora,sonoora natureza mistica',
+          'dkbr':                           'all collections,dkbr',
+          'festival maiara coelho':         'maiara coelho,festival maiara coelho,maiara',
+          'apice':                          'apice,apex',
+          'casa yala':                      'unik,casa yala',
+          'floresta infectada':             'floresta infectada',
+          'friends fuel':                   'friends fuel - eventos,friends fuel eventos,friends fuel',
+          'new sheet':                      'newsheet brand activation lda,newsheet brand activation,newsheet brand,new sheet',
+          'mad in brazza':                  'mad in funk,mad funk,mad in brazza',
+          'mad in brazza sp':               'mad in funk sp,mad funk sp,mad in brazza sp',
+          'starlight, templo, bdg e caos':  'ca - templo,starlight,baile do gomes,gomes,templo,bdg,caos,baile do gomes caos,baile do gomes templo',
+          'tardezinha':                     'tardezinha',
+          'terratronic':                    'terratronic',
+          'terra magica':                   'terra magica,terra magica parque',
+          'moving festival':                'ca - moving festival,ca moving festival,moving festival,ca moving',
+          'festival sarava':                'festival sarava 2026,festival sarava,sarava',
+          'feijoada do serginho':           'feijoada do serginho,feijoada serginho',
+          'use isy':                        'isy,use isy,isy store',
+          'hipnotica festival':             'hipnotica,hipnotica festival',
+          'deboxe eclipse':                 'ca - megadeboxe,megadeboxe,ca megadeboxe,deboxe eclipse uberlandia,deboxe eclipse',
+          'snapp':                          'snapp productions,snapp',
+          'na pegada':                      'na pegada',
+          'w2k':                            'w2k',
+          '3cket':                          '3cket',
+          'segundos encantados':            'segundos encantados',
+          'unifarra':                       'unifarra,sigaunifarra',
+          'buteco costelao':                'buteco costelao,buteco',
+          'camarote pride':                 'camarote pride,pride',
+          'complexo fora do eixo':          'cpx fora do eixo,fora do eixo,cpx',
+          'dust pub':                       'dust pub,dust',
+          'magic boom tour':                'magic boom floripa,magic boom tour,magic boom',
+          'puma punku festival':            'puma punku festival,puma punku',
+          'savage':                         'savage festival,savage',
+          'um sonho (rmk)':                 'um sonho,um sonho rmk',
+          'villa sambo':                    'villa sambô,villa sambo',
+          'you can productions':            'you can,you can productions',
+          'neutratech & new sheet':         'neutratech,neutratech new sheet',
+        };
+        clients=clients.map(c=>{
+          const key=norm(c.name);
+          const a=aliases[key];
+          if(!a)return c;
+          return{...c,brunoAlias:a};
         });
       }
       return{...d,clients,patchVersion:DATA_PATCH};
