@@ -1017,6 +1017,7 @@ function RelatorioView({clients,onUpdate,brunoDate,onSetDate}){
   const[error,setError]=useState('');
   const[msg,setMsg]=useState('');
   const[perfModal,setPerfModal]=useState(null);
+  const[editAlias,setEditAlias]=useState(null);
   const active=clients.filter(c=>c.status==='ativo').sort((a,b)=>['critico','atencao','sem_dados','saudavel'].indexOf(a.brunoStatus)-['critico','atencao','sem_dados','saudavel'].indexOf(b.brunoStatus));
   const allClients=clients;
   const si={border:`1px solid ${P_BORDER}`,borderRadius:8,padding:'6px 10px',fontSize:12,background:'white',color:GRAFITE,width:'100%'};
@@ -1193,16 +1194,30 @@ function RelatorioView({clients,onUpdate,brunoDate,onSetDate}){
       <div style={{padding:'11px 18px',borderBottom:`1px solid ${P_BORDER}`,background:P_BG}}><span style={{fontSize:12,fontWeight:700,color:GRAFITE}}>Atualização manual</span></div>
       <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(280px,1fr))'}}>
         {active.map(c=><div key={c.id} style={{display:'flex',alignItems:'center',gap:10,padding:'9px 16px',borderBottom:`1px solid #FCE4EC`}}>
-          <div style={{flex:1,cursor:'pointer'}} onClick={()=>setPerfModal(c)}>
-            <div style={{fontSize:12,fontWeight:600,color:GRAFITE}}>{c.name}</div>
-            <div style={{fontSize:10,color:'#B08090',marginTop:2}}>
-              {c.gestor}
-              {c.brunoRoas!=null&&<span style={{marginLeft:6,color:c.brunoRoas<1?'#DC2626':c.brunoRoas<2?'#D97706':'#16A34A',fontWeight:700}}>ROAS {c.brunoRoas}x</span>}
-              {c.brunoCtr!=null&&<span style={{marginLeft:6}}>CTR {c.brunoCtr}%</span>}
-              {c.brunoFreq!=null&&<span style={{marginLeft:6,color:c.brunoFreq>=6?'#DC2626':c.brunoFreq>=4?'#D97706':'inherit'}}>{c.brunoFreq>=6?'⚠ ':c.brunoFreq>=4?'⚠ ':''}Freq {c.brunoFreq}</span>}
-              {c.brunoCompras!=null&&<span style={{marginLeft:6,color:c.brunoCompras===0?'#DC2626':'inherit'}}>{c.brunoCompras===0?'⚠ ':''}Compras {c.brunoCompras}</span>}
+          <div style={{flex:1,minWidth:0}}>
+            <div style={{display:'flex',alignItems:'center',gap:5,cursor:'pointer'}} onClick={()=>setPerfModal(c)}>
+              <div style={{fontSize:12,fontWeight:600,color:GRAFITE}}>{c.name}</div>
+              <button onClick={e=>{e.stopPropagation();setEditAlias({id:c.id,value:c.brunoAlias||''});}} style={{fontSize:9,padding:'1px 5px',borderRadius:4,border:`1px solid ${P_BORDER}`,background:'#FFF0F6',color:P,cursor:'pointer',fontWeight:700,flexShrink:0}}>conta</button>
             </div>
-            <div style={{fontSize:9,color:P,marginTop:2,opacity:0.7}}>clique para ver detalhes</div>
+            {editAlias?.id===c.id
+              ?<div style={{marginTop:4}} onClick={e=>e.stopPropagation()}>
+                  <input autoFocus value={editAlias.value} onChange={e=>setEditAlias(p=>({...p,value:e.target.value}))} placeholder="nomes no relatório, separados por vírgula" style={{fontSize:11,border:`1px solid ${P_BORDER}`,borderRadius:6,padding:'3px 7px',width:'100%',marginBottom:3,boxSizing:'border-box'}}/>
+                  <div style={{display:'flex',gap:4}}>
+                    <button onClick={()=>{onUpdate(c.id,{brunoAlias:editAlias.value});setEditAlias(null);}} style={{fontSize:10,padding:'2px 8px',borderRadius:5,background:P,color:'white',border:'none',cursor:'pointer',fontWeight:700}}>Salvar</button>
+                    <button onClick={()=>setEditAlias(null)} style={{fontSize:10,padding:'2px 8px',borderRadius:5,background:'transparent',color:'#B08090',border:`1px solid ${P_BORDER}`,cursor:'pointer'}}>Cancelar</button>
+                  </div>
+                </div>
+              :<div style={{cursor:'pointer'}} onClick={()=>setPerfModal(c)}>
+                  <div style={{fontSize:10,color:'#B08090',marginTop:2}}>
+                    {c.gestor}
+                    {c.brunoRoas!=null&&<span style={{marginLeft:6,color:c.brunoRoas<1?'#DC2626':c.brunoRoas<2?'#D97706':'#16A34A',fontWeight:700}}>ROAS {c.brunoRoas}x</span>}
+                    {c.brunoCtr!=null&&<span style={{marginLeft:6}}>CTR {c.brunoCtr}%</span>}
+                    {c.brunoFreq!=null&&<span style={{marginLeft:6,color:c.brunoFreq>=6?'#DC2626':c.brunoFreq>=4?'#D97706':'inherit'}}>{c.brunoFreq>=6?'⚠ ':c.brunoFreq>=4?'⚠ ':''}Freq {c.brunoFreq}</span>}
+                    {c.brunoCompras!=null&&<span style={{marginLeft:6,color:c.brunoCompras===0?'#DC2626':'inherit'}}>{c.brunoCompras===0?'⚠ ':''}Compras {c.brunoCompras}</span>}
+                  </div>
+                  <div style={{fontSize:9,color:P,marginTop:2,opacity:0.7}}>{c.brunoAlias?`conta: ${c.brunoAlias}`:'⚠ sem conta — clique em "conta" para adicionar'}</div>
+                </div>
+            }
           </div>
           <div style={{display:'flex',flexDirection:'column',gap:4,minWidth:110}}>
             <select value={c.brunoStatus} onChange={e=>onUpdate(c.id,{brunoStatus:e.target.value})} style={{...si,padding:'4px 6px',cursor:'pointer'}}>
@@ -1285,8 +1300,7 @@ function NovoClienteView({clients,onAddClient}){
         <div><div style={lbl}>Tipo</div><select value={form.tipo||''} onChange={e=>upd('tipo',e.target.value)} style={{...si,cursor:'pointer'}}><option value="">— Selecionar —</option>{TIPOS_CLIENTE.map(t=><option key={t} value={t}>{t}</option>)}</select></div>
       </div>
       <div style={{marginTop:12}}><div style={lbl}>Instagram (@perfil ou link)</div><input value={form.instagram||''} onChange={e=>upd('instagram',e.target.value)} style={si} placeholder="https://www.instagram.com/perfil"/></div>
-      <div style={{marginTop:8}}><div style={lbl}>Relatório de Conta (nomes no relatório, separados por vírgula)</div><input value={form.brunoAlias||''} onChange={e=>upd('brunoAlias',e.target.value)} style={si} placeholder="ex: nome no meta, outro nome..."/></div>
-      <div style={{marginTop:8}}><div style={lbl}>Obs. do contrato (parcelas)</div><textarea value={form.obsContrato||''} onChange={e=>upd('obsContrato',e.target.value)} rows={2} style={{...si,resize:'vertical'}} placeholder="Parcela 1 – R$ X – dia Y; Parcela 2 – ..."/></div>
+<div style={{marginTop:8}}><div style={lbl}>Obs. do contrato (parcelas)</div><textarea value={form.obsContrato||''} onChange={e=>upd('obsContrato',e.target.value)} rows={2} style={{...si,resize:'vertical'}} placeholder="Parcela 1 – R$ X – dia Y; Parcela 2 – ..."/></div>
       <div style={{marginTop:8}}><div style={lbl}>Obs. do evento</div><textarea value={form.obsEvento||''} onChange={e=>upd('obsEvento',e.target.value)} rows={2} style={{...si,resize:'vertical'}} placeholder="Datas, locais, detalhes do evento..."/></div>
       <div style={{display:'flex',gap:10,marginTop:14}}>
         <button onClick={confirmar} style={{flex:1,background:P,color:'white',padding:'10px',borderRadius:12,fontSize:13,fontWeight:700,border:'none',cursor:'pointer'}}>✓ Adicionar novo cliente</button>
