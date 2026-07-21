@@ -706,7 +706,7 @@ function LyraHome({clients,onSelect,onUpd,hoje,onToggleHoje,today,userName}){
             {g.cards.map(k=>(
               <div key={k.l}
                 onClick={()=>setKpiModal({title:k.l,list:k.list})}
-                style={{background:k.bg,borderRadius:14,padding:'10px 10px 7px',color:'white',boxShadow:'0 4px 14px rgba(230,75,151,0.18)',cursor:'pointer',transition:'transform 0.15s,box-shadow 0.15s',display:'flex',flexDirection:'column',justifyContent:'space-between',aspectRatio:'1/1',maxHeight:110}}
+                style={{background:k.bg,borderRadius:14,padding:'10px 10px 7px',color:'white',boxShadow:'0 4px 14px rgba(230,75,151,0.18)',cursor:'pointer',transition:'transform 0.15s,box-shadow 0.15s',display:'flex',flexDirection:'column',justifyContent:'space-between',aspectRatio:'1/1'}}
                 onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-2px)';e.currentTarget.style.boxShadow='0 8px 20px rgba(230,75,151,0.30)';}}
                 onMouseLeave={e=>{e.currentTarget.style.transform='';e.currentTarget.style.boxShadow='0 4px 14px rgba(230,75,151,0.18)';}}>
                 <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
