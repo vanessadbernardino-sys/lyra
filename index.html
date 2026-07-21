@@ -642,6 +642,7 @@ function DetailPanel({c,onClose,onSave,onDelete,today}){
 
 // ─── LYRA HOME ─────────────────────────────────────────────────────────────────
 function LyraHome({clients,onSelect,onUpd,hoje,onToggleHoje,today,userName}){
+  const META=5;
   const[kpiModal,setKpiModal]=useState(null);
   const active=clients.filter(c=>c.status==='ativo');
   const scored=active.map(c=>({...c,sc:calcScore(c,today)})).sort((a,b)=>b.sc-a.sc);
