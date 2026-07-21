@@ -34,7 +34,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
 const KEY = "lyra-cs-v4";
 const KEY_BACKUP = "lyra-cs-backup";
 const GITHUB_TOKEN_KEY = "lyra-github-token";
-const DATA_PATCH = 16;
+const DATA_PATCH = 17;
 const AUTH_KEY = "lyra-auth";
 const PASS_PREFIX = "lyra-pw-";
 // ─── USUÁRIOS E PERMISSÕES ────────────────────────────────────────────────────
@@ -1618,8 +1618,8 @@ function App(){
           return{...c,brunoAlias:a}; // sempre sobrescreve
         });
       }
-      // Patch 15+16: apenas o nome exato da conta conforme aparece no PDF do relatório
-      if(pv<16){
+      // Patch 15+16+17: apenas o nome exato da conta conforme aparece no PDF do relatório
+      if(pv<17){
         const norm=s=>(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').trim();
         const aliases={
           'kibixiga show':                  'Kibexiga',
@@ -1648,13 +1648,17 @@ function App(){
           'deboxe eclipse':                 'CA - MEGADEBOXE',
           'snapp':                          'Snapp Productions',
           'na pegada':                      'Na Pegada',
+          'mad in brazza sp':               'Mad in Funk',
+          'neutratech & new sheet':         '',
+          'segundos encantados':            '',
+          'unifarra':                       '',
+          'horror expo':                    '',
         };
         clients=clients.map(c=>{
           const norm2=s=>(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').trim();
           const key=norm2(c.name);
-          const a=aliases[key];
-          if(!a)return c; // preserva alias existente (ex: clientes pausados que já tinham)
-          return{...c,brunoAlias:a};
+          if(!(key in aliases))return c; // preserva alias existente se não mapeado
+          return{...c,brunoAlias:aliases[key]};
         });
       }
       return{...d,clients,patchVersion:DATA_PATCH};
