@@ -642,28 +642,47 @@ function DetailPanel({c,onClose,onSave,onDelete,today}){
 
 // ─── LYRA HOME ─────────────────────────────────────────────────────────────────
 function LyraHome({clients,onSelect,onUpd,hoje,onToggleHoje,today,userName}){
-  const META=5;
   const[kpiModal,setKpiModal]=useState(null);
   const active=clients.filter(c=>c.status==='ativo');
   const scored=active.map(c=>({...c,sc:calcScore(c,today)})).sort((a,b)=>b.sc-a.sc);
   const queue=scored.filter(c=>c.sc>-50&&c.reuniaoStatus!=='nao_precisa'&&c.reuniaoStatus!=='onboarding');
   const agendados=scored.filter(c=>c.reuniaoStatus==='agendado');
-  const hojeList=clients.filter(c=>hoje.includes(c.id));
-  const done=hojeList.filter(c=>c.reuniaoStatus==='realizado'||c.reuniaoStatus==='nao_precisa'||c.reuniaoStatus==='onboarding').length;
-  const nC=active.filter(c=>c.brunoStatus==='critico');
-  const nA=active.filter(c=>c.brunoStatus==='atencao');
-  const nAg=active.filter(c=>c.reuniaoStatus==='agendar');
-  const nV=active.filter(c=>!c.davi&&c.contratoVenc&&daysTo(c.contratoVenc,today)<=30);
   const hr=new Date().getHours();
   const greeting=hr<12?'Bom dia':hr<18?'Boa tarde':'Boa noite';
   const dateStr=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long'});
-  const rCol=(i)=>i<3?'#DC2626':i<6?'#B45309':'#2563EB';
 
-  const kpis=[
-    {l:'Críticos',v:nC.length,list:nC,bg:'linear-gradient(135deg,#F9C8DD,#E64B97)',icon:'ti-alert-circle',key:'critico',spark:'0,22 20,16 40,20 55,10 70,16 85,8 100,12'},
-    {l:'Atenção',v:nA.length,list:nA,bg:'linear-gradient(135deg,#FFD0B3,#FF8F73)',icon:'ti-eye',key:'atencao',spark:'0,20 20,14 40,18 55,8 70,14 85,10 100,16'},
-    {l:'Agendar',v:nAg.length,list:nAg,bg:'linear-gradient(135deg,#E64B97,#D93E82)',icon:'ti-phone',key:'agendar',spark:'0,24 20,18 40,14 55,20 70,10 85,16 100,8'},
-    {l:'Contratos',v:nV.length,list:nV,bg:'linear-gradient(135deg,#D7B8FF,#B86EFF)',icon:'ti-file-text',key:'contratos',spark:'0,18 20,22 40,12 55,18 70,8 85,14 100,10'},
+  const nCritico=active.filter(c=>c.brunoStatus==='critico');
+  const nAtencao=active.filter(c=>c.brunoStatus==='atencao');
+  const nSaudavel=active.filter(c=>c.brunoStatus==='saudavel');
+  const nSemDados=active.filter(c=>c.brunoStatus==='sem_dados');
+  const nAgendar=active.filter(c=>c.reuniaoStatus==='agendar');
+  const nRealizado=active.filter(c=>c.reuniaoStatus==='realizado');
+  const nNaoPrecisa=active.filter(c=>c.reuniaoStatus==='nao_precisa');
+  const nOnboarding=active.filter(c=>c.reuniaoStatus==='onboarding');
+  const nVencido=active.filter(c=>!c.davi&&c.contratoVenc&&daysTo(c.contratoVenc,today)<=0);
+  const nAVencer=active.filter(c=>!c.davi&&c.contratoVenc&&daysTo(c.contratoVenc,today)>0&&daysTo(c.contratoVenc,today)<=30);
+  const nEmDia=active.filter(c=>!c.davi&&c.contratoVenc&&daysTo(c.contratoVenc,today)>30);
+  const nDavi=active.filter(c=>c.davi);
+
+  const grupos=[
+    {label:'Performance',icon:'ti-chart-bar',cards:[
+      {l:'Críticos',   v:nCritico.length,  list:nCritico,  bg:'linear-gradient(135deg,#F9C8DD,#E64B97)', spark:'0,22 20,16 40,20 55,10 70,16 85,8 100,12'},
+      {l:'Atenção',    v:nAtencao.length,  list:nAtencao,  bg:'linear-gradient(135deg,#FFD0B3,#FF8F73)', spark:'0,20 20,14 40,18 55,8 70,14 85,10 100,16'},
+      {l:'Saudável',   v:nSaudavel.length, list:nSaudavel, bg:'linear-gradient(135deg,#A8EDBE,#34C270)', spark:'0,14 20,20 40,16 55,24 70,18 85,22 100,20'},
+      {l:'Sem dados',  v:nSemDados.length, list:nSemDados, bg:'linear-gradient(135deg,#E8E0F0,#C4B0D8)', spark:'0,18 20,14 40,18 55,12 70,16 85,14 100,18'},
+    ]},
+    {label:'Reuniões',icon:'ti-phone',cards:[
+      {l:'Agendar',    v:nAgendar.length,   list:nAgendar,   bg:'linear-gradient(135deg,#E64B97,#D93E82)', spark:'0,24 20,18 40,14 55,20 70,10 85,16 100,8'},
+      {l:'Realizado',  v:nRealizado.length, list:nRealizado, bg:'linear-gradient(135deg,#A8EDBE,#34C270)', spark:'0,14 20,20 40,16 55,24 70,18 85,22 100,20'},
+      {l:'Não precisa',v:nNaoPrecisa.length,list:nNaoPrecisa,bg:'linear-gradient(135deg,#FFD0B3,#FF8F73)', spark:'0,18 20,12 40,16 55,10 70,14 85,12 100,16'},
+      {l:'Onboarding', v:nOnboarding.length,list:nOnboarding,bg:'linear-gradient(135deg,#B8DFFF,#5BA8E5)', spark:'0,16 20,20 40,14 55,18 70,22 85,16 100,20'},
+    ]},
+    {label:'Contratos',icon:'ti-file-text',cards:[
+      {l:'Vencidos',   v:nVencido.length,  list:nVencido,  bg:'linear-gradient(135deg,#F9C8DD,#E64B97)', spark:'0,22 20,16 40,20 55,10 70,16 85,8 100,12'},
+      {l:'A vencer',   v:nAVencer.length,  list:nAVencer,  bg:'linear-gradient(135deg,#FFD0B3,#FF8F73)', spark:'0,20 20,14 40,18 55,8 70,14 85,10 100,16'},
+      {l:'Em dia',     v:nEmDia.length,    list:nEmDia,    bg:'linear-gradient(135deg,#A8EDBE,#34C270)', spark:'0,14 20,20 40,16 55,24 70,18 85,22 100,20'},
+      {l:'Davi',       v:nDavi.length,     list:nDavi,     bg:'linear-gradient(135deg,#D7B8FF,#B86EFF)', spark:'0,18 20,22 40,12 55,18 70,8 85,14 100,10'},
+    ]},
   ];
 
   return<div style={{flex:1,overflowY:'auto',padding:'28px 32px',background:'transparent'}}>
@@ -674,52 +693,34 @@ function LyraHome({clients,onSelect,onUpd,hoje,onToggleHoje,today,userName}){
       <div style={{fontSize:13,color:'#B08090',textTransform:'capitalize'}}>{dateStr}</div>
     </div>
 
-    {/* KPIs */}
-    <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:16,marginBottom:26}}>
-      {kpis.map(k=><div key={k.l}
-        onClick={()=>setKpiModal({title:k.l,list:k.list})}
-        style={{background:k.bg,borderRadius:24,padding:'20px 22px',minHeight:170,color:'white',boxShadow:'0 8px 24px rgba(230,75,151,0.22)',cursor:'pointer',transition:'transform 0.15s,box-shadow 0.15s',display:'flex',flexDirection:'column',justifyContent:'space-between'}}
-        onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-3px)';e.currentTarget.style.boxShadow='0 14px 32px rgba(230,75,151,0.35)';}}
-        onMouseLeave={e=>{e.currentTarget.style.transform='';e.currentTarget.style.boxShadow='0 8px 24px rgba(230,75,151,0.22)';}}>
-        {/* topo: número esquerda + ícone direita */}
-        <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
-          <div>
-            <div style={{fontSize:46,fontWeight:800,lineHeight:1,letterSpacing:-1}}>{k.v}</div>
-            <div style={{fontSize:13,fontWeight:700,marginTop:6,opacity:0.95}}>{k.l}</div>
-            <div style={{fontSize:10,marginTop:3,opacity:0.7,fontWeight:500}}>clique para ver</div>
+    {/* KPI grupos */}
+    <div style={{display:'flex',flexDirection:'column',gap:16,marginBottom:26}}>
+      {grupos.map(g=>(
+        <div key={g.label}>
+          <div style={{fontSize:11,fontWeight:700,color:'#C06090',letterSpacing:1,textTransform:'uppercase',marginBottom:8,display:'flex',alignItems:'center',gap:6}}>
+            <i className={`ti ${g.icon}`} style={{fontSize:13}}/>{g.label}
           </div>
-          <div style={{width:44,height:44,borderRadius:'50%',background:'rgba(255,255,255,0.25)',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
-            <i className={`ti ${k.icon}`} style={{fontSize:20,color:'white'}}/>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:10}}>
+            {g.cards.map(k=>(
+              <div key={k.l}
+                onClick={()=>setKpiModal({title:k.l,list:k.list})}
+                style={{background:k.bg,borderRadius:16,padding:'14px 16px',color:'white',boxShadow:'0 4px 16px rgba(230,75,151,0.18)',cursor:'pointer',transition:'transform 0.15s,box-shadow 0.15s',display:'flex',flexDirection:'column',justifyContent:'space-between',minHeight:90}}
+                onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-2px)';e.currentTarget.style.boxShadow='0 8px 24px rgba(230,75,151,0.30)';}}
+                onMouseLeave={e=>{e.currentTarget.style.transform='';e.currentTarget.style.boxShadow='0 4px 16px rgba(230,75,151,0.18)';}}>
+                <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
+                  <div style={{fontSize:30,fontWeight:800,lineHeight:1,letterSpacing:-1}}>{k.v}</div>
+                </div>
+                <div>
+                  <div style={{fontSize:11,fontWeight:700,opacity:0.95,marginBottom:4}}>{k.l}</div>
+                  <svg width="100%" height="18" viewBox="0 0 100 30" preserveAspectRatio="none">
+                    <polyline points={k.spark} fill="none" stroke="rgba(255,255,255,0.55)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
-        {/* sparkline */}
-        <svg width="100%" height="30" viewBox="0 0 100 30" preserveAspectRatio="none" style={{marginTop:8}}>
-          <polyline points={k.spark} fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
-      </div>)}
-    </div>
-
-    {/* Meta do dia */}
-    <div style={{background:'white',border:`1px solid ${P_BORDER}`,borderRadius:24,padding:'18px 22px',marginBottom:18,boxShadow:'0 10px 30px rgba(230,75,151,0.08)'}}>
-      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}}>
-        <div style={{fontSize:15,fontWeight:700,color:GRAFITE}}>
-          <i className="ti ti-target" style={{color:P,marginRight:8,fontSize:16}}/>Meta do dia — {META} reuniões
-        </div>
-        <div style={{fontSize:12,color:'#B08090',fontWeight:600}}>{done}/{META} realizadas · {hoje.length}/{META} selecionadas</div>
-      </div>
-      <div style={{background:P_LIGHT,borderRadius:20,height:8,overflow:'hidden',marginBottom:14}}>
-        <div style={{background:`linear-gradient(90deg,${P},${P_DARK})`,height:'100%',width:`${Math.min(100,(done/META)*100)}%`,transition:'width 0.4s',borderRadius:20}}/>
-      </div>
-      {hojeList.length>0
-        ?<div style={{display:'flex',flexWrap:'wrap',gap:8}}>
-          {hojeList.map(c=><div key={c.id} style={{display:'flex',alignItems:'center',gap:6,background:P_LIGHT,border:`1px solid ${P_BORDER}`,borderRadius:20,padding:'4px 12px 4px 8px',fontSize:12}}>
-            <span style={{width:8,height:8,borderRadius:'50%',background:c.reuniaoStatus==='realizado'?'#16a34a':c.reuniaoStatus==='agendado'?'#B45309':P,flexShrink:0}}/>
-            <span onClick={()=>onSelect(c.id)} style={{cursor:'pointer',fontWeight:600,color:GRAFITE}}>{c.name}</span>
-            <button onClick={()=>onToggleHoje(c.id)} style={{background:'none',color:'#C06090',fontSize:16,lineHeight:1,padding:0,border:'none',cursor:'pointer'}}>×</button>
-          </div>)}
-        </div>
-        :<div style={{fontSize:12,color:'#C06090',textAlign:'center',padding:'4px 0'}}>Clique em "+ hoje" na fila abaixo para selecionar seus 5 clientes do dia</div>
-      }
+      ))}
     </div>
 
     {/* Agendados */}
