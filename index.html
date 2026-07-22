@@ -705,26 +705,26 @@ function LyraHome({clients,onSelect,onUpd,hoje,onToggleHoje,today,userName}){
           <div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:10}}>
             {g.cards.map(k=>{
               const pct=active.length>0?Math.round((k.v/active.length)*100):0;
-              const r=22;const circ=2*Math.PI*r;const dash=(pct/100)*circ;
+              const r=26;const circ=2*Math.PI*r;const dash=(pct/100)*circ;
               return<div key={k.l}
                 onClick={()=>setKpiModal({title:k.l,list:k.list})}
                 style={{display:'flex',alignItems:'center',gap:10,padding:'8px 10px',borderRadius:12,cursor:'pointer',transition:'background 0.15s'}}
                 onMouseEnter={e=>e.currentTarget.style.background='#FDF5F9'}
                 onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
-                <div style={{position:'relative',width:52,height:52,flexShrink:0}}>
-                  <svg width="52" height="52" style={{transform:'rotate(-90deg)'}}>
-                    <circle cx="26" cy="26" r={r} fill="none" stroke="#F0EAF4" strokeWidth="4"/>
-                    <circle cx="26" cy="26" r={r} fill="none" stroke={k.color} strokeWidth="4"
+                <div style={{position:'relative',width:62,height:62,flexShrink:0}}>
+                  <svg width="62" height="62" style={{transform:'rotate(-90deg)'}}>
+                    <circle cx="31" cy="31" r={r} fill="none" stroke="#F0EAF4" strokeWidth="4"/>
+                    <circle cx="31" cy="31" r={r} fill="none" stroke={k.color} strokeWidth="4"
                       strokeDasharray={`${dash} ${circ}`} strokeLinecap="round"/>
                   </svg>
                   <div style={{position:'absolute',inset:0,display:'flex',alignItems:'center',justifyContent:'center'}}>
-                    <i className={`ti ${k.icon}`} style={{fontSize:14,color:k.color}}/>
+                    <i className={`ti ${k.icon}`} style={{fontSize:17,color:k.color}}/>
                   </div>
                 </div>
                 <div>
                   <div style={{fontSize:20,fontWeight:800,lineHeight:1,color:'#3A2030'}}>{k.v}</div>
-                  <div style={{fontSize:10,color:'#9B6080',marginTop:2,fontWeight:500}}>{k.l}</div>
-                  <div style={{fontSize:10,color:k.color,fontWeight:700,marginTop:2}}>{pct}%</div>
+                  <div style={{fontSize:12,color:'#5A3048',marginTop:2,fontWeight:600}}>{k.l}</div>
+                  <div style={{fontSize:12,color:k.color,fontWeight:700,marginTop:2}}>{pct}%</div>
                 </div>
               </div>;
             })}
