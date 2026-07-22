@@ -668,22 +668,22 @@ function LyraHome({clients,onSelect,onUpd,hoje,onToggleHoje,today,userName}){
 
   const grupos=[
     {label:'Performance',icon:'ti-chart-bar',cards:[
-      {l:'Críticos',   v:nCritico.length,  list:nCritico,  icon:'ti-alert-circle', bg:'linear-gradient(135deg,#F9C8DD,#E64B97)', spark:'0,22 20,16 40,20 55,10 70,16 85,8 100,12'},
-      {l:'Atenção',    v:nAtencao.length,  list:nAtencao,  icon:'ti-bell',         bg:'linear-gradient(135deg,#FFD0B3,#FF8F73)', spark:'0,20 20,14 40,18 55,8 70,14 85,10 100,16'},
-      {l:'Saudável',   v:nSaudavel.length, list:nSaudavel, icon:'ti-heart',        bg:'linear-gradient(135deg,#A8EDBE,#34C270)', spark:'0,14 20,20 40,16 55,24 70,18 85,22 100,20'},
-      {l:'Sem dados',  v:nSemDados.length, list:nSemDados, icon:'ti-chart-pie',    bg:'linear-gradient(135deg,#E8E0F0,#C4B0D8)', spark:'0,18 20,14 40,18 55,12 70,16 85,14 100,18'},
+      {l:'Críticos',   v:nCritico.length,  list:nCritico,  icon:'ti-alert-circle', color:'#E64B97'},
+      {l:'Atenção',    v:nAtencao.length,  list:nAtencao,  icon:'ti-bell',         color:'#FF8F73'},
+      {l:'Saudável',   v:nSaudavel.length, list:nSaudavel, icon:'ti-heart',        color:'#34C270'},
+      {l:'Sem dados',  v:nSemDados.length, list:nSemDados, icon:'ti-chart-pie',    color:'#B86EFF'},
     ]},
     {label:'Reuniões',icon:'ti-phone',cards:[
-      {l:'Agendar',    v:nAgendar.length,   list:nAgendar,   icon:'ti-calendar',      bg:'linear-gradient(135deg,#E64B97,#D93E82)', spark:'0,24 20,18 40,14 55,20 70,10 85,16 100,8'},
-      {l:'Realizado',  v:nRealizado.length, list:nRealizado, icon:'ti-circle-check',  bg:'linear-gradient(135deg,#A8EDBE,#34C270)', spark:'0,14 20,20 40,16 55,24 70,18 85,22 100,20'},
-      {l:'Não precisa',v:nNaoPrecisa.length,list:nNaoPrecisa,icon:'ti-circle-minus',  bg:'linear-gradient(135deg,#FFD0B3,#FF8F73)', spark:'0,18 20,12 40,16 55,10 70,14 85,12 100,16'},
-      {l:'Onboarding', v:nOnboarding.length,list:nOnboarding,icon:'ti-user',          bg:'linear-gradient(135deg,#B8DFFF,#5BA8E5)', spark:'0,16 20,20 40,14 55,18 70,22 85,16 100,20'},
+      {l:'Agendar',    v:nAgendar.length,   list:nAgendar,   icon:'ti-calendar',     color:'#E64B97'},
+      {l:'Realizado',  v:nRealizado.length, list:nRealizado, icon:'ti-circle-check', color:'#34C270'},
+      {l:'Não precisa',v:nNaoPrecisa.length,list:nNaoPrecisa,icon:'ti-circle-minus', color:'#FF8F73'},
+      {l:'Onboarding', v:nOnboarding.length,list:nOnboarding,icon:'ti-user',         color:'#5BA8E5'},
     ]},
     {label:'Contratos',icon:'ti-file-text',cards:[
-      {l:'Vencidos',   v:nVencido.length,  list:nVencido,  icon:'ti-clock',        bg:'linear-gradient(135deg,#F9C8DD,#E64B97)', spark:'0,22 20,16 40,20 55,10 70,16 85,8 100,12'},
-      {l:'A vencer',   v:nAVencer.length,  list:nAVencer,  icon:'ti-hourglass',    bg:'linear-gradient(135deg,#FFD0B3,#FF8F73)', spark:'0,20 20,14 40,18 55,8 70,14 85,10 100,16'},
-      {l:'Em dia',     v:nEmDia.length,    list:nEmDia,    icon:'ti-shield-check', bg:'linear-gradient(135deg,#A8EDBE,#34C270)', spark:'0,14 20,20 40,16 55,24 70,18 85,22 100,20'},
-      {l:'Davi',       v:nDavi.length,     list:nDavi,     icon:'ti-user',         bg:'linear-gradient(135deg,#D7B8FF,#B86EFF)', spark:'0,18 20,22 40,12 55,18 70,8 85,14 100,10'},
+      {l:'Vencidos',   v:nVencido.length,  list:nVencido,  icon:'ti-clock',        color:'#E64B97'},
+      {l:'A vencer',   v:nAVencer.length,  list:nAVencer,  icon:'ti-hourglass',    color:'#FF8F73'},
+      {l:'Em dia',     v:nEmDia.length,    list:nEmDia,    icon:'ti-shield-check', color:'#34C270'},
+      {l:'Davi',       v:nDavi.length,     list:nDavi,     icon:'ti-user',         color:'#B86EFF'},
     ]},
   ];
 
@@ -695,41 +695,42 @@ function LyraHome({clients,onSelect,onUpd,hoje,onToggleHoje,today,userName}){
       <div style={{fontSize:13,color:'#B08090',textTransform:'capitalize'}}>{dateStr}</div>
     </div>
 
-    {/* Topo: cards */}
-    <div style={{display:'flex',gap:20,marginBottom:26,alignItems:'flex-start'}}>
-      {/* KPI grupos */}
-      <div style={{flex:1,display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:16}}>
-        {grupos.map(g=>(
-          <div key={g.label}>
-            <div style={{fontSize:10,fontWeight:700,color:'#C06090',letterSpacing:1,textTransform:'uppercase',marginBottom:10,display:'flex',alignItems:'center',gap:5}}>
-              <i className={`ti ${g.icon}`} style={{fontSize:12}}/>{g.label}
-            </div>
-            <div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:8}}>
-              {g.cards.map(k=>(
-                <div key={k.l}
-                  onClick={()=>setKpiModal({title:k.l,list:k.list})}
-                  style={{background:k.bg,borderRadius:14,padding:'10px 10px 7px',color:'white',boxShadow:'0 4px 14px rgba(230,75,151,0.18)',cursor:'pointer',transition:'transform 0.15s,box-shadow 0.15s',display:'flex',flexDirection:'column',justifyContent:'space-between',aspectRatio:'1/1'}}
-                  onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-2px)';e.currentTarget.style.boxShadow='0 8px 20px rgba(230,75,151,0.30)';}}
-                  onMouseLeave={e=>{e.currentTarget.style.transform='';e.currentTarget.style.boxShadow='0 4px 14px rgba(230,75,151,0.18)';}}>
-                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
-                    <div style={{fontSize:26,fontWeight:800,lineHeight:1,letterSpacing:-1}}>{k.v}</div>
-                    <div style={{width:24,height:24,borderRadius:'50%',background:'rgba(255,255,255,0.25)',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
-                      <i className={`ti ${k.icon}`} style={{fontSize:12,color:'white'}}/>
-                    </div>
-                  </div>
-                  <div>
-                    <div style={{fontSize:10,fontWeight:700,opacity:0.95,marginBottom:4}}>{k.l}</div>
-                    <svg width="100%" height="14" viewBox="0 0 100 30" preserveAspectRatio="none">
-                      <polyline points={k.spark} fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
+    {/* KPI grupos — donut style */}
+    <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:16,marginBottom:22}}>
+      {grupos.map(g=>(
+        <div key={g.label} style={{background:'white',borderRadius:20,padding:'16px',boxShadow:'0 2px 12px rgba(0,0,0,0.06)',border:'1px solid #F0E8EE'}}>
+          <div style={{fontSize:11,fontWeight:700,color:'#9B6080',letterSpacing:0.8,textTransform:'uppercase',marginBottom:14,display:'flex',alignItems:'center',gap:6}}>
+            <i className={`ti ${g.icon}`} style={{fontSize:13}}/>{g.label}
+          </div>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:10}}>
+            {g.cards.map(k=>{
+              const pct=active.length>0?Math.round((k.v/active.length)*100):0;
+              const r=22;const circ=2*Math.PI*r;const dash=(pct/100)*circ;
+              return<div key={k.l}
+                onClick={()=>setKpiModal({title:k.l,list:k.list})}
+                style={{display:'flex',alignItems:'center',gap:10,padding:'8px 10px',borderRadius:12,cursor:'pointer',transition:'background 0.15s'}}
+                onMouseEnter={e=>e.currentTarget.style.background='#FDF5F9'}
+                onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
+                <div style={{position:'relative',width:52,height:52,flexShrink:0}}>
+                  <svg width="52" height="52" style={{transform:'rotate(-90deg)'}}>
+                    <circle cx="26" cy="26" r={r} fill="none" stroke="#F0EAF4" strokeWidth="4"/>
+                    <circle cx="26" cy="26" r={r} fill="none" stroke={k.color} strokeWidth="4"
+                      strokeDasharray={`${dash} ${circ}`} strokeLinecap="round"/>
+                  </svg>
+                  <div style={{position:'absolute',inset:0,display:'flex',alignItems:'center',justifyContent:'center'}}>
+                    <i className={`ti ${k.icon}`} style={{fontSize:14,color:k.color}}/>
                   </div>
                 </div>
-              ))}
-            </div>
+                <div>
+                  <div style={{fontSize:20,fontWeight:800,lineHeight:1,color:'#3A2030'}}>{k.v}</div>
+                  <div style={{fontSize:10,color:'#9B6080',marginTop:2,fontWeight:500}}>{k.l}</div>
+                  <div style={{fontSize:10,color:k.color,fontWeight:700,marginTop:2}}>{pct}%</div>
+                </div>
+              </div>;
+            })}
           </div>
-        ))}
-      </div>
-
+        </div>
+      ))}
     </div>
 
     {/* Reuniões agendadas */}
