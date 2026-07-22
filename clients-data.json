@@ -109,7 +109,7 @@
       "eventoDate": "2026-12-31",
       "davi": true,
       "status": "ativo",
-      "brunoStatus": "critico",
+      "brunoStatus": "sem_dados",
       "brunoRoas": null,
       "brunoGasto": 5930.24,
       "contratoVenc": "2026-12-31",
