@@ -1097,7 +1097,7 @@ function RelatorioView({clients,onUpdate,brunoDate,onSetDate}){
       }
       // Ativo: calcula média dos campos numéricos, pior status
       const avg=arr=>{ const v=arr.filter(x=>x!=null); return v.length?+(v.reduce((a,b)=>a+b,0)/v.length).toFixed(2):null; };
-      const worstStatus=items.reduce((w,it)=>{
+      const worstStatus=c.reuniaoStatus==='onboarding'?'sem_dados':items.reduce((w,it)=>{
         const wi=STATUS_ORDER.indexOf(w),ii=STATUS_ORDER.indexOf(it.status);
         return ii!==-1&&ii<wi?it.status:w;
       },items[0].status||'sem_dados');
