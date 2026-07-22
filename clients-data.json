@@ -795,7 +795,7 @@
       "brunoStatus": "saudavel",
       "brunoRoas": 6.06,
       "brunoGasto": 8993.52,
-      "contratoVenc": null,
+      "contratoVenc": "2026-12-31",
       "contratoVal": "R$ 5.000",
       "reuniaoStatus": "realizado",
       "reuniaoData": "2026-07-16",
@@ -812,7 +812,6 @@
       "obsEvento": "",
       "dataInicio": null,
       "contratoAnterior": null,
-      "_editingName": false,
       "segmento": "Entretenimento Multigênero",
       "instagram": "https://www.instagram.com/festastarlight/ https://www.instagram.com/bailedogomesofc/"
     },
