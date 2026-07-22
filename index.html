@@ -695,7 +695,7 @@ function LyraHome({clients,onSelect,onUpd,hoje,onToggleHoje,today,userName}){
       <div style={{fontSize:13,color:'#B08090',textTransform:'capitalize'}}>{dateStr}</div>
     </div>
 
-    {/* Topo: cards + reuniões agendadas lado a lado */}
+    {/* Topo: cards */}
     <div style={{display:'flex',gap:20,marginBottom:26,alignItems:'flex-start'}}>
       {/* KPI grupos */}
       <div style={{flex:1,display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:16}}>
@@ -730,28 +730,24 @@ function LyraHome({clients,onSelect,onUpd,hoje,onToggleHoje,today,userName}){
         ))}
       </div>
 
-      {/* Reuniões agendadas */}
-      {agendados.length>0&&<div style={{width:280,flexShrink:0,background:'white',border:'1px solid #FCD34D',borderRadius:18,overflow:'hidden'}}>
-        <div style={{padding:'12px 16px',borderBottom:'1px solid #FEF3C7',background:'#FFFBEB',display:'flex',justifyContent:'space-between'}}>
-          <span style={{fontSize:13,fontWeight:700,color:'#B45309'}}><i className="ti ti-clock" style={{marginRight:6}}/>Reuniões agendadas</span>
-          <span style={{fontSize:11,background:'#FEF3C7',color:'#B45309',padding:'2px 8px',borderRadius:20,fontWeight:700}}>{agendados.length}</span>
-        </div>
-        {agendados.map(c=><div key={c.id} style={{display:'flex',flexDirection:'column',gap:6,padding:'11px 16px',borderBottom:'1px solid #FEF3C7',cursor:'pointer'}}
-          onClick={()=>onSelect(c.id)}
-          onMouseEnter={e=>e.currentTarget.style.background='#FFFBEB'}
-          onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
-          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-            <span style={{fontSize:13,fontWeight:600}}>{c.name}</span>
-            <span style={{fontSize:11,color:'#B45309'}}>{c.reuniaoData?fmtFull(c.reuniaoData):''}</span>
-          </div>
-          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-            <span style={{fontSize:11,color:'#B08090'}}>{c.gestor}</span>
-            <button onClick={e=>{e.stopPropagation();onUpd(c.id,{reuniaoStatus:'realizado',reuniaoData:todayStr()});}}
-              style={{background:'#DCFCE7',color:'#15803D',border:'none',padding:'3px 10px',borderRadius:20,fontSize:11,fontWeight:700,cursor:'pointer'}}>✓ Realizado</button>
-          </div>
-        </div>)}
-      </div>}
     </div>
+
+    {/* Reuniões agendadas */}
+    {agendados.length>0&&<div style={{background:'white',border:'1px solid #FCD34D',borderRadius:18,overflow:'hidden',marginBottom:18}}>
+      <div style={{padding:'12px 20px',borderBottom:'1px solid #FEF3C7',background:'#FFFBEB',display:'flex',justifyContent:'space-between'}}>
+        <span style={{fontSize:13,fontWeight:700,color:'#B45309'}}><i className="ti ti-clock" style={{marginRight:6}}/>Reuniões agendadas</span>
+        <span style={{fontSize:11,background:'#FEF3C7',color:'#B45309',padding:'2px 8px',borderRadius:20,fontWeight:700}}>{agendados.length}</span>
+      </div>
+      {agendados.map(c=><div key={c.id} style={{display:'flex',alignItems:'center',gap:12,padding:'11px 20px',borderBottom:'1px solid #FEF3C7',cursor:'pointer'}}
+        onClick={()=>onSelect(c.id)}
+        onMouseEnter={e=>e.currentTarget.style.background='#FFFBEB'}
+        onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
+        <div style={{flex:1}}><span style={{fontSize:13,fontWeight:600}}>{c.name}</span><span style={{fontSize:11,color:'#B08090',marginLeft:8}}>{c.gestor}</span></div>
+        <span style={{fontSize:11,color:'#B45309'}}>{c.reuniaoData?fmtFull(c.reuniaoData):''}</span>
+        <button onClick={e=>{e.stopPropagation();onUpd(c.id,{reuniaoStatus:'realizado',reuniaoData:todayStr()});}}
+          style={{background:'#DCFCE7',color:'#15803D',border:'none',padding:'5px 12px',borderRadius:20,fontSize:11,fontWeight:700,cursor:'pointer'}}>✓ Realizado</button>
+      </div>)}
+    </div>}
 
     {/* Fila de prioridades */}
     <div style={{background:'white',border:`1px solid ${P_BORDER}`,borderRadius:24,overflow:'hidden',boxShadow:'0 10px 30px rgba(230,75,151,0.08)'}}>
