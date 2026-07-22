@@ -1464,6 +1464,11 @@ function App(){
           return c;
         });
       }
+      // Patch 10: forçar status correto baseado no Monday (fonte de verdade)
+      if(pv<10){
+        const pausados=new Set([2,3,4,6,7,16,23,29,31,32]);
+        clients=clients.map(c=>pausados.has(c.id)?{...c,status:'pausado'}:c);
+      }
       // Patch 11: mesclar duplicatas — pega dados reais do localStorage e junta com entrada do código
       if(pv<11){
         const defaultIds=new Set(CLIENTS_DEFAULT.map(c=>c.id));
@@ -1488,11 +1493,6 @@ function App(){
         // Remove os duplicados do localStorage
         const defaultNames=new Set(clients.filter(c=>defaultIds.has(c.id)).map(c=>norm(c.name)));
         clients=clients.filter(c=>defaultIds.has(c.id)||!defaultNames.has(norm(c.name)));
-      }
-      // Patch 10: forçar status correto baseado no Monday (fonte de verdade)
-      if(pv<10){
-        const pausados=new Set([2,3,4,6,7,16,23,29,31,32]);
-        clients=clients.map(c=>pausados.has(c.id)?{...c,status:'pausado'}:c);
       }
       // Patch 9: brunoAlias para Kibixiga
       if(pv<9){
@@ -1747,7 +1747,10 @@ function App(){
     const token=localStorage.getItem(GITHUB_TOKEN_KEY);
     if(!token)return;
     if(autoSyncRef.current)clearTimeout(autoSyncRef.current);
+    let syncing=false;
     const doSync=async()=>{
+      if(syncing)return;
+      syncing=true;
       const owner='vanessadbernardino-sys',repo='lyra',path='clients-data.json';
       const content=btoa(unescape(encodeURIComponent(JSON.stringify(data,null,2))));
       try{
@@ -1758,6 +1761,7 @@ function App(){
         if(sha)body.sha=sha;
         await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`,{method:'PUT',headers:{'Authorization':`token ${token}`,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},body:JSON.stringify(body)});
       }catch(e){}
+      syncing=false;
     };
     autoSyncRef.current=setTimeout(doSync,3000);
     return()=>{if(autoSyncRef.current)clearTimeout(autoSyncRef.current);};
