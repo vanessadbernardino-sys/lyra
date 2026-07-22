@@ -706,7 +706,7 @@ function LyraHome({clients,onSelect,onUpd,hoje,onToggleHoje,today,userName}){
     {/* KPI grupos — donut style */}
     <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:16,marginBottom:22}}>
       {grupos.map(g=>(
-        <div key={g.label} style={{background:g.bg,borderRadius:20,padding:'16px',boxShadow:'0 2px 12px rgba(0,0,0,0.05)',border:`1px solid ${g.border}`}}>
+        <div key={g.label} style={{background:g.bg,borderRadius:20,padding:'16px',boxShadow:'0 2px 12px rgba(0,0,0,0.05)',border:`1px solid ${g.border}`,minWidth:0,overflow:'hidden'}}>
           <div style={{fontSize:11,fontWeight:700,color:'#9B6080',letterSpacing:0.8,textTransform:'uppercase',marginBottom:14,display:'flex',alignItems:'center',gap:6}}>
             <i className={`ti ${g.icon}`} style={{fontSize:13}}/>{g.label}
           </div>
