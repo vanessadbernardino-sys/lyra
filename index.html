@@ -667,19 +667,19 @@ function LyraHome({clients,onSelect,onUpd,hoje,onToggleHoje,today,userName}){
   const nDavi=active.filter(c=>c.davi);
 
   const grupos=[
-    {label:'Performance',icon:'ti-chart-bar',bg:'linear-gradient(145deg,#FFE8F2,#FFF5F9)',border:'#F9D0E0',cards:[
+    {label:'Performance',icon:'ti-chart-bar',bg:'linear-gradient(145deg,#FFF0F6,#FFFAFC)',border:'#F9D8E6',cards:[
       {l:'Críticos',   v:nCritico.length,  list:nCritico,  icon:'ti-alert-circle', color:'#E64B97'},
       {l:'Atenção',    v:nAtencao.length,  list:nAtencao,  icon:'ti-bell',         color:'#FF8F73'},
       {l:'Saudável',   v:nSaudavel.length, list:nSaudavel, icon:'ti-heart',        color:'#34C270'},
       {l:'Sem dados',  v:nSemDados.length, list:nSemDados, icon:'ti-chart-pie',    color:'#B86EFF'},
     ]},
-    {label:'Reuniões',icon:'ti-phone',bg:'linear-gradient(145deg,#FFE8D8,#FFF6F0)',border:'#FDCCA8',cards:[
+    {label:'Reuniões',icon:'ti-phone',bg:'linear-gradient(145deg,#FFF2EA,#FFFAF6)',border:'#FDCCA8',cards:[
       {l:'Agendar',    v:nAgendar.length,   list:nAgendar,   icon:'ti-calendar',     color:'#E64B97'},
       {l:'Realizado',  v:nRealizado.length, list:nRealizado, icon:'ti-circle-check', color:'#34C270'},
       {l:'Não precisa',v:nNaoPrecisa.length,list:nNaoPrecisa,icon:'ti-circle-minus', color:'#FF8F73'},
       {l:'Onboarding', v:nOnboarding.length,list:nOnboarding,icon:'ti-user',         color:'#5BA8E5'},
     ]},
-    {label:'Contratos',icon:'ti-file-text',bg:'linear-gradient(145deg,#EDE0FF,#F8F3FF)',border:'#D8C4F5',cards:[
+    {label:'Contratos',icon:'ti-file-text',bg:'linear-gradient(145deg,#F4EEFF,#FAF7FF)',border:'#D8C4F5',cards:[
       {l:'Vencidos',   v:nVencido.length,  list:nVencido,  icon:'ti-clock',        color:'#E64B97'},
       {l:'A vencer',   v:nAVencer.length,  list:nAVencer,  icon:'ti-hourglass',    color:'#FF8F73'},
       {l:'Em dia',     v:nEmDia.length,    list:nEmDia,    icon:'ti-shield-check', color:'#34C270'},
