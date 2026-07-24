@@ -1727,14 +1727,14 @@
       "dataInicio": "2026-07-24",
       "contratoVenc": "2026-09-27",
       "contratoVal": "R$ 2.400,00",
-      "reuniaoStatus": "agendar",
-      "reuniaoData": null,
+      "reuniaoStatus": "onboarding",
+      "reuniaoData": "2026-07-24",
       "alerta": null,
       "obs": "",
       "obsContrato": "Parcela 1 – R$ 2.400,00 – 24/07/2026; Parcela 2 – R$ 2.400,00 – 24/08/2026",
       "obsEvento": "Evento de Funk + Som Automotivo",
       "contratoAnterior": null,
-      "ultimoContato": null,
+      "ultimoContato": "2026-07-24",
       "brunoAlias": ""
     }
   ],
